@@ -1,0 +1,121 @@
+"use client";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Project, Role, Stage, User } from "@devcycle/shared";
+import { apiClient } from "./apiClient";
+
+export function useFlows() {
+  return useQuery({
+    queryKey: ["flows"],
+    queryFn: async () => (await apiClient.get<Stage[]>("/flows")).data,
+    staleTime: Infinity,
+  });
+}
+
+export function useRoles() {
+  return useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => (await apiClient.get<Role[]>("/roles")).data,
+    staleTime: Infinity,
+  });
+}
+
+export function useUsers() {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: async () => (await apiClient.get<User[]>("/users")).data,
+    staleTime: Infinity,
+  });
+}
+
+export function useProjects() {
+  return useQuery({
+    queryKey: ["projects"],
+    queryFn: async () => (await apiClient.get<Project[]>("/projects")).data,
+  });
+}
+
+export function useProject(id: string | undefined) {
+  return useQuery({
+    queryKey: ["projects", id],
+    queryFn: async () => (await apiClient.get<Project>(`/projects/${id}`)).data,
+    enabled: Boolean(id),
+  });
+}
+
+interface PatchProjectInput {
+  id: string;
+  status?: Project["status"];
+  priority?: Project["priority"];
+  stageData?: Record<string, Record<string, unknown>>;
+}
+
+export function usePatchProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...body }: PatchProjectInput) =>
+      (await apiClient.patch<Project>(`/projects/${id}`, body)).data,
+    onSuccess: (project) => {
+      queryClient.setQueryData(["projects", project.id], project);
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+interface AddApprovalInput {
+  projectId: string;
+  subStepId: string;
+  roleId: string;
+  userId: string;
+  decision: "aprobado" | "rechazado";
+  comment?: string;
+}
+
+export function useAddApproval() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ projectId, ...body }: AddApprovalInput) =>
+      (await apiClient.post<Project>(`/projects/${projectId}/approvals`, body)).data,
+    onSuccess: (project) => {
+      queryClient.setQueryData(["projects", project.id], project);
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+interface AddFileInput {
+  projectId: string;
+  name: string;
+  size: number;
+  type: string;
+}
+
+export function useAddFile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ projectId, ...body }: AddFileInput) =>
+      (await apiClient.post<Project>(`/projects/${projectId}/files`, body)).data,
+    onSuccess: (project) => {
+      queryClient.setQueryData(["projects", project.id], project);
+    },
+  });
+}
+
+interface ChatInput {
+  message: string;
+  context?: { stageId?: string; subStepId?: string };
+}
+
+interface ChatOutput {
+  id: string;
+  text: string;
+  ts: string;
+  suggestions?: string[];
+}
+
+export function useSendChatMessage() {
+  return useMutation({
+    mutationFn: async (input: ChatInput) =>
+      (await apiClient.post<ChatOutput>("/assistant/chat", input)).data,
+  });
+}

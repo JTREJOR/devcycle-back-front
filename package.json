@@ -1,0 +1,16 @@
+{
+  "name": "devcycle-back-front",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "postinstall": "pnpm --filter @devcycle/shared build",
+    "dev:backend": "pnpm --filter backend start:dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm --filter @devcycle/shared build && pnpm --filter backend build && pnpm --filter frontend build",
+    "lint": "pnpm -r lint"
+  }
+}
