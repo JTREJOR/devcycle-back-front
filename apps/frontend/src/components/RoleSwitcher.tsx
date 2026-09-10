@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { Avatar, Dropdown } from "@vibe/core";
+import { Avatar, Dropdown, Icon } from "@vibe/core";
+import { Labs } from "@vibe/icons";
 import { useRoles, useUsers } from "@/lib/queries";
 import { useUiStore } from "@/store/uiStore";
 
@@ -34,6 +35,9 @@ export function RoleSwitcher() {
 
   return (
     <div className="role-switcher" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--brand-primary)" }}>
+        <Icon icon={Labs} size={16} />
+      </div>
       {activeOption && (
         <Avatar
           size="small"
@@ -42,17 +46,17 @@ export function RoleSwitcher() {
           customBackgroundColor={activeOption.avatarColor}
         />
       )}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 200 }}>
         <Dropdown
           size="small"
-          placeholder="Actuar como…"
+          placeholder="Probar como…"
           options={options}
           value={activeOption ?? undefined}
           onChange={(option) => option && setActiveUserId((option as UserOption).value)}
           optionRenderer={(option: UserOption) => (
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>{option.label}</span>
-              <span style={{ fontSize: 11, opacity: 0.65 }}>{option.roleName}</span>
+              <span style={{ fontWeight: 600 }}>{option.label}</span>
+              <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{option.roleName}</span>
             </div>
           )}
         />

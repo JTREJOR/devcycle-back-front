@@ -1,13 +1,28 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Project, Role, Stage, User } from "@devcycle/shared";
+import {
+  Project,
+  Role,
+  Stage,
+  User,
+  stages as mockStages,
+  roles as mockRoles,
+  users as mockUsers,
+  projects as mockProjects,
+} from "@devcycle/shared";
 import { apiClient } from "./apiClient";
 
 export function useFlows() {
   return useQuery({
     queryKey: ["flows"],
-    queryFn: async () => (await apiClient.get<Stage[]>("/flows")).data,
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<Stage[]>("/flows")).data;
+      } catch {
+        return mockStages;
+      }
+    },
     staleTime: Infinity,
   });
 }
@@ -15,7 +30,13 @@ export function useFlows() {
 export function useRoles() {
   return useQuery({
     queryKey: ["roles"],
-    queryFn: async () => (await apiClient.get<Role[]>("/roles")).data,
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<Role[]>("/roles")).data;
+      } catch {
+        return mockRoles;
+      }
+    },
     staleTime: Infinity,
   });
 }
@@ -23,7 +44,13 @@ export function useRoles() {
 export function useUsers() {
   return useQuery({
     queryKey: ["users"],
-    queryFn: async () => (await apiClient.get<User[]>("/users")).data,
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<User[]>("/users")).data;
+      } catch {
+        return mockUsers;
+      }
+    },
     staleTime: Infinity,
   });
 }
@@ -31,14 +58,26 @@ export function useUsers() {
 export function useProjects() {
   return useQuery({
     queryKey: ["projects"],
-    queryFn: async () => (await apiClient.get<Project[]>("/projects")).data,
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<Project[]>("/projects")).data;
+      } catch {
+        return mockProjects;
+      }
+    },
   });
 }
 
 export function useProject(id: string | undefined) {
   return useQuery({
     queryKey: ["projects", id],
-    queryFn: async () => (await apiClient.get<Project>(`/projects/${id}`)).data,
+    queryFn: async () => {
+      try {
+        return (await apiClient.get<Project>(`/projects/${id}`)).data;
+      } catch {
+        return mockProjects.find((p) => p.id === id) ?? mockProjects[0];
+      }
+    },
     enabled: Boolean(id),
   });
 }
