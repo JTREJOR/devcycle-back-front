@@ -12,6 +12,7 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3001;
+  // Start the API on the configured application port.
   await app.listen(port);
   // eslint-disable-next-line no-console
   console.log(`DevCycle backend listening on port ${port}`);
