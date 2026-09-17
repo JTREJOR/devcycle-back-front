@@ -43,6 +43,7 @@ const SYSTEMS_CATALOG = [
   { id: "pos", name: "Punto de Venta (POS Tienda)" },
 ];
 
+// Catálogo de beneficios
 const BENEFIT_TYPES = [
   "Ahorro directo de costos",
   "Nuevos ingresos de negocio",
