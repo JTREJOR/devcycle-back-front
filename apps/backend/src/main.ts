@@ -27,7 +27,13 @@ async function bootstrap() {
     next();
   });
 
-  const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:3000").split(",");
+  const allowedOrigins = [
+    ...new Set([
+      "http://localhost:3002",
+      "http://localhost:3000",
+      ...(process.env.CORS_ORIGIN ?? "").split(",").map((origin) => origin.trim()),
+    ]),
+  ].filter(Boolean);
   app.enableCors({
     origin: allowedOrigins,
     credentials: true,
