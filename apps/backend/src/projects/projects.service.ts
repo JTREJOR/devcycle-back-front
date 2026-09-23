@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { projects as seedProjects, stages, stageById, roleById, Project, Approval } from "@devcycle/shared";
-import { AddApprovalDto, AddFileDto, PatchProjectDto } from "./dto";
+import { AddApprovalDto, AddFileDto, CreateProjectDto, PatchProjectDto } from "./dto";
 
 function generateAiInsight(fileName: string): string {
   const lower = fileName.toLowerCase();
@@ -26,6 +26,33 @@ export class ProjectsService {
 
   findAll(): Project[] {
     return this.projects;
+  }
+
+  create(dto: CreateProjectDto): Project {
+    const now = new Date();
+    const defaultTargetDate = new Date(now);
+    defaultTargetDate.setMonth(defaultTargetDate.getMonth() + 6);
+
+    const newProject: Project = {
+      id: `proj-${Date.now()}`,
+      name: dto.name,
+      description: dto.description ?? "",
+      area: dto.area,
+      owner: dto.owner ?? "Por asignar",
+      priority: dto.priority ?? "Media",
+      status: "Por iniciar",
+      currentStageId: "priorizacion",
+      currentSubStepId: "p-11",
+      budgetEstimate: dto.budgetEstimate ?? 0,
+      startDate: now.toISOString().slice(0, 10),
+      targetDate: dto.targetDate ?? defaultTargetDate.toISOString().slice(0, 10),
+      documents: [],
+      approvals: [],
+      stageData: dto.stageData ?? {},
+    };
+
+    this.projects.unshift(newProject);
+    return newProject;
   }
 
   findOne(id: string): Project {

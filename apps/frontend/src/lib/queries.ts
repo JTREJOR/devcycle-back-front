@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Project, Role, Stage, User } from "@devcycle/shared";
+import { Priority, Project, Role, Stage, User } from "@devcycle/shared";
 import { apiClient } from "./apiClient";
 
 export function useFlows() {
@@ -32,6 +32,28 @@ export function useProjects() {
   return useQuery({
     queryKey: ["projects"],
     queryFn: async () => (await apiClient.get<Project[]>("/projects")).data,
+  });
+}
+
+export interface CreateProjectInput {
+  name: string;
+  description?: string;
+  area: string;
+  owner?: string;
+  priority?: Priority;
+  budgetEstimate?: number;
+  targetDate?: string;
+  stageData?: Record<string, Record<string, unknown>>;
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (dto: CreateProjectInput) =>
+      (await apiClient.post<Project>("/projects", dto)).data,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
   });
 }
 

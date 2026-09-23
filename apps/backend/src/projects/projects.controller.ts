@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
-import { AddApprovalDto, AddFileDto, PatchProjectDto } from "./dto";
+import { AddApprovalDto, AddFileDto, CreateProjectDto, PatchProjectDto } from "./dto";
 
 @Controller("projects")
 export class ProjectsController {
@@ -9,6 +9,11 @@ export class ProjectsController {
   @Get()
   findAll() {
     return this.projectsService.findAll();
+  }
+
+  @Post()
+  create(@Body() dto: CreateProjectDto) {
+    return this.projectsService.create(dto);
   }
 
   @Get(":id")

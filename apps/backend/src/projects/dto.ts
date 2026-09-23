@@ -1,5 +1,17 @@
 import { Priority, ProjectStatus } from "@devcycle/shared";
 
+export interface CreateProjectDto {
+  name: string;
+  description?: string;
+  area: string;
+  owner?: string;
+  priority?: Priority;
+  status?: ProjectStatus;
+  budgetEstimate?: number;
+  targetDate?: string;
+  stageData?: Record<string, Record<string, unknown>>;
+}
+
 export interface PatchProjectDto {
   status?: ProjectStatus;
   priority?: Priority;

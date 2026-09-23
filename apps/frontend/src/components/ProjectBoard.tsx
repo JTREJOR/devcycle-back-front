@@ -36,10 +36,10 @@ export function ProjectBoard() {
           <h2>Iniciativas del Portafolio</h2>
           <p>Flujo homologado end-to-end embebido para Monday.com</p>
         </div>
-        <button className="project-board__create-button" type="button">
+        <Link href="/new-project" className="project-board__create-button">
           <Bolt size={16} aria-hidden />
           Crear nueva iniciativa
-        </button>
+        </Link>
       </div>
 
       {isLoading ? (
