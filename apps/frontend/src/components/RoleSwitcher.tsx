@@ -8,6 +8,7 @@ import { useUiStore } from "@/store/uiStore";
 interface UserOption {
   value: string;
   label: string;
+  roleId: string;
   roleName: string;
   avatarColor: string;
   [key: string]: unknown;
@@ -24,6 +25,7 @@ export function RoleSwitcher() {
       users.map((user) => ({
         value: user.id,
         label: user.name,
+        roleId: user.roleId,
         roleName: roles.find((r) => r.id === user.roleId)?.name ?? user.roleId,
         avatarColor: user.avatarColor,
       })),
@@ -57,6 +59,11 @@ export function RoleSwitcher() {
           )}
         />
       </div>
+      {activeOption && (
+        <span className="role-switcher__badge">
+          {activeOption.roleId.replace(/-/g, "_").toUpperCase()}
+        </span>
+      )}
     </div>
   );
 }

@@ -1,17 +1,14 @@
 "use client";
 
-import { Heading, Text } from "@vibe/core";
+import { InitiativesSummary } from "@/components/InitiativesSummary";
 import { ProjectBoard } from "@/components/ProjectBoard";
+import { WelcomeBanner } from "@/components/WelcomeBanner";
 
 export default function PortfolioPage() {
   return (
-    <div>
-      <div style={{ marginBottom: 20 }}>
-        <Heading type="h1">Portafolio de proyectos</Heading>
-        <Text type="text2" color="secondary">
-          Descubrimiento, priorización y ejecución del portafolio — datos de ejemplo.
-        </Text>
-      </div>
+    <div className="portfolio-page">
+      <WelcomeBanner />
+      <InitiativesSummary />
       <ProjectBoard />
     </div>
   );

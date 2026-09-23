@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Security } from "@vibe/icons";
 import { useUiStore } from "@/store/uiStore";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { CopilotChat } from "./CopilotChat";
 
 const NAV_LINKS = [
   { href: "/", label: "Portafolio" },
-  { href: "/team", label: "Usuarios y Perfiles" },
+  { href: "/team", label: "Configuración y Usuarios" },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -19,8 +20,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <>
       <header className="app-header">
         <div className="app-header__brand">
-          <span className="app-header__brand-dot" aria-hidden />
-          <span>DevCycle Portfolio</span>
+          <Security size={20} aria-hidden />
+          <span>Gestión de Iniciativas</span>
         </div>
         <nav className="app-header__nav">
           {NAV_LINKS.map((link) => (
