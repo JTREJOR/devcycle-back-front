@@ -17,6 +17,7 @@ import {
   Update,
 } from "@vibe/icons";
 import { useUiStore } from "@/store/uiStore";
+import { usePriorizacionStore } from "@/store/priorizacionStore";
 
 // Unidades de negocio típicas
 const BUSINESS_UNITS = [
@@ -250,13 +251,38 @@ export default function DiscoveryPage() {
     setForm((prev) => ({ ...prev, ...payload }));
   };
 
-  // Finalizar y enviar a "2. Visualizar backlog por cartera de negocio"
+  // Finalizar y registrar en la cartera de priorización
+  const addInitiativeStore = usePriorizacionStore((s) => s.addInitiative);
+
   const handleSubmitToBacklog = () => {
     setIsSubmitting(true);
+    const savingsNum = Number(form.estimatedSavingsMxn) || 3500000;
+    const savingsStr = `$${(savingsNum / 1000000).toFixed(1)}M MXN / año`;
+
+    addInitiativeStore({
+      name: form.title || "Automatización de Conciliación y Liquidación Omnicanal",
+      area: form.businessUnit || "Finanzas y Contabilidad",
+      status: "Nueva",
+      description: form.needDescription || "Iniciativa formulada con asistencia de IA en Discovery.",
+      solicitante: form.requester || "Argos Eyra Martínez Zeferino",
+      sponsor: form.requester || "Carlos Méndez",
+      sponsorRole: "CFO",
+      impactoTI: form.hasItImpact === "si" ? "Sí, proyecto tecnológico" : "No",
+      sistemasInvolucrados: form.selectedSystems?.length ? form.selectedSystems : ["SAP", "API Gateway"],
+      beneficioEstimado: savingsStr,
+      beneficioDetalle: `Ahorro estimado y ${form.savedHoursPerMonth || "140"} hrs/mes optimizadas`,
+      kpiEsperado: form.successKpi || "Reducción de tiempos operativos",
+      madurez: readinessScore,
+      madurezTag: readinessScore >= 80 ? "Madurez avanzada" : "Madurez inicial",
+      esfuerzo: 55,
+      impacto: 80,
+      color: "#e6007e",
+    });
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccessModalOpen(true);
-    }, 1000);
+    }, 600);
   };
 
   const readinessScore = calculateReadinessScore();
@@ -1054,9 +1080,9 @@ export default function DiscoveryPage() {
               <button
                 type="button"
                 className="btn-purple-solid"
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/priorizacion")}
               >
-                Ir al Backlog del Portafolio
+                Ir a Priorización del Portafolio
               </button>
               <button
                 type="button"

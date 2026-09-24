@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EmptyState, Icon, Loader, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@vibe/core";
 import { Settings, Person, Check } from "@vibe/icons";
 import { useRoles, useUsers } from "@/lib/queries";
 import { RoleTag } from "@/components/RoleTag";
+import { useUiStore } from "@/store/uiStore";
 
 const USER_COLUMNS = [
   { id: "id", title: "ID", width: 120 },
@@ -87,6 +88,25 @@ export default function TeamPage() {
   const [activeTab, setActiveTab] = useState<"users" | "config">("users");
   const [configFields, setConfigFields] = useState<ConfigField[]>(INITIAL_CONFIG);
   const [savedFieldId, setSavedFieldId] = useState<string | null>(null);
+  const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam === "config") {
+        setActiveTab("config");
+        setActiveMenuTitle("Configuración");
+      } else if (tabParam === "users") {
+        setActiveTab("users");
+        if (window.location.hash.includes("roles")) {
+          setActiveMenuTitle("Roles");
+        } else {
+          setActiveMenuTitle("Usuarios");
+        }
+      }
+    }
+  }, [setActiveMenuTitle]);
 
   if (loadingRoles || loadingUsers) return <Loader size={48} />;
 
@@ -136,7 +156,7 @@ export default function TeamPage() {
       </div>
 
       {activeTab === "config" ? (
-        <div>
+        <div id="config">
           {/* Banner informativo */}
           <div className="notice-banner">
             <div className="notice-banner__icon">
@@ -211,7 +231,7 @@ export default function TeamPage() {
       ) : (
         <div>
           {/* Catálogo de Roles */}
-          <div className="board-card" style={{ marginBottom: 20 }}>
+          <div className="board-card" id="roles" style={{ marginBottom: 20 }}>
             <div style={{ marginBottom: 16 }}>
               <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 4px 0", color: "#1e2022" }}>
                 Gobernanza y Aprobadores por Rol
@@ -257,7 +277,7 @@ export default function TeamPage() {
           </div>
 
           {/* Directorio de Usuarios */}
-          <div className="board-card">
+          <div className="board-card" id="usuarios">
             <div style={{ marginBottom: 16 }}>
               <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 4px 0", color: "#1e2022" }}>
                 Directorio de Integrantes

@@ -8,6 +8,13 @@ interface UiState {
   selectedStageId: string | null;
   setSelectedStageId: (id: string | null) => void;
 
+  activeMenuTitle: string;
+  setActiveMenuTitle: (title: string) => void;
+
+  isMainMenuOpen: boolean;
+  toggleMainMenu: () => void;
+  setMainMenuOpen: (open: boolean) => void;
+
   isChatOpen: boolean;
   toggleChat: () => void;
   setChatOpen: (open: boolean) => void;
@@ -22,6 +29,13 @@ export const useUiStore = create<UiState>((set) => ({
 
   selectedStageId: null,
   setSelectedStageId: (id) => set({ selectedStageId: id }),
+
+  activeMenuTitle: "Portafolio",
+  setActiveMenuTitle: (title) => set({ activeMenuTitle: title }),
+
+  isMainMenuOpen: false,
+  toggleMainMenu: () => set((s) => ({ isMainMenuOpen: !s.isMainMenuOpen })),
+  setMainMenuOpen: (open) => set({ isMainMenuOpen: open }),
 
   isChatOpen: false,
   toggleChat: () => set((s) => ({ isChatOpen: !s.isChatOpen })),

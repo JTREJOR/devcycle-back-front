@@ -1,24 +1,24 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Icon } from "@vibe/core";
-import { Menu, Security, Labs, LogOut } from "@vibe/icons";
+import { MoreActions, Labs, LogOut } from "@vibe/icons";
 import { useUiStore } from "@/store/uiStore";
 import { useRoles, useUsers } from "@/lib/queries";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { CopilotChat } from "./CopilotChat";
-
-const NAV_LINKS = [
-  { href: "/", label: "Portafolio" },
-  { href: "/discovery", label: "Discovery IA (Paso 1)" },
-  { href: "/team", label: "Configuración y Usuarios" },
-];
+import { MainMenuOverlay } from "./MainMenuOverlay";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const isChatOpen = useUiStore((s) => s.isChatOpen);
   const activeUserId = useUiStore((s) => s.activeUserId);
   const setActiveUserId = useUiStore((s) => s.setActiveUserId);
+  const activeMenuTitle = useUiStore((s) => s.activeMenuTitle);
+  const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
+  const isMainMenuOpen = useUiStore((s) => s.isMainMenuOpen);
+  const toggleMainMenu = useUiStore((s) => s.toggleMainMenu);
+  const setMainMenuOpen = useUiStore((s) => s.setMainMenuOpen);
   const pathname = usePathname();
 
   const { data: users = [] } = useUsers();
@@ -30,30 +30,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Consideramos modo simulación cuando no es el usuario base (u-01)
   const isSimulating = activeUserId !== "u-01";
 
+  // Sincronizar el título de la página según la ruta cuando el usuario navega directamente
+  useEffect(() => {
+    if (pathname === "/priorizacion") {
+      setActiveMenuTitle("Priorización");
+    } else if (pathname === "/discovery") {
+      setActiveMenuTitle("Discovery");
+    } else if (pathname === "/team") {
+      setActiveMenuTitle("Configuración de usuarios");
+    } else if (pathname.startsWith("/project/")) {
+      setActiveMenuTitle("Ficha de Proyecto");
+    } else if (pathname === "/") {
+      const homeOptions = ["Portafolio", "Priorización", "Aprobaciones", "Comité", "Auditoría"];
+      if (!homeOptions.includes(activeMenuTitle)) {
+        setActiveMenuTitle("Portafolio");
+      }
+    }
+  }, [pathname, setActiveMenuTitle]);
+
   return (
     <>
       <header className="app-header">
         <div className="app-header__left">
-          <button className="app-header__icon-btn" aria-label="Menú principal" type="button">
-            <Icon icon={Menu} size={20} />
+          {/* Botón de menú de opciones (Imagen 3) */}
+          <button
+            className={`app-header__icon-btn ${isMainMenuOpen ? "app-header__icon-btn--active" : ""}`}
+            aria-label="Abrir menú de opciones"
+            title="Abrir menú con todas las opciones"
+            type="button"
+            onClick={toggleMainMenu}
+          >
+            <Icon icon={MoreActions} size={20} />
           </button>
+
+          {/* Título de la página con punto morado (Imagen 3) */}
           <div className="app-header__brand">
-            <span className="app-header__brand-shield" aria-hidden>
-              <Icon icon={Security} size={20} />
-            </span>
-            <span>Gestión de Iniciativas</span>
+            <span className="app-header__dot" aria-hidden>•</span>
+            <span className="app-header__title">{activeMenuTitle}</span>
           </div>
-          <nav className="app-header__nav">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`app-header__nav-link ${pathname === link.href ? "active" : ""}`}
-              >
-                <span>{link.label}</span>
-              </Link>
-            ))}
-          </nav>
         </div>
 
         <div className="app-header__right">
@@ -66,6 +80,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </span>
         </div>
       </header>
+
+      {/* Menú desplegable con todas las opciones inspirado en Imagen 2 */}
+      <MainMenuOverlay />
 
       {isSimulating && (
         <div className="simulation-banner">
