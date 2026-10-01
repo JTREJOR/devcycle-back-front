@@ -2,6 +2,8 @@
 
 Aplicación custom embebida en Monday.com para el descubrimiento, gestión y ejecución del portafolio de proyectos. Esta primera entrega es un **maquetado navegable con datos dummy**: muestra las 6 etapas del ciclo de vida (una por cada flujo homologado "To Be" compartido), su subflujo de pasos con decisiones/aprobaciones, un módulo de Usuarios y Perfiles, y un asistente tipo copiloto — todo con datos de ejemplo y un backend mínimo en memoria.
 
+> Adicionalmente, se puede consultar el contexto y estatus actual del proyecto en este repositorio: [JTREJOR/devcycle-context](https://github.com/JTREJOR/devcycle-context).
+
 ## Estructura
 
 ```
