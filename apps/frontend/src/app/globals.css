@@ -1159,7 +1159,7 @@ a {
    ======================================================== */
 .discovery-layout {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 7fr) minmax(320px, 3fr);
   gap: 24px;
   align-items: flex-start;
 }
@@ -1299,6 +1299,8 @@ a {
   flex-direction: column;
   height: 640px;
   max-height: calc(100vh - 180px);
+  position: sticky;
+  top: 16px;
 }
 
 .dataswat-header {
@@ -4402,6 +4404,624 @@ a {
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+/* ========================================================
+   DISCOVERY EXTENDIDO: ESTILOS BLUE PRINT Y FICHA CANVAS (IMÁGENES 2, 3, 4, 5)
+   ======================================================== */
+
+/* Contenedor de sección de bloque (1.1, 1.2, 2.1, etc.) */
+.disc-block-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+}
+
+.disc-block-card:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Encabezado del bloque con fondo rosa suave */
+.disc-block-header {
+  padding: 14px 18px;
+  background: #fdf2f7;
+  border-bottom: 1px solid #fce7f3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.disc-block-header__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.disc-block-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: #db2777;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.disc-block-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #db2777;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fbcfe8;
+  flex-shrink: 0;
+}
+
+.disc-block-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e2022;
+  margin: 0;
+}
+
+.disc-block-sub {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  margin: 2px 0 0 0;
+}
+
+/* Badge de estado del bloque (Completo o X de Y) */
+.disc-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.disc-status-pill--complete {
+  background: #ecfdf5;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.disc-status-pill--progress {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+/* Cuerpo del bloque con los campos */
+.disc-block-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Etiquetas de campo con soporte para asterisco, tooltip y check verde */
+.disc-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e2022;
+  margin-bottom: 6px;
+}
+
+.disc-required-star {
+  color: #e6007e;
+  font-weight: 800;
+}
+
+.disc-tooltip-icon {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #f1f3f5;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+}
+
+.disc-check-ok {
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.disc-subhead-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin: 10px 0 2px 0;
+}
+
+/* Tarjeta destacada de Asignación según Matriz */
+.disc-matrix-card {
+  background: #fdf5fa;
+  border: 1px solid #f8d7eb;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.disc-matrix-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.disc-matrix-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #833177;
+}
+
+.disc-matrix-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e9d5e8;
+  color: #6b7280;
+}
+
+.disc-matrix-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  font-size: 11.5px;
+}
+
+.disc-matrix-k {
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+
+.disc-matrix-v {
+  font-weight: 700;
+  color: #1e2022;
+}
+
+.disc-matrix-note {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+  border-top: 1px solid #f5e1f0;
+  padding-top: 8px;
+}
+
+/* Radio cards de Alineación estratégica (N0 a N3) */
+.disc-align-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .disc-align-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.disc-align-card {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.disc-align-card:hover {
+  border-color: #f472b6;
+  background: #fdf2f8;
+}
+
+.disc-align-card--active {
+  border-color: #db2777 !important;
+  background: #fdf2f8 !important;
+  box-shadow: 0 0 0 1px #db2777;
+}
+
+.disc-align-card__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e2022;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.disc-align-card--active .disc-align-card__title {
+  color: #db2777;
+}
+
+.disc-align-card__desc {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+/* Dimensiones de impacto (Estructura, Procesos, Tecnología, Gente) */
+.disc-impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.disc-impact-card {
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.disc-impact-card:hover {
+  border-color: #f472b6;
+  background: #fdf2f8;
+}
+
+.disc-impact-card--active {
+  border-color: #db2777 !important;
+  background: #fdf2f8 !important;
+  box-shadow: 0 0 0 1px #db2777;
+}
+
+.disc-impact-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.disc-impact-card--active .disc-impact-card__icon {
+  background: #fce7f3;
+  color: #db2777;
+}
+
+.disc-impact-card__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e2022;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.disc-impact-card--active .disc-impact-card__title {
+  color: #db2777;
+}
+
+.disc-impact-card__desc {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+/* Botones segmentados Sí / No / Aún no sé */
+.disc-segment-group {
+  display: flex;
+  gap: 8px;
+}
+
+.disc-segment-btn {
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 1px solid #d0d4e4;
+  background: #ffffff;
+  color: #4b5563;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.disc-segment-btn:hover {
+  background: #fdf2f8;
+  border-color: #f472b6;
+}
+
+.disc-segment-btn--active {
+  background: #db2777 !important;
+  color: #ffffff !important;
+  border-color: #db2777 !important;
+  font-weight: 700;
+}
+
+/* Tarjeta OKR dinámica */
+.disc-okr-card {
+  background: #fbfbfd;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.disc-okr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.disc-okr-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
+}
+
+.disc-icon-btn-danger {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.disc-icon-btn-danger:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+/* Caja de resultados de ROI punteada */
+.disc-roi-result-box {
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 18px 20px;
+  background: #ffffff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.disc-roi-result-box--filled {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+/* Filas dinámicas de capacidades y dependencias */
+.disc-dynamic-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.disc-row-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fdf2f8;
+  color: #db2777;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Botón outline para añadir capacidad / OKR / dependencia */
+.disc-btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid #d0d4e4;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  align-self: flex-start;
+}
+
+.disc-btn-add:hover {
+  background: #fdf2f8;
+  border-color: #db2777;
+  color: #db2777;
+}
+
+/* ========================================================
+   FICHA CANVAS DE INICIATIVA (IMAGEN 5)
+   ======================================================== */
+.disc-canvas-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #d0d4e4;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.disc-canvas-banner {
+  background: linear-gradient(90deg, #b01777 0%, #db2777 100%);
+  color: #ffffff;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.disc-canvas-banner__title {
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.disc-canvas-banner__sub {
+  font-size: 11.5px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.disc-canvas-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: #ffffff;
+}
+
+.disc-canvas-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.disc-canvas-box__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.disc-canvas-box__val {
+  font-size: 12.5px;
+  color: #1e2022;
+  line-height: 1.45;
+}
+
+/* Mini checkboxes de resumen en la Ficha Canvas */
+.disc-canvas-chk-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.disc-canvas-chk-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 11.5px;
+  color: #475569;
+}
+
+.disc-canvas-chk-item--selected {
+  border-color: #db2777;
+  background: #fdf2f8;
+  color: #db2777;
+  font-weight: 700;
+}
+
+/* Barra inferior de metadatos en la Ficha Canvas */
+.disc-canvas-meta-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.disc-canvas-meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.disc-canvas-meta-k {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.disc-canvas-meta-v {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1e2022;
+  margin-top: 1px;
+}
+
+/* Caja de verificación previa verde */
+.disc-verify-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #15803d;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
 
 
 

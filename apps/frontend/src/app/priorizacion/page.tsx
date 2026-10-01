@@ -566,32 +566,77 @@ function PriorizacionContent() {
 
             {activeDetailTab === "discovery" && (
               <div className="prio-discovery-tab">
-                <div className="prio-section-label">Ficha del descubrimiento guiado</div>
-                <div className="prio-discovery-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div className="prio-section-label" style={{ margin: 0 }}>Ficha Canvas de Discovery</div>
+                  <span className="disc-status-pill disc-status-pill--complete" style={{ fontSize: 10.5 }}>
+                    ✓ Discovery completo
+                  </span>
+                </div>
+
+                <div className="prio-discovery-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Unidad de Negocio:</span>
-                    <span className="prio-discovery-val">{selectedInitiative.area}</span>
+                    <span className="prio-discovery-key">Gobierno / Dirección:</span>
+                    <span className="prio-discovery-val">{selectedInitiative.direccionNegocio || selectedInitiative.area} · {selectedInitiative.oficinaArea || "Oficina Central"}</span>
                   </div>
                   <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Alineación estratégica:</span>
-                    <span className="prio-discovery-val">Eficiencia operativa y omnicanalidad</span>
+                    <span className="prio-discovery-key">PMO / Portfolio Mgr:</span>
+                    <span className="prio-discovery-val">{selectedInitiative.pmoResponsable || "EPL"} · {selectedInitiative.portafolioManager || selectedInitiative.sponsor || "AL UBAMARI MALINALLI MORENO MERAZ"}</span>
+                  </div>
+                  <div className="prio-discovery-row">
+                    <span className="prio-discovery-key">Alineación piramidal:</span>
+                    <span className="prio-discovery-val" style={{ color: "#db2777", fontWeight: 700 }}>
+                      {selectedInitiative.alineacionEstrategicaNivel || "(N2) Habilitadores/Regulatorios"}
+                    </span>
+                  </div>
+                  <div className="prio-discovery-row">
+                    <span className="prio-discovery-key">Impacto Tecnología:</span>
+                    <span className="prio-discovery-val">{selectedInitiative.impactoTI}</span>
+                  </div>
+                  <div className="prio-discovery-row">
+                    <span className="prio-discovery-key">Dimensiones:</span>
+                    <span className="prio-discovery-val">
+                      {(selectedInitiative.dimensionesImpacto?.length
+                        ? selectedInitiative.dimensionesImpacto.join(", ")
+                        : "Tecnología, Procesos")}
+                    </span>
                   </div>
                   <div className="prio-discovery-row">
                     <span className="prio-discovery-key">Sistemas involucrados:</span>
-                    <span className="prio-discovery-val">SAP Central, BigQuery, Portal Web</span>
+                    <span className="prio-discovery-val">
+                      {selectedInitiative.sistemasInvolucrados?.join(", ") || "SAP ERP, BigQuery"}
+                    </span>
                   </div>
+                  {selectedInitiative.okrs && selectedInitiative.okrs.length > 0 && (
+                    <div className="prio-discovery-row" style={{ alignItems: "flex-start" }}>
+                      <span className="prio-discovery-key">OKRs Clave:</span>
+                      <span className="prio-discovery-val" style={{ fontSize: 11.5 }}>
+                        {selectedInitiative.okrs[0].objetivo} → {selectedInitiative.okrs[0].resultadoClave}
+                      </span>
+                    </div>
+                  )}
+                  {selectedInitiative.roiData && (
+                    <div className="prio-discovery-row">
+                      <span className="prio-discovery-key">ROI Estimado:</span>
+                      <span className="prio-discovery-val" style={{ color: "#15803d", fontWeight: 700 }}>
+                        +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~{selectedInitiative.roiData.paybackMeses || 3.8} meses)
+                      </span>
+                    </div>
+                  )}
                   <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Asistente IA utilizado:</span>
-                    <span className="prio-discovery-val">DataSwat Copilot (Fase 1 completada)</span>
+                    <span className="prio-discovery-key">Asistente IA:</span>
+                    <span className="prio-discovery-val">DataSwat Copilot (Fase 1 Discovery Completada)</span>
                   </div>
                 </div>
-                <Link
-                  href="/discovery"
-                  className="prio-btn-link"
-                  style={{ marginTop: 12, display: "inline-flex" }}
-                >
-                  <span>Ver flujo de descubrimiento completo →</span>
-                </Link>
+
+                <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+                  <Link
+                    href="/discovery"
+                    className="prio-btn-link"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                  >
+                    <span>Abrir nuevo Discovery asistido por IA →</span>
+                  </Link>
+                </div>
               </div>
             )}
 

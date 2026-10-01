@@ -18,6 +18,30 @@ export interface EvaluacionData {
   feedback?: string;
 }
 
+export interface OKRItem {
+  id: string;
+  objetivo: string;
+  resultadoClave: string;
+  kpi: string;
+  clasificacion: string;
+  concepto: string;
+}
+
+export interface RoiData {
+  ingresoIncrementalAnual?: string;
+  ahorroCostosAnual?: string;
+  inversionEstimada?: string;
+  horizonte?: string;
+  roiPorcentaje?: number;
+  paybackMeses?: number;
+}
+
+export interface DependenciaItem {
+  id: string;
+  origen: string;
+  destino: string;
+}
+
 export interface InitiativeItem {
   id: string;
   name: string;
@@ -50,6 +74,25 @@ export interface InitiativeItem {
   prioridadFinal?: "Alta" | "Media" | "Baja";
   justificacionDecision?: string;
   destinoDecision?: string;
+  // Campos de Discovery extendido (Imágenes 2, 3, 4, 5)
+  direccionNegocio?: string;
+  pmoResponsable?: string;
+  oficinaArea?: string;
+  portafolioManager?: string;
+  dominioMatriz?: string;
+  alcanceQue?: string;
+  alcancePorQue?: string;
+  evidenciaSustento?: string;
+  capacidades?: string[];
+  beneficioCliente?: string;
+  beneficioNegocio?: string;
+  alineacionEstrategicaNivel?: "(N0) Ninguna" | "(N1) Prioritarios" | "(N2) Habilitadores/Regulatorios" | "(N3) Mejora continua";
+  okrs?: OKRItem[];
+  roiData?: RoiData;
+  dimensionesImpacto?: string[];
+  intervencionTecnologia?: "Sí" | "No" | "Aún no sé";
+  sistemasDetalle?: string;
+  dependenciasCascada?: DependenciaItem[];
 }
 
 export const DEFAULT_INITIATIVES: InitiativeItem[] = [
@@ -957,6 +1000,8 @@ export const usePriorizacionStore = create<PriorizacionStore>((set) => ({
       name: newItem.name,
       area: newItem.area,
       status: newItem.status || "Nueva",
+      etapaCiclo: newItem.etapaCiclo || "Priorización",
+      estadoOperativo: newItem.estadoOperativo || "Por revisar",
       score: newItem.score ?? null,
       priority: newItem.priority ?? null,
       creationDate: newItem.creationDate || "Hoy",
@@ -973,6 +1018,25 @@ export const usePriorizacionStore = create<PriorizacionStore>((set) => ({
       esfuerzo: newItem.esfuerzo ?? 50,
       impacto: newItem.impacto ?? 70,
       color: newItem.color || "#e6007e",
+      // Campos de Discovery extendido
+      direccionNegocio: newItem.direccionNegocio,
+      pmoResponsable: newItem.pmoResponsable,
+      oficinaArea: newItem.oficinaArea,
+      portafolioManager: newItem.portafolioManager,
+      dominioMatriz: newItem.dominioMatriz,
+      alcanceQue: newItem.alcanceQue,
+      alcancePorQue: newItem.alcancePorQue,
+      evidenciaSustento: newItem.evidenciaSustento,
+      capacidades: newItem.capacidades,
+      beneficioCliente: newItem.beneficioCliente,
+      beneficioNegocio: newItem.beneficioNegocio,
+      alineacionEstrategicaNivel: newItem.alineacionEstrategicaNivel,
+      okrs: newItem.okrs,
+      roiData: newItem.roiData,
+      dimensionesImpacto: newItem.dimensionesImpacto,
+      intervencionTecnologia: newItem.intervencionTecnologia,
+      sistemasDetalle: newItem.sistemasDetalle,
+      dependenciasCascada: newItem.dependenciasCascada,
     };
     set((state) => ({
       initiatives: [initiative, ...state.initiatives],
