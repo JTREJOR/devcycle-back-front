@@ -1,5 +1,27 @@
 import { create } from "zustand";
 
+export type MacroStage = "Definición" | "Estimación" | "Ejecución" | "Cierre";
+export type StandardOperativeStatus = "Por iniciar" | "En curso" | "Finalizado" | "Atrasado";
+export type BusinessPortfolio =
+  | "Digital"
+  | "Negocios Financieros"
+  | "EPL / Logística"
+  | "Operaciones TI"
+  | "Comercial / Tiendas";
+
+export interface EstimacionTecnicaData {
+  tps?: number;
+  usuariosMensuales?: string;
+  tipoArquitectura?: string;
+  serviciosNube?: string[];
+  horasDesarrolloEstimadas?: number;
+  costoNubeMensualEstimado?: string;
+  voboLiderTecnico?: "aprobado" | "pendiente" | "refinamiento";
+  voboLiderArquitectura?: "aprobado" | "pendiente" | "refinamiento";
+  observacionesRefinamiento?: string;
+  chatSizingCompletado?: boolean;
+}
+
 export interface EvaluacionData {
   impactoNegocio: number; // 1..5
   alineacionEstrategica: number; // 1..5
@@ -22,19 +44,27 @@ export interface InitiativeItem {
   id: string;
   name: string;
   area: string;
+  cartera?: BusinessPortfolio | string;
   status: "Nueva" | "En revisión" | "Lista" | "Con comentarios" | "En priorización" | "Descartada";
-  etapaCiclo?: "Priorización" | "Estimación" | "Autorización" | "Formalización" | "Ejecución" | "Cierre";
-  estadoOperativo?: string;
+  etapaCiclo?: "Definición" | "Estimación" | "Ejecución" | "Cierre" | "Priorización" | "Autorización" | "Formalización";
+  estadoOperativo?: StandardOperativeStatus | string;
   score: number | null;
   priority: "Alta" | "Media-Alta" | "Media" | "Baja" | null;
   creationDate: string;
   description: string;
   solicitante: string;
+  solicitanteEmail?: string;
   sponsor?: string;
+  sponsorEmail?: string;
   sponsorRole?: string;
+  interesadosEmails?: string[];
   impactoTI: string;
   impactoTISub?: string;
+  requiereTI?: boolean;
+  impactoTIConfirmado?: boolean;
   sistemasInvolucrados?: string[];
+  sistemasConfirmados?: string[];
+  enCarteraPendientes?: boolean;
   beneficioEstimado: string;
   beneficioDetalle?: string;
   kpiEsperado?: string;
@@ -46,13 +76,41 @@ export interface InitiativeItem {
   color: string;
   projectId?: string;
   evaluacion?: EvaluacionData;
+  estimacionTecnica?: EstimacionTecnicaData;
   decision?: "priorizar" | "observacion" | "ajustes" | "descartar";
   prioridadFinal?: "Alta" | "Media" | "Baja";
   justificacionDecision?: string;
   destinoDecision?: string;
 }
 
-export const DEFAULT_INITIATIVES: InitiativeItem[] = [
+export function getMacroStage(etapa?: string): MacroStage {
+  if (!etapa) return "Definición";
+  if (etapa === "Definición" || etapa === "Priorización") return "Definición";
+  if (etapa === "Estimación" || etapa === "Autorización" || etapa === "Formalización") return "Estimación";
+  if (etapa === "Ejecución") return "Ejecución";
+  if (etapa === "Cierre") return "Cierre";
+  return "Definición";
+}
+
+export function getCarteraByArea(area?: string): BusinessPortfolio {
+  if (!area) return "Digital";
+  const a = area.toLowerCase();
+  if (a.includes("e-commerce") || a.includes("digital") || a.includes("marketing") || a.includes("omnicanal")) {
+    return "Digital";
+  }
+  if (a.includes("finanzas") || a.includes("crédito") || a.includes("banca") || a.includes("riesgos") || a.includes("pago") || a.includes("contabilidad")) {
+    return "Negocios Financieros";
+  }
+  if (a.includes("suministro") || a.includes("logística") || a.includes("almacén") || a.includes("distribución") || a.includes("operaciones")) {
+    return "EPL / Logística";
+  }
+  if (a.includes("tecnología") || a.includes("infraestructura") || a.includes("redes") || a.includes("ti")) {
+    return "Operaciones TI";
+  }
+  return "Comercial / Tiendas";
+}
+
+const RAW_DEFAULT_INITIATIVES: InitiativeItem[] = [
   // ==========================================
   // 1. INICIATIVAS PRINCIPALES DEL HOME (Imagen 2)
   // ==========================================
@@ -841,10 +899,47 @@ export const DEFAULT_INITIATIVES: InitiativeItem[] = [
   },
 ];
 
+export const DEFAULT_INITIATIVES: InitiativeItem[] = RAW_DEFAULT_INITIATIVES.map((item) => ({
+  ...item,
+  cartera: item.cartera || getCarteraByArea(item.area),
+  solicitanteEmail:
+    item.solicitanteEmail ||
+    `${item.solicitante.toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
+  sponsorEmail:
+    item.sponsorEmail ||
+    `${(item.sponsor || "sponsor").toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
+  interesadosEmails: item.interesadosEmails || [
+    "pm_cartera@liverpool.com.mx",
+    "brm_lider@liverpool.com.mx",
+  ],
+  enCarteraPendientes:
+    item.enCarteraPendientes ??
+    (item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
+  impactoTIConfirmado:
+    item.impactoTIConfirmado ??
+    !(item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
+  sistemasConfirmados:
+    item.sistemasConfirmados || item.sistemasInvolucrados || ["SAP ERP", "API Gateway"],
+  requiereTI: item.requiereTI ?? true,
+  estimacionTecnica: item.estimacionTecnica || {
+    tps: 350,
+    usuariosMensuales: "2.4M",
+    tipoArquitectura: "Microservicios en Google Cloud Platform",
+    serviciosNube: ["Cloud Run", "Cloud SQL", "Pub/Sub", "BigQuery"],
+    horasDesarrolloEstimadas: 480,
+    costoNubeMensualEstimado: "$3,200 USD/mes",
+    voboLiderTecnico: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
+    voboLiderArquitectura: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
+    chatSizingCompletado: true,
+  },
+}));
+
 interface PriorizacionStore {
   initiatives: InitiativeItem[];
   selectedInitiativeId: string;
+  selectedCartera: string;
   setSelectedInitiativeId: (id: string) => void;
+  setSelectedCartera: (cartera: string) => void;
   saveEvaluation: (
     id: string,
     evalData: EvaluacionData,
@@ -863,12 +958,24 @@ interface PriorizacionStore {
     destino: string
   ) => void;
   addInitiative: (newItem: Partial<InitiativeItem> & { name: string; area: string }) => string;
+  reorderInitiatives: (sourceId: string, targetId: string) => { displacedCount: number };
+  confirmTIImpact: (id: string, requiereTI: boolean, sistemas: string[]) => void;
+  formalizePriorities: () => { count: number; timestamp: string };
+  updateEstimacionTecnica: (id: string, data: Partial<EstimacionTecnicaData>) => void;
+  setVoboLider: (
+    id: string,
+    rol: "tecnico" | "arquitectura",
+    decision: "aprobado" | "refinamiento",
+    observaciones?: string
+  ) => void;
 }
 
-export const usePriorizacionStore = create<PriorizacionStore>((set) => ({
+export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
   initiatives: DEFAULT_INITIATIVES,
   selectedInitiativeId: "prio-01",
+  selectedCartera: "Todas",
   setSelectedInitiativeId: (id) => set({ selectedInitiativeId: id }),
+  setSelectedCartera: (cartera) => set({ selectedCartera: cartera }),
 
   saveEvaluation: (id, evalData, score, priority, newStatus = "Lista") =>
     set((state) => ({
@@ -950,29 +1057,154 @@ export const usePriorizacionStore = create<PriorizacionStore>((set) => ({
       }),
     })),
 
+  reorderInitiatives: (sourceId, targetId) => {
+    let displacedCount = 0;
+    set((state) => {
+      const srcIdx = state.initiatives.findIndex((i) => i.id === sourceId);
+      const tgtIdx = state.initiatives.findIndex((i) => i.id === targetId);
+      if (srcIdx === -1 || tgtIdx === -1 || srcIdx === tgtIdx) {
+        return state;
+      }
+      displacedCount = Math.abs(tgtIdx - srcIdx);
+      const list = [...state.initiatives];
+      const [removed] = list.splice(srcIdx, 1);
+      list.splice(tgtIdx, 0, removed);
+      return { initiatives: list };
+    });
+    return { displacedCount };
+  },
+
+  confirmTIImpact: (id, requiereTI, sistemas) =>
+    set((state) => ({
+      initiatives: state.initiatives.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            requiereTI,
+            impactoTIConfirmado: true,
+            sistemasConfirmados: sistemas,
+            enCarteraPendientes: false,
+            status: requiereTI ? "Nueva" : "Descartada",
+            etapaCiclo: requiereTI ? "Definición" : item.etapaCiclo,
+            estadoOperativo: requiereTI ? "Por iniciar" : "Finalizado",
+            madurezTag: requiereTI ? "Validada por TI (Lista para Priorización)" : "Sin impacto TI (descartada)",
+          };
+        }
+        return item;
+      }),
+    })),
+
+  formalizePriorities: () => {
+    const now = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: true });
+    let count = 0;
+    set((state) => {
+      count = state.initiatives.filter((i) => i.status === "En priorización").length;
+      return {
+        initiatives: state.initiatives.map((item) =>
+          item.status === "En priorización"
+            ? { ...item, madurezTag: "Prioridad formalizada", etapaCiclo: "Definición" }
+            : item
+        ),
+      };
+    });
+    return { count, timestamp: now };
+  },
+
+  updateEstimacionTecnica: (id, data) =>
+    set((state) => ({
+      initiatives: state.initiatives.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              estimacionTecnica: {
+                ...(item.estimacionTecnica || {}),
+                ...data,
+              },
+            }
+          : item
+      ),
+    })),
+
+  setVoboLider: (id, rol, decision, observaciones) =>
+    set((state) => ({
+      initiatives: state.initiatives.map((item) => {
+        if (item.id === id) {
+          const currentEst = item.estimacionTecnica || {};
+          const updatedEst: EstimacionTecnicaData = {
+            ...currentEst,
+            ...(rol === "tecnico"
+              ? { voboLiderTecnico: decision }
+              : { voboLiderArquitectura: decision }),
+            ...(observaciones ? { observacionesRefinamiento: observaciones } : {}),
+          };
+          const ambosAprobados =
+            (rol === "tecnico" ? decision : updatedEst.voboLiderTecnico) === "aprobado" &&
+            (rol === "arquitectura" ? decision : updatedEst.voboLiderArquitectura) === "aprobado";
+
+          return {
+            ...item,
+            estimacionTecnica: updatedEst,
+            status: ambosAprobados ? "Lista" : decision === "refinamiento" ? "Con comentarios" : item.status,
+            madurezTag: ambosAprobados
+              ? "Aprobada por Arquitectura y Técnica"
+              : decision === "refinamiento"
+              ? "Refinamiento de estimación requerido"
+              : item.madurezTag,
+            estadoOperativo: ambosAprobados ? "En curso" : item.estadoOperativo,
+            etapaCiclo: ambosAprobados ? "Ejecución" : "Estimación",
+          };
+        }
+        return item;
+      }),
+    })),
+
   addInitiative: (newItem) => {
     const id = newItem.id || `prio-${Date.now().toString(36)}`;
     const initiative: InitiativeItem = {
       id,
       name: newItem.name,
       area: newItem.area,
+      cartera: newItem.cartera || getCarteraByArea(newItem.area),
       status: newItem.status || "Nueva",
+      etapaCiclo: "Definición",
+      estadoOperativo: "Por iniciar",
       score: newItem.score ?? null,
       priority: newItem.priority ?? null,
       creationDate: newItem.creationDate || "Hoy",
       description: newItem.description || "",
       solicitante: newItem.solicitante || "Argos Eyra Martínez Zeferino",
+      solicitanteEmail: newItem.solicitanteEmail || "solicitante@liverpool.com.mx",
       sponsor: newItem.sponsor || "Carlos Méndez",
+      sponsorEmail: newItem.sponsorEmail || "sponsor@liverpool.com.mx",
       sponsorRole: newItem.sponsorRole || "Sponsor Ejecutivo",
+      interesadosEmails: newItem.interesadosEmails || [
+        "pm_cartera@liverpool.com.mx",
+        "brm_lider@liverpool.com.mx",
+      ],
       impactoTI: newItem.impactoTI || "Sí, proyecto tecnológico",
-      sistemasInvolucrados: newItem.sistemasInvolucrados || ["SAP", "API Core"],
+      sistemasInvolucrados: newItem.sistemasInvolucrados || ["SAP ERP", "API Core"],
+      sistemasConfirmados: newItem.sistemasConfirmados || newItem.sistemasInvolucrados || ["SAP ERP", "API Core"],
+      requiereTI: newItem.requiereTI ?? true,
+      enCarteraPendientes: true,
+      impactoTIConfirmado: false,
       beneficioEstimado: newItem.beneficioEstimado || "$2.5M MXN / año",
       kpiEsperado: newItem.kpiEsperado || "Reducción de costos",
       madurez: newItem.madurez ?? 35,
-      madurezTag: newItem.madurezTag || "Madurez inicial",
+      madurezTag: "Pendiente validación TI",
       esfuerzo: newItem.esfuerzo ?? 50,
       impacto: newItem.impacto ?? 70,
       color: newItem.color || "#e6007e",
+      estimacionTecnica: {
+        tps: 150,
+        usuariosMensuales: "500k",
+        tipoArquitectura: "Cloud Native / GCP",
+        serviciosNube: ["Cloud Run", "Cloud SQL"],
+        horasDesarrolloEstimadas: 320,
+        costoNubeMensualEstimado: "$1,800 USD/mes",
+        voboLiderTecnico: "pendiente",
+        voboLiderArquitectura: "pendiente",
+        chatSizingCompletado: false,
+      },
     };
     set((state) => ({
       initiatives: [initiative, ...state.initiatives],

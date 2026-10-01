@@ -5,6 +5,15 @@ export type ProjectStatus =
   | "Por iniciar"
   | "No aplica";
 
+export type MacroStage = "Definición" | "Estimación" | "Ejecución" | "Cierre";
+export type StandardOperativeStatus = "Por iniciar" | "En curso" | "Finalizado" | "Atrasado";
+export type BusinessPortfolio =
+  | "Digital"
+  | "Negocios Financieros"
+  | "EPL / Logística"
+  | "Operaciones TI"
+  | "Comercial / Tiendas";
+
 export type Priority = "Alta" | "Media" | "Baja";
 
 export type SubStepType = "task" | "decision" | "approval";

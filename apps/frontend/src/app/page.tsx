@@ -19,11 +19,22 @@ import {
   Play,
   Info,
 } from "@vibe/icons";
-import { usePriorizacionStore } from "@/store/priorizacionStore";
+import { usePriorizacionStore, getMacroStage } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+
+const CARTERAS = [
+  "Todas",
+  "Digital",
+  "Negocios Financieros",
+  "EPL / Logística",
+  "Operaciones TI",
+  "Comercial / Tiendas",
+];
 
 export default function PortfolioPage() {
   const initiatives = usePriorizacionStore((s) => s.initiatives);
+  const selectedCartera = usePriorizacionStore((s) => s.selectedCartera);
+  const setSelectedCartera = usePriorizacionStore((s) => s.setSelectedCartera);
   const setSelectedInitiativeId = usePriorizacionStore((s) => s.setSelectedInitiativeId);
   const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
 
@@ -59,100 +70,81 @@ export default function PortfolioPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Conteo de iniciativas en cada una de las 6 etapas del ciclo de vida (Imagen 2)
-  const countStage1_Priorizacion = useMemo(
-    () => initiatives.filter((i) => (i.etapaCiclo || "Priorización") === "Priorización").length,
-    [initiatives]
+  // Filtrado de iniciativas por la cartera seleccionada
+  const initiativesInCartera = useMemo(() => {
+    if (selectedCartera === "Todas") return initiatives;
+    return initiatives.filter((i) => i.cartera === selectedCartera);
+  }, [initiatives, selectedCartera]);
+
+  // Conteo de iniciativas en las 4 etapas macro acordadas
+  const countStage1_Definicion = useMemo(
+    () => initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === "Definición").length,
+    [initiativesInCartera]
   );
   const countStage2_Estimacion = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Estimación").length,
-    [initiatives]
+    () => initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === "Estimación").length,
+    [initiativesInCartera]
   );
-  const countStage3_Autorizacion = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Autorización").length,
-    [initiatives]
+  const countStage3_Ejecucion = useMemo(
+    () => initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === "Ejecución").length,
+    [initiativesInCartera]
   );
-  const countStage4_Formalizacion = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Formalización").length,
-    [initiatives]
-  );
-  const countStage5_Ejecucion = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Ejecución").length,
-    [initiatives]
-  );
-  const countStage6_Cierre = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Cierre").length,
-    [initiatives]
+  const countStage4_Cierre = useMemo(
+    () => initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === "Cierre").length,
+    [initiativesInCartera]
   );
 
-  const totalInitiatives = initiatives.length || 30;
+  const totalInitiatives = initiativesInCartera.length || 1;
 
-  // Cálculo para los 6 segmentos de la gráfica de dona (Circunferencia r=40 es ~251.33)
+  // Cálculo para los 4 segmentos de la gráfica de dona (Circunferencia r=40 es ~251.33)
   const c = 251.33;
-  const arcPrio = (countStage1_Priorizacion / totalInitiatives) * c;
+  const arcDef = (countStage1_Definicion / totalInitiatives) * c;
   const arcEst = (countStage2_Estimacion / totalInitiatives) * c;
-  const arcAut = (countStage3_Autorizacion / totalInitiatives) * c;
-  const arcFor = (countStage4_Formalizacion / totalInitiatives) * c;
-  const arcEje = (countStage5_Ejecucion / totalInitiatives) * c;
-  const arcCie = (countStage6_Cierre / totalInitiatives) * c;
+  const arcEje = (countStage3_Ejecucion / totalInitiatives) * c;
+  const arcCie = (countStage4_Cierre / totalInitiatives) * c;
 
-  const pctPrio = Math.round((countStage1_Priorizacion / totalInitiatives) * 100);
+  const pctDef = Math.round((countStage1_Definicion / totalInitiatives) * 100);
   const pctEst = Math.round((countStage2_Estimacion / totalInitiatives) * 100);
-  const pctAut = Math.round((countStage3_Autorizacion / totalInitiatives) * 100);
-  const pctFor = Math.round((countStage4_Formalizacion / totalInitiatives) * 100);
-  const pctEje = Math.round((countStage5_Ejecucion / totalInitiatives) * 100);
-  const pctCie = Math.round((countStage6_Cierre / totalInitiatives) * 100);
+  const pctEje = Math.round((countStage3_Ejecucion / totalInitiatives) * 100);
+  const pctCie = Math.round((countStage4_Cierre / totalInitiatives) * 100);
 
-  // Lista prioritaria filtrada o predeterminada (las 6 iniciativas visibles en Imagen 2)
+  // Lista prioritaria filtrada por etapa y cartera
   const displayedInitiatives = useMemo(() => {
     if (selectedStageFilter) {
-      return initiatives.filter((i) => i.etapaCiclo === selectedStageFilter);
+      return initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === selectedStageFilter);
     }
-    // Si no hay filtro, mostrar las 6 iniciativas clave de la Imagen 2
-    return initiatives.slice(0, 6);
-  }, [initiatives, selectedStageFilter]);
+    return initiativesInCartera.slice(0, 6);
+  }, [initiativesInCartera, selectedStageFilter]);
 
   const getEtapaPill = (etapa?: string) => {
-    switch (etapa) {
-      case "Priorización":
-        return <span className="prio-stage-pill prio-stage-pill--prio">Priorización</span>;
+    const macro = getMacroStage(etapa);
+    switch (macro) {
+      case "Definición":
+        return <span className="prio-stage-pill prio-stage-pill--prio">1. Definición</span>;
       case "Estimación":
-        return <span className="prio-stage-pill prio-stage-pill--est">Estimación</span>;
-      case "Autorización":
-        return <span className="prio-stage-pill prio-stage-pill--aut">Autorización</span>;
-      case "Formalización":
-        return <span className="prio-stage-pill prio-stage-pill--for">Formalización</span>;
+        return <span className="prio-stage-pill prio-stage-pill--est">2. Estimación</span>;
       case "Ejecución":
-        return <span className="prio-stage-pill prio-stage-pill--eje">Ejecución</span>;
+        return <span className="prio-stage-pill prio-stage-pill--eje">3. Ejecución</span>;
       case "Cierre":
-        return <span className="prio-stage-pill prio-stage-pill--cie">Cierre</span>;
-      default:
-        return <span className="prio-stage-pill prio-stage-pill--prio">{etapa || "Priorización"}</span>;
+        return <span className="prio-stage-pill prio-stage-pill--cie">4. Cierre</span>;
     }
   };
 
   const getEstadoPill = (estado?: string, statusFallback?: string) => {
-    const st = estado || statusFallback || "En análisis";
-    switch (st) {
-      case "En priorización":
-        return <span className="prio-estado-pill prio-estado-pill--purple">En priorización</span>;
-      case "Por revisar":
-        return <span className="prio-estado-pill prio-estado-pill--red">Por revisar</span>;
-      case "Lista para comité":
-        return <span className="prio-estado-pill prio-estado-pill--yellow">Lista para comité</span>;
-      case "Aprobada":
-        return <span className="prio-estado-pill prio-estado-pill--green">Aprobada</span>;
-      case "En ejecución":
-        return <span className="prio-estado-pill prio-estado-pill--blue">En ejecución</span>;
-      case "Cerrada":
-        return <span className="prio-estado-pill prio-estado-pill--green">Cerrada</span>;
-      case "Nueva":
-        return <span className="prio-estado-pill prio-estado-pill--purple">Nueva</span>;
-      case "Con comentarios":
-        return <span className="prio-estado-pill prio-estado-pill--orange">Con comentarios</span>;
-      default:
-        return <span className="prio-estado-pill prio-estado-pill--gray">{st}</span>;
+    const st = estado || statusFallback || "Por iniciar";
+    if (st === "Nueva" || st === "Por revisar" || st === "Por iniciar") {
+      return <span className="prio-estado-pill prio-estado-pill--purple">Por iniciar</span>;
     }
+    if (st === "En priorización" || st === "En revisión" || st === "En ejecución" || st === "En proceso" || st === "En curso") {
+      return <span className="prio-estado-pill prio-estado-pill--blue">En curso</span>;
+    }
+    if (st === "Lista" || st === "Aprobada" || st === "Finalizado" || st === "Cerrada") {
+      return <span className="prio-estado-pill prio-estado-pill--green">Finalizado</span>;
+    }
+    if (st === "Con comentarios" || st === "Atrasado" || st === "Ajustes solicitados") {
+      return <span className="prio-estado-pill prio-estado-pill--red">Atrasado</span>;
+    }
+    return <span className="prio-estado-pill prio-estado-pill--gray">{st}</span>;
   };
 
   const getScoreBadge = (score: number | null) => {
@@ -193,7 +185,43 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* 2. ETAPAS DEL PORTAFOLIO (CICLO COMPLETO DE VIDA - IMAGEN 2) */}
+      {/* Selector de Cartera de Negocio Independiente */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "#ffffff",
+          padding: "10px 16px",
+          borderRadius: 8,
+          border: "1px solid var(--color-border)",
+          margin: "16px 0",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase" }}>
+            Cartera de Negocio:
+          </span>
+          <div style={{ display: "flex", gap: 6 }}>
+            {CARTERAS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                className={`tag-pill ${selectedCartera === c ? "tag-pill--purple" : "tag-pill--gray"}`}
+                style={{ cursor: "pointer", fontWeight: selectedCartera === c ? 700 : 500 }}
+                onClick={() => setSelectedCartera(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ fontSize: 11.5, color: "#64748b" }}>
+          Portafolio activo: <strong>{initiativesInCartera.length}</strong> iniciativas en {selectedCartera}
+        </div>
+      </div>
+
+      {/* 2. ETAPAS DEL PORTAFOLIO (4 ETAPAS HOMOLOGADAS DEL CICLO DE VIDA) */}
       <section className="home-lifecycle-card">
         <div className="home-lifecycle-header">
           <div className="home-lifecycle-header-icon">
@@ -201,23 +229,23 @@ export default function PortfolioPage() {
           </div>
           <div>
             <h2 className="home-lifecycle-header-title">Etapas del portafolio</h2>
-            <p className="home-lifecycle-header-sub">Ciclo completo de vida de las iniciativas.</p>
+            <p className="home-lifecycle-header-sub">Ciclo completo de vida de las iniciativas (4 etapas macro).</p>
           </div>
         </div>
 
         <div className="home-lifecycle-ribbon">
-          {/* Etapa 1: Priorización */}
+          {/* Etapa 1: Definición */}
           <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Priorización" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Priorización" ? null : "Priorización")}
+            className={`home-lifecycle-item ${selectedStageFilter === "Definición" ? "home-lifecycle-item--active" : ""}`}
+            onClick={() => setSelectedStageFilter(selectedStageFilter === "Definición" ? null : "Definición")}
           >
             <div className="home-stage-icon-box" style={{ background: "#eff6ff", color: "#2563eb", border: "1px solid #bfdbfe" }}>
               <Icon icon={CheckList} size={16} />
             </div>
             <div className="home-stage-num-badge" style={{ background: "#2563eb" }}>1</div>
             <div>
-              <div className="home-stage-title">Priorización</div>
-              <div className="home-stage-count">{countStage1_Priorizacion} iniciativas</div>
+              <div className="home-stage-title">Definición</div>
+              <div className="home-stage-count">{countStage1_Definicion} iniciativas</div>
             </div>
           </div>
 
@@ -240,41 +268,7 @@ export default function PortfolioPage() {
 
           <div className="home-lifecycle-chevron">&gt;</div>
 
-          {/* Etapa 3: Autorización */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Autorización" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Autorización" ? null : "Autorización")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#fffbeb", color: "#f59e0b", border: "1px solid #fde68a" }}>
-              <Icon icon={Settings} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#f59e0b" }}>3</div>
-            <div>
-              <div className="home-stage-title">Autorización</div>
-              <div className="home-stage-count">{countStage3_Autorizacion} iniciativas</div>
-            </div>
-          </div>
-
-          <div className="home-lifecycle-chevron">&gt;</div>
-
-          {/* Etapa 4: Formalización */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Formalización" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Formalización" ? null : "Formalización")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#fdf2f8", color: "#ec4899", border: "1px solid #fbcfe8" }}>
-              <Icon icon={FileIcon} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#ec4899" }}>4</div>
-            <div>
-              <div className="home-stage-title">Formalización</div>
-              <div className="home-stage-count">{countStage4_Formalizacion} iniciativas</div>
-            </div>
-          </div>
-
-          <div className="home-lifecycle-chevron">&gt;</div>
-
-          {/* Etapa 5: Ejecución */}
+          {/* Etapa 3: Ejecución */}
           <div
             className={`home-lifecycle-item ${selectedStageFilter === "Ejecución" ? "home-lifecycle-item--active" : ""}`}
             onClick={() => setSelectedStageFilter(selectedStageFilter === "Ejecución" ? null : "Ejecución")}
@@ -282,16 +276,16 @@ export default function PortfolioPage() {
             <div className="home-stage-icon-box" style={{ background: "#ecfdf5", color: "#10b981", border: "1px solid #a7f3d0" }}>
               <Icon icon={Play} size={16} />
             </div>
-            <div className="home-stage-num-badge" style={{ background: "#10b981" }}>5</div>
+            <div className="home-stage-num-badge" style={{ background: "#10b981" }}>3</div>
             <div>
               <div className="home-stage-title">Ejecución</div>
-              <div className="home-stage-count">{countStage5_Ejecucion} iniciativas</div>
+              <div className="home-stage-count">{countStage3_Ejecucion} iniciativas</div>
             </div>
           </div>
 
           <div className="home-lifecycle-chevron">&gt;</div>
 
-          {/* Etapa 6: Cierre */}
+          {/* Etapa 4: Cierre */}
           <div
             className={`home-lifecycle-item ${selectedStageFilter === "Cierre" ? "home-lifecycle-item--active" : ""}`}
             onClick={() => setSelectedStageFilter(selectedStageFilter === "Cierre" ? null : "Cierre")}
@@ -299,16 +293,16 @@ export default function PortfolioPage() {
             <div className="home-stage-icon-box" style={{ background: "#f1f5f9", color: "#1e293b", border: "1px solid #cbd5e1" }}>
               <Icon icon={Check} size={16} />
             </div>
-            <div className="home-stage-num-badge" style={{ background: "#1e293b" }}>6</div>
+            <div className="home-stage-num-badge" style={{ background: "#1e293b" }}>4</div>
             <div>
               <div className="home-stage-title">Cierre</div>
-              <div className="home-stage-count">{countStage6_Cierre} iniciativas</div>
+              <div className="home-stage-count">{countStage4_Cierre} iniciativas</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. BARRA DE ACCIONES CLAVE (Imagen 2) */}
+      {/* 3. BARRA DE ACCIONES CLAVE */}
       <section className="home-actions-bar">
         <div className="home-actions-bar__info">
           <div className="home-actions-bar__icon">
@@ -317,12 +311,21 @@ export default function PortfolioPage() {
           <div>
             <div className="home-actions-bar__title">Acciones clave</div>
             <div className="home-actions-bar__sub">
-              Accede rápidamente a las funciones principales del portafolio.
+              Accede a los módulos clave del ciclo automatizado de iniciativas.
             </div>
           </div>
         </div>
 
         <div className="home-actions-bar__buttons">
+          <Link
+            href="/backlog"
+            className="btn-purple-outline"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            <Icon icon={CheckList} size={15} />
+            <span>Cartera de Pendientes (TI)</span>
+          </Link>
+
           <Link
             href="/priorizacion"
             className="btn-purple-solid"
@@ -332,28 +335,12 @@ export default function PortfolioPage() {
           </Link>
 
           <Link
-            href="/priorizacion?tab=comite"
+            href="/estimacion"
             className="btn-purple-outline"
             style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            <Icon icon={Show} size={15} />
-            <span>Ver comité</span>
-          </Link>
-
-          <Link
-            href="/project/proj-01"
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--brand-primary)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              padding: "0 6px",
-            }}
-          >
-            <span>Seguimiento del portafolio</span>
-            <span>→</span>
+            <Icon icon={Timeline} size={15} />
+            <span>Estimación y VoBo</span>
           </Link>
         </div>
       </section>
@@ -458,13 +445,13 @@ export default function PortfolioPage() {
             </table>
           </div>
 
-          {/* Banner Informativo explicativo (Imagen 2) */}
+          {/* Banner Informativo explicativo de 4 etapas y 4 estados */}
           <div className="home-table-info-banner">
             <span style={{ color: "#0284c7", display: "flex", alignItems: "center", flexShrink: 0 }}>
               <Icon icon={Info} size={16} />
             </span>
             <span>
-              La <strong>etapa</strong> indica el paso del ciclo de vida (Priorización → Estimación → Autorización → Formalización → Ejecución → Cierre), mientras que el <strong>estado</strong> refleja la condición operativa actual de la iniciativa.
+              La <strong>etapa</strong> indica el progreso macro (1. Definición → 2. Estimación → 3. Ejecución → 4. Cierre), mientras que el <strong>estado</strong> refleja la condición operativa estándar (Por iniciar, En curso, Finalizado, Atrasado).
             </span>
           </div>
         </section>
@@ -484,18 +471,18 @@ export default function PortfolioPage() {
             </div>
 
             <div className="donut-widget-body">
-              {/* Gráfica de dona SVG con 6 segmentos proporcionales */}
+              {/* Gráfica de dona SVG con 4 segmentos proporcionales homologados */}
               <div className="donut-chart-container">
                 <svg width="120" height="120" viewBox="0 0 120 120">
-                  {/* Segmento 1: Priorización (Azul #3b82f6) */}
+                  {/* Segmento 1: Definición (Azul #2563eb) */}
                   <circle
                     cx="60"
                     cy="60"
                     r="40"
                     fill="none"
-                    stroke="#3b82f6"
+                    stroke="#2563eb"
                     strokeWidth="14"
-                    strokeDasharray={`${arcPrio} ${c}`}
+                    strokeDasharray={`${arcDef} ${c}`}
                     strokeDashoffset="0"
                     transform="rotate(-90 60 60)"
                   />
@@ -508,34 +495,10 @@ export default function PortfolioPage() {
                     stroke="#8b5cf6"
                     strokeWidth="14"
                     strokeDasharray={`${arcEst} ${c}`}
-                    strokeDashoffset={`-${arcPrio}`}
+                    strokeDashoffset={`-${arcDef}`}
                     transform="rotate(-90 60 60)"
                   />
-                  {/* Segmento 3: Autorización (Ámbar #f59e0b) */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="40"
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="14"
-                    strokeDasharray={`${arcAut} ${c}`}
-                    strokeDashoffset={`-${arcPrio + arcEst}`}
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Segmento 4: Formalización (Rosa #ec4899) */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="40"
-                    fill="none"
-                    stroke="#ec4899"
-                    strokeWidth="14"
-                    strokeDasharray={`${arcFor} ${c}`}
-                    strokeDashoffset={`-${arcPrio + arcEst + arcAut}`}
-                    transform="rotate(-90 60 60)"
-                  />
-                  {/* Segmento 5: Ejecución (Verde #10b981) */}
+                  {/* Segmento 3: Ejecución (Verde #10b981) */}
                   <circle
                     cx="60"
                     cy="60"
@@ -544,10 +507,10 @@ export default function PortfolioPage() {
                     stroke="#10b981"
                     strokeWidth="14"
                     strokeDasharray={`${arcEje} ${c}`}
-                    strokeDashoffset={`-${arcPrio + arcEst + arcAut + arcFor}`}
+                    strokeDashoffset={`-${arcDef + arcEst}`}
                     transform="rotate(-90 60 60)"
                   />
-                  {/* Segmento 6: Cierre (Slate Oscuro #1e293b) */}
+                  {/* Segmento 4: Cierre (Slate Oscuro #1e293b) */}
                   <circle
                     cx="60"
                     cy="60"
@@ -556,26 +519,26 @@ export default function PortfolioPage() {
                     stroke="#1e293b"
                     strokeWidth="14"
                     strokeDasharray={`${arcCie} ${c}`}
-                    strokeDashoffset={`-${arcPrio + arcEst + arcAut + arcFor + arcEje}`}
+                    strokeDashoffset={`-${arcDef + arcEst + arcEje}`}
                     transform="rotate(-90 60 60)"
                   />
                 </svg>
                 <div className="donut-center-text">
-                  <span className="donut-center-num">{totalInitiatives}</span>
+                  <span className="donut-center-num">{initiativesInCartera.length}</span>
                   <span className="donut-center-label">iniciativas</span>
                 </div>
               </div>
 
-              {/* Leyenda con las 6 etapas, conteos y porcentajes exactos */}
+              {/* Leyenda con las 4 etapas macro, conteos y porcentajes exactos */}
               <div className="donut-legend">
                 <div className="donut-legend-item">
                   <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#3b82f6" }} />
-                    <span>Priorización</span>
+                    <span className="donut-legend-dot" style={{ background: "#2563eb" }} />
+                    <span>Definición</span>
                   </div>
                   <div className="donut-legend-counts">
-                    <span>{countStage1_Priorizacion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctPrio}%</span>
+                    <span>{countStage1_Definicion}</span>
+                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctDef}%</span>
                   </div>
                 </div>
 
@@ -592,33 +555,11 @@ export default function PortfolioPage() {
 
                 <div className="donut-legend-item">
                   <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#f59e0b" }} />
-                    <span>Autorización</span>
-                  </div>
-                  <div className="donut-legend-counts">
-                    <span>{countStage3_Autorizacion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctAut}%</span>
-                  </div>
-                </div>
-
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#ec4899" }} />
-                    <span>Formalización</span>
-                  </div>
-                  <div className="donut-legend-counts">
-                    <span>{countStage4_Formalizacion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctFor}%</span>
-                  </div>
-                </div>
-
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
                     <span className="donut-legend-dot" style={{ background: "#10b981" }} />
                     <span>Ejecución</span>
                   </div>
                   <div className="donut-legend-counts">
-                    <span>{countStage5_Ejecucion}</span>
+                    <span>{countStage3_Ejecucion}</span>
                     <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctEje}%</span>
                   </div>
                 </div>
@@ -629,7 +570,7 @@ export default function PortfolioPage() {
                     <span>Cierre</span>
                   </div>
                   <div className="donut-legend-counts">
-                    <span>{countStage6_Cierre}</span>
+                    <span>{countStage4_Cierre}</span>
                     <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctCie}%</span>
                   </div>
                 </div>

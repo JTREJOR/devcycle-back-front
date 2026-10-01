@@ -28,7 +28,7 @@ export interface MenuItemDef {
 }
 
 export const MAIN_MENU_ITEMS: MenuItemDef[] = [
-  // Fila 1 (Inspirada en Imagen 2)
+  // Fila 1 (Inspirada en Imagen 2 y Acuerdos de Negocio)
   {
     id: "portfolio",
     title: "Portafolio",
@@ -44,18 +44,25 @@ export const MAIN_MENU_ITEMS: MenuItemDef[] = [
     href: "/discovery",
   },
   {
+    id: "backlog",
+    title: "Cartera de Pendientes",
+    subtitle: "Validación obligatoria de TI",
+    icon: Security,
+    href: "/backlog",
+  },
+  {
     id: "priorizacion",
     title: "Priorización",
-    subtitle: "Matriz y backlog de cartera",
+    subtitle: "Matriz y ordenamiento visual",
     icon: CheckList,
     href: "/priorizacion",
   },
   {
-    id: "aprobaciones",
-    title: "Aprobaciones",
-    subtitle: "Pendientes por revisar",
-    icon: Check,
-    href: "/#aprobaciones",
+    id: "estimacion",
+    title: "Estimación y VoBo",
+    subtitle: "Sizing IA y VoBo técnico/arquitectura",
+    icon: Timeline,
+    href: "/estimacion",
   },
   {
     id: "comite",

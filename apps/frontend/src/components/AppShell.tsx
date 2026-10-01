@@ -34,6 +34,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (pathname === "/priorizacion") {
       setActiveMenuTitle("Priorización");
+    } else if (pathname === "/backlog") {
+      setActiveMenuTitle("Cartera de Pendientes");
+    } else if (pathname === "/estimacion") {
+      setActiveMenuTitle("Estimación y VoBo");
     } else if (pathname === "/discovery") {
       setActiveMenuTitle("Discovery");
     } else if (pathname === "/team") {

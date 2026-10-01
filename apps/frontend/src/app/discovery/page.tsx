@@ -66,10 +66,13 @@ interface DiscoveryState {
   title: string;
   businessUnit: string;
   requester: string;
+  solicitanteEmail: string;
+  sponsor: string;
+  sponsorEmail: string;
+  interesadosEmails: string[];
   needDescription: string;
   hasItImpact: "si" | "no" | "evaluacion";
   selectedSystems: string[];
-  architectureReference: string;
   benefitType: string;
   estimatedSavingsMxn: string;
   savedHoursPerMonth: string;
@@ -79,12 +82,15 @@ interface DiscoveryState {
 const INITIAL_STATE: DiscoveryState = {
   title: "Automatización de Conciliación y Liquidación Omnicanal",
   businessUnit: "Finanzas y Contabilidad",
-  requester: "Argos Eyra Martinez Zeferino",
+  requester: "Argos Eyra Martínez Zeferino",
+  solicitanteEmail: "aemartinezz@liverpool.com.mx",
+  sponsor: "Carlos Méndez (CFO)",
+  sponsorEmail: "cmendez@liverpool.com.mx",
+  interesadosEmails: ["pm_cartera@liverpool.com.mx", "brm_lider@liverpool.com.mx"],
   needDescription:
     "El proceso actual de conciliación entre las ventas en tienda física, portal web y pasarelas de pago se realiza mediante hojas de cálculo manuales, lo que causa demoras de hasta 48 horas en el cierre contable y discrepancias financieras.",
   hasItImpact: "si",
   selectedSystems: ["sap", "payments", "core", "apis"],
-  architectureReference: "Integración vía Webhooks hacia SAP Finance con base de datos intermedia en BigQuery.",
   benefitType: "Eficiencia en Horas / Hombre",
   estimatedSavingsMxn: "3500000",
   savedHoursPerMonth: "140",
@@ -95,8 +101,27 @@ export default function DiscoveryPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [form, setForm] = useState<DiscoveryState>(INITIAL_STATE);
+  const [newEmailInput, setNewEmailInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  const handleAddStakeholderEmail = () => {
+    const email = newEmailInput.trim().toLowerCase();
+    if (email && email.includes("@") && !form.interesadosEmails.includes(email)) {
+      setForm((prev) => ({
+        ...prev,
+        interesadosEmails: [...prev.interesadosEmails, email],
+      }));
+      setNewEmailInput("");
+    }
+  };
+
+  const handleRemoveStakeholderEmail = (emailToRemove: string) => {
+    setForm((prev) => ({
+      ...prev,
+      interesadosEmails: prev.interesadosEmails.filter((e) => e !== emailToRemove),
+    }));
+  };
 
   // Estado del chat inteligente DataSwat AI
   const [chatDraft, setChatDraft] = useState("");
@@ -176,7 +201,6 @@ export default function DiscoveryPage() {
         payload = {
           hasItImpact: "si",
           selectedSystems: ["sap", "payments", "core", "apis"],
-          architectureReference: "Microservicio orquestador con colas de mensajería hacia SAP.",
         };
       } else if (lower.includes("archivo") || lower.includes("subir") || lower.includes("pdf") || lower.includes("doc")) {
         botReply =
@@ -265,15 +289,21 @@ export default function DiscoveryPage() {
       status: "Nueva",
       description: form.needDescription || "Iniciativa formulada con asistencia de IA en Discovery.",
       solicitante: form.requester || "Argos Eyra Martínez Zeferino",
-      sponsor: form.requester || "Carlos Méndez",
+      solicitanteEmail: form.solicitanteEmail || "aemartinezz@liverpool.com.mx",
+      sponsor: form.sponsor || "Carlos Méndez",
+      sponsorEmail: form.sponsorEmail || "cmendez@liverpool.com.mx",
       sponsorRole: "CFO",
+      interesadosEmails: form.interesadosEmails,
       impactoTI: form.hasItImpact === "si" ? "Sí, proyecto tecnológico" : "No",
+      requiereTI: form.hasItImpact === "si",
+      enCarteraPendientes: true,
+      impactoTIConfirmado: false,
       sistemasInvolucrados: form.selectedSystems?.length ? form.selectedSystems : ["SAP", "API Gateway"],
       beneficioEstimado: savingsStr,
       beneficioDetalle: `Ahorro estimado y ${form.savedHoursPerMonth || "140"} hrs/mes optimizadas`,
       kpiEsperado: form.successKpi || "Reducción de tiempos operativos",
       madurez: readinessScore,
-      madurezTag: readinessScore >= 80 ? "Madurez avanzada" : "Madurez inicial",
+      madurezTag: "Pendiente validación TI",
       esfuerzo: 55,
       impacto: 80,
       color: "#e6007e",
@@ -460,14 +490,110 @@ export default function DiscoveryPage() {
 
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 700, color: "#1e2022", textTransform: "uppercase", display: "block", marginBottom: 5 }}>
-                      Solicitante (Sponsor)
+                      Nombre del Solicitante
                     </label>
                     <input
                       type="text"
                       className="config-card__input"
                       value={form.requester}
+                      placeholder="Ej. Argos Eyra Martínez Zeferino"
                       onChange={(e) => setForm({ ...form, requester: e.target.value })}
                     />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#1e2022", textTransform: "uppercase", display: "block", marginBottom: 5 }}>
+                      Correo Solicitante (@liverpool.com.mx)
+                    </label>
+                    <input
+                      type="email"
+                      className="config-card__input"
+                      value={form.solicitanteEmail}
+                      placeholder="solicitante@liverpool.com.mx"
+                      onChange={(e) => setForm({ ...form, solicitanteEmail: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: "#1e2022", textTransform: "uppercase", display: "block", marginBottom: 5 }}>
+                      Correo Sponsor Ejecutivo (@liverpool.com.mx)
+                    </label>
+                    <input
+                      type="email"
+                      className="config-card__input"
+                      value={form.sponsorEmail}
+                      placeholder="sponsor@liverpool.com.mx"
+                      onChange={(e) => setForm({ ...form, sponsorEmail: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                {/* Notificaciones a Interesados Adicionales */}
+                <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
+                  <label style={{ fontSize: 11.5, fontWeight: 700, color: "#334155", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
+                    Notificaciones Automáticas a Interesados (BRM, PMO, Operaciones)
+                  </label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                    {form.interesadosEmails.map((email) => (
+                      <span
+                        key={email}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          background: "#eff6ff",
+                          border: "1px solid #bfdbfe",
+                          color: "#1e40af",
+                          fontSize: 11.5,
+                          padding: "3px 8px",
+                          borderRadius: 14,
+                        }}
+                      >
+                        {email}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveStakeholderEmail(email)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                            lineHeight: 1,
+                            color: "#93c5fd",
+                            fontWeight: "bold",
+                          }}
+                          title="Eliminar"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input
+                      type="email"
+                      className="config-card__input"
+                      style={{ fontSize: 12 }}
+                      placeholder="agregar_interesado@liverpool.com.mx"
+                      value={newEmailInput}
+                      onChange={(e) => setNewEmailInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddStakeholderEmail();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="btn-purple-outline"
+                      style={{ padding: "4px 12px", fontSize: 12, whiteSpace: "nowrap" }}
+                      onClick={handleAddStakeholderEmail}
+                    >
+                      + Agregar
+                    </button>
                   </div>
                 </div>
 
@@ -576,19 +702,6 @@ export default function DiscoveryPage() {
                       );
                     })}
                   </div>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: 12, fontWeight: 700, color: "#1e2022", textTransform: "uppercase", display: "block", marginBottom: 5 }}>
-                    Referencia de Arquitectura o Dependencias Previas
-                  </label>
-                  <input
-                    type="text"
-                    className="config-card__input"
-                    value={form.architectureReference}
-                    placeholder="Ej. Integración mediante APIs REST y eventos en GCP..."
-                    onChange={(e) => setForm({ ...form, architectureReference: e.target.value })}
-                  />
                 </div>
               </div>
 
@@ -1073,23 +1186,23 @@ export default function DiscoveryPage() {
             >
               <strong>Siguiente paso en el flujo:</strong>
               <br />
-              ➔ <strong>2. Visualizar backlog por cartera de negocio</strong> (Asignado al rol de PMO para priorización).
+              ➔ <strong>Validación en Cartera de Pendientes (Backlog TI)</strong>: el Portfolio Manager y Arquitectura confirmarán los sistemas afectados antes de habilitar su priorización.
             </div>
 
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
               <button
                 type="button"
                 className="btn-purple-solid"
-                onClick={() => router.push("/priorizacion")}
+                onClick={() => router.push("/backlog")}
               >
-                Ir a Priorización del Portafolio
+                Ir a Cartera de Pendientes (Backlog TI)
               </button>
               <button
                 type="button"
                 className="btn-purple-outline"
-                onClick={() => setIsSuccessModalOpen(false)}
+                onClick={() => router.push("/priorizacion")}
               >
-                Permanecer en la Ficha
+                Ir al Portafolio
               </button>
             </div>
           </div>
