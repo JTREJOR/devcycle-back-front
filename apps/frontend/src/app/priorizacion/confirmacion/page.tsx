@@ -15,7 +15,16 @@ import {
   Edit,
   Delete,
 } from "@vibe/icons";
-import { usePriorizacionStore } from "@/store/priorizacionStore";
+import {
+  usePriorizacionStore,
+  normalizePiramideNivel,
+  getPiramidePoints,
+  getPizzaPoints,
+  getCriteriosPoints,
+  PIZZA_OBJETIVOS_CLAVE,
+  PIZZA_BATALLAS,
+  PIZZA_HABILITADORES,
+} from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
 
 function ConfirmacionContent() {
@@ -36,7 +45,7 @@ function ConfirmacionContent() {
     return initiatives.find((i) => i.id === initiativeId) || initiatives[0];
   }, [initiatives, initiativeId]);
 
-  // Datos provenientes del Paso 1 (Evaluación preliminar)
+  // Datos provenientes del Paso 1 (Evaluación preliminar: Pirámide + Pizza + 5 Criterios)
   const evalData = initiative.evaluacion;
   const c1 = evalData?.impactoNegocio ?? 4;
   const c2 = evalData?.alineacionEstrategica ?? 5;
@@ -44,18 +53,24 @@ function ConfirmacionContent() {
   const c4 = evalData?.complejidad ?? 3;
   const c5 = evalData?.riesgos ?? 3;
 
-  // Score y prioridad sugerida (calculados o preexistentes)
+  const piramideNivel =
+    evalData?.piramideNivel ||
+    normalizePiramideNivel(initiative.alineacionEstrategicaNivel);
+  const piramidePuntos = evalData?.piramidePuntos ?? getPiramidePoints(piramideNivel);
+
+  const pizzaObjetivoClave = evalData?.pizzaObjetivoClave || PIZZA_OBJETIVOS_CLAVE[2];
+  const pizzaBatalla = evalData?.pizzaBatalla || PIZZA_BATALLAS[6];
+  const pizzaHabilitador = evalData?.pizzaHabilitador || PIZZA_HABILITADORES[1];
+  const pizzaPuntos =
+    evalData?.pizzaPuntos ?? getPizzaPoints(pizzaObjetivoClave, pizzaBatalla, pizzaHabilitador);
+
+  const criteriosPuntos = evalData?.criteriosPuntos ?? getCriteriosPoints(c1, c2, c3, c4, c5);
+
+  // Score y prioridad sugerida (calculados o preexistentes, máximo 100 pts)
   const score = useMemo(() => {
     if (initiative.score && initiative.score > 0) return initiative.score;
-    const raw =
-      c1 * 6 +
-      c2 * 5 +
-      c3 * 3 +
-      c4 * 3 +
-      c5 * 3 +
-      (c1 >= 4 && c2 >= 4 ? 3 : 0);
-    return Math.min(100, Math.max(10, Math.round(raw)));
-  }, [initiative.score, c1, c2, c3, c4, c5]);
+    return Math.min(100, Math.max(0, piramidePuntos + pizzaPuntos + criteriosPuntos));
+  }, [initiative.score, piramidePuntos, pizzaPuntos, criteriosPuntos]);
 
   const suggestedPriority = useMemo(() => {
     if (initiative.priority) return initiative.priority;
@@ -118,26 +133,24 @@ function ConfirmacionContent() {
     }
   };
 
-  // Criterios formateados para tabla de resumen del análisis
+  // Criterios formateados para tabla de resumen del análisis (40% restante)
   const criteriosList = [
-    { id: 1, name: "Impacto al negocio", val: c1, max: 5, peso: "30%" },
-    { id: 2, name: "Alienación estratégica", val: c2, max: 5, peso: "25%" },
-    { id: 3, name: "Urgencia / oportunidad", val: c3, max: 5, peso: "15%" },
-    { id: 4, name: "Complejidad preliminar", val: c4, max: 5, peso: "15%" },
-    { id: 5, name: "Riesgos / dependencias", val: c5, max: 5, peso: "15%" },
+    { id: 1, name: "Impacto al negocio", val: c1, max: 5, peso: "12%" },
+    { id: 2, name: "Alineación estratégica", val: c2, max: 5, peso: "10%" },
+    { id: 3, name: "Urgencia / oportunidad", val: c3, max: 5, peso: "6%" },
+    { id: 4, name: "Complejidad preliminar", val: c4, max: 5, peso: "6%" },
+    { id: 5, name: "Riesgos / dependencias", val: c5, max: 5, peso: "6%" },
   ];
 
   // Lectura ejecutiva dinámica
   const lecturaBullets = useMemo(() => {
     return [
-      c1 >= 4 ? "Alto impacto al negocio." : "Impacto moderado al negocio.",
-      c2 >= 4 ? "Fuerte alineación estratégica." : "Alineación estratégica estándar.",
-      c3 >= 4 ? "Urgencia relevante." : "Urgencia moderada / programable.",
-      c4 <= 3 && c5 <= 3
-        ? "Complejidad y dependencias en nivel medio."
-        : "Alta complejidad técnica y dependencias críticas.",
+      `Pirámide estratégica: ${piramideNivel} (${piramidePuntos} / 30 pts).`,
+      `OKR's Comercio Unificado ("Pizza"): ${pizzaPuntos / 10} de 3 dimensiones (${pizzaPuntos} / 30 pts).`,
+      `Criterios multicriterio (1-5): ${criteriosPuntos} / 40 pts.`,
+      c1 >= 4 ? "Alto impacto al negocio y alineación confirmada." : "Impacto moderado al negocio.",
     ];
-  }, [c1, c2, c3, c4, c5]);
+  }, [piramideNivel, piramidePuntos, pizzaPuntos, criteriosPuntos, c1]);
 
   // Impactos dinámicos según la decisión
   const impactoBullets = useMemo(() => {
@@ -339,6 +352,45 @@ function ConfirmacionContent() {
             </div>
 
             <div className="step2-table-wrapper">
+              {/* Resumen de Pirámide (30 pts) y Pizza (30 pts) */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  padding: "12px 14px",
+                  background: "#fdf4f9",
+                  border: "1px solid #efd6e7",
+                  borderRadius: 10,
+                  marginBottom: 14,
+                  fontSize: 12,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontWeight: 700, color: "#833177" }}>
+                    🔺 Alineación Estratégica (&quot;Pirámide&quot; · Máx. 30%)
+                  </span>
+                  <span style={{ fontWeight: 800, color: "#e6007e" }}>
+                    {piramideNivel} · {piramidePuntos} / 30 pts
+                  </span>
+                </div>
+                <div style={{ borderTop: "1px solid #f2d8ec", paddingTop: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <span style={{ fontWeight: 700, color: "#833177" }}>
+                      🍕 OKR&apos;s Estratégicos (&quot;Pizza&quot; · Máx. 30%)
+                    </span>
+                    <span style={{ fontWeight: 800, color: "#e6007e" }}>
+                      {pizzaPuntos} / 30 pts
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3, color: "#4b5563", fontSize: 11.5 }}>
+                    <div>• <b>Objetivo Clave:</b> {pizzaObjetivoClave}</div>
+                    <div>• <b>Batalla / Iniciativa Clave:</b> {pizzaBatalla}</div>
+                    <div>• <b>Habilitador:</b> {pizzaHabilitador}</div>
+                  </div>
+                </div>
+              </div>
+
               <table className="step2-analysis-table">
                 <thead>
                   <tr>

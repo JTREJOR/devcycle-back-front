@@ -1156,27 +1156,39 @@ function PriorizacionContent() {
                     </div>
 
                     <div style={{ marginTop: 16 }}>
-                      <div className="prio-section-label">Desglose de calificaciones</div>
+                      <div className="prio-section-label">Desglose de calificaciones (100 pts)</div>
                       <div className="prio-breakdown-list">
                         <div className="prio-breakdown-row">
-                          <span>Impacto al negocio (30%)</span>
-                          <b>{selectedInitiative.evaluacion?.impactoNegocio ?? 8}/10</b>
+                          <span>🔺 Pirámide ({selectedInitiative.evaluacion?.piramideNivel || "N2 Habilitadores/Regulatorios"})</span>
+                          <b style={{ color: "var(--brand-accent)" }}>
+                            {selectedInitiative.evaluacion?.piramidePuntos ?? 20}/30 pts
+                          </b>
                         </div>
                         <div className="prio-breakdown-row">
-                          <span>Alineación estratégica (25%)</span>
-                          <b>{selectedInitiative.evaluacion?.alineacionEstrategica ?? 8}/10</b>
+                          <span>🍕 OKR&apos;s Pizza (Comercio Unificado)</span>
+                          <b style={{ color: "var(--brand-accent)" }}>
+                            {selectedInitiative.evaluacion?.pizzaPuntos ?? 30}/30 pts
+                          </b>
                         </div>
                         <div className="prio-breakdown-row">
-                          <span>Urgencia / oportunidad (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.urgencia ?? 7}/10</b>
+                          <span>1. Impacto al negocio (12%)</span>
+                          <b>{selectedInitiative.evaluacion?.impactoNegocio ?? 4}/5</b>
                         </div>
                         <div className="prio-breakdown-row">
-                          <span>Esfuerzo estimado (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.esfuerzoEstimado ?? 7}/10</b>
+                          <span>2. Alineación estratégica (10%)</span>
+                          <b>{selectedInitiative.evaluacion?.alineacionEstrategica ?? 5}/5</b>
                         </div>
                         <div className="prio-breakdown-row">
-                          <span>Riesgos y dependencias (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.riesgos ?? 8}/10</b>
+                          <span>3. Urgencia / oportunidad (6%)</span>
+                          <b>{selectedInitiative.evaluacion?.urgencia ?? 4}/5</b>
+                        </div>
+                        <div className="prio-breakdown-row">
+                          <span>4. Complejidad preliminar (6%)</span>
+                          <b>{selectedInitiative.evaluacion?.complejidad ?? 3}/5</b>
+                        </div>
+                        <div className="prio-breakdown-row">
+                          <span>5. Riesgos y dependencias (6%)</span>
+                          <b>{selectedInitiative.evaluacion?.riesgos ?? 3}/5</b>
                         </div>
                       </div>
                     </div>
@@ -1324,12 +1336,12 @@ function PriorizacionContent() {
           <div className="prio-bottom-card__header">
             <div className="prio-bottom-card__title">
               <Icon icon={Settings} size={17} />
-              <span>Criterios de evaluación (pesos)</span>
+              <span>Metodología y Criterios (100 pts)</span>
             </div>
             <button
               type="button"
               className="prio-btn-link"
-              onClick={() => showNotification("Metodología: ponderación multicriterio homologada")}
+              onClick={() => showNotification("Metodología: Pirámide (30%) + Pizza OKR's (30%) + 5 Criterios (40%) = 100 pts")}
             >
               Ver metodología →
             </button>
@@ -1337,8 +1349,8 @@ function PriorizacionContent() {
 
           <div className="prio-criteria-list">
             <div className="prio-criteria-item">
-              <span className="prio-criteria-num">1</span>
-              <span className="prio-criteria-name">Impacto al negocio</span>
+              <span className="prio-criteria-num">P1</span>
+              <span className="prio-criteria-name">Alineación Estratégica (&quot;Pirámide&quot; N1-N3)</span>
               <div className="prio-criteria-bar-track">
                 <div className="prio-criteria-bar-fill" style={{ width: "30%" }} />
               </div>
@@ -1346,39 +1358,39 @@ function PriorizacionContent() {
             </div>
 
             <div className="prio-criteria-item">
+              <span className="prio-criteria-num">P2</span>
+              <span className="prio-criteria-name">OKR&apos;s Comercio Unificado (&quot;Pizza&quot;)</span>
+              <div className="prio-criteria-bar-track">
+                <div className="prio-criteria-bar-fill" style={{ width: "30%" }} />
+              </div>
+              <span className="prio-criteria-pct">30%</span>
+            </div>
+
+            <div className="prio-criteria-item">
+              <span className="prio-criteria-num">1</span>
+              <span className="prio-criteria-name">Impacto al negocio</span>
+              <div className="prio-criteria-bar-track">
+                <div className="prio-criteria-bar-fill" style={{ width: "12%" }} />
+              </div>
+              <span className="prio-criteria-pct">12%</span>
+            </div>
+
+            <div className="prio-criteria-item">
               <span className="prio-criteria-num">2</span>
               <span className="prio-criteria-name">Alineación estratégica</span>
               <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "25%" }} />
+                <div className="prio-criteria-bar-fill" style={{ width: "10%" }} />
               </div>
-              <span className="prio-criteria-pct">25%</span>
+              <span className="prio-criteria-pct">10%</span>
             </div>
 
             <div className="prio-criteria-item">
               <span className="prio-criteria-num">3</span>
-              <span className="prio-criteria-name">Urgencia / oportunidad</span>
+              <span className="prio-criteria-name">Urgencia, Complejidad y Riesgos (6% c/u)</span>
               <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "15%" }} />
+                <div className="prio-criteria-bar-fill" style={{ width: "18%" }} />
               </div>
-              <span className="prio-criteria-pct">15%</span>
-            </div>
-
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">4</span>
-              <span className="prio-criteria-name">Esfuerzo estimado</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "15%" }} />
-              </div>
-              <span className="prio-criteria-pct">15%</span>
-            </div>
-
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">5</span>
-              <span className="prio-criteria-name">Riesgos y dependencias</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "15%" }} />
-              </div>
-              <span className="prio-criteria-pct">15%</span>
+              <span className="prio-criteria-pct">18%</span>
             </div>
           </div>
         </div>
