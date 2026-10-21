@@ -21,6 +21,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore, InitiativeItem } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 interface SizingMessage {
   id: string;
@@ -209,6 +210,10 @@ function EstimacionContent() {
 
   return (
     <div className="prio-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast Notification */}
       {notification && (
         <div className="prio-toast">
@@ -235,9 +240,9 @@ function EstimacionContent() {
 
         <div className="prio-header__right">
           <div style={{ display: "flex", gap: 10 }}>
-            <Link href="/priorizacion" className="btn-purple-outline" style={{ fontSize: 12.5 }}>
+            <Link href="/iniciativas" className="btn-purple-outline" style={{ fontSize: 12.5 }}>
               <Icon icon={CheckList} size={15} />
-              <span>Volver a Priorización</span>
+              <span>Volver a Iniciativas</span>
             </Link>
           </div>
         </div>
@@ -835,7 +840,7 @@ function EstimacionContent() {
           {/* Botón de Formalización Final */}
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
             <Link
-              href="/priorizacion"
+              href="/iniciativas"
               className="btn-purple-solid"
               style={{
                 background: isFullyApproved ? "#10b981" : "#94a3b8",

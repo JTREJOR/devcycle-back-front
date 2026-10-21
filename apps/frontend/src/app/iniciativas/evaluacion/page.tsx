@@ -15,6 +15,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 function EvaluacionContent() {
   const router = useRouter();
@@ -27,7 +28,7 @@ function EvaluacionContent() {
   const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
 
   useEffect(() => {
-    setActiveMenuTitle("Priorización");
+    setActiveMenuTitle("Iniciativas");
   }, [setActiveMenuTitle]);
 
   const initiative = useMemo(() => {
@@ -171,7 +172,7 @@ function EvaluacionContent() {
     );
     showToast(`Evaluación guardada exitosamente: ${calculatedScore}/100 (${prioritySugerida})`);
     setTimeout(() => {
-      router.push(`/priorizacion/confirmacion?id=${initiative.id}`);
+      router.push(`/iniciativas/confirmacion?id=${initiative.id}`);
     }, 600);
   };
 
@@ -200,7 +201,7 @@ function EvaluacionContent() {
     );
     showToast("Borrador guardado exitosamente");
     setTimeout(() => {
-      router.push("/priorizacion");
+      router.push("/iniciativas");
     }, 900);
   };
 
@@ -208,12 +209,16 @@ function EvaluacionContent() {
     requestAdjustments(initiative.id);
     showToast(`Se solicitaron ajustes al solicitante (${initiative.solicitante})`);
     setTimeout(() => {
-      router.push("/priorizacion");
+      router.push("/iniciativas");
     }, 900);
   };
 
   return (
     <div className="eval-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast flotante */}
       {toastMessage && (
         <div className="prio-toast">
@@ -230,8 +235,8 @@ function EvaluacionContent() {
               Portafolio
             </Link>
             <span className="prio-breadcrumb__sep">&gt;</span>
-            <Link href="/priorizacion" className="prio-breadcrumb__link">
-              Revisión y Priorización
+            <Link href="/iniciativas" className="prio-breadcrumb__link">
+              Iniciativas
             </Link>
             <span className="prio-breadcrumb__sep">&gt;</span>
             <span className="prio-breadcrumb__current">Evaluación</span>
