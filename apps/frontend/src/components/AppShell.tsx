@@ -9,7 +9,6 @@ import { useRoles, useUsers } from "@/lib/queries";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { CopilotChat } from "./CopilotChat";
 import { MainMenuOverlay } from "./MainMenuOverlay";
-import { BackButton } from "./BackButton";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const isChatOpen = useUiStore((s) => s.isChatOpen);
@@ -65,8 +64,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Icon icon={MoreActions} size={20} />
           </button>
-
-          <BackButton />
 
           {/* Título de la página con punto morado (Imagen 3) */}
           <div className="app-header__brand">
