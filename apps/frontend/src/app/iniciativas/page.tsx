@@ -25,6 +25,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore, InitiativeItem } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 type StageFilter =
   | "Priorización"
@@ -162,11 +163,6 @@ function IniciativasContent() {
     "Comercial / Tiendas",
   ];
 
-  const pendingTiCount = useMemo(
-    () => initiatives.filter((i) => i.enCarteraPendientes || !i.impactoTIConfirmado).length,
-    [initiatives]
-  );
-
   // Iniciativas filtradas por Cartera de Negocio
   const initiativesInCartera = useMemo(() => {
     if (selectedCartera === "Todas") return initiatives;
@@ -213,24 +209,27 @@ function IniciativasContent() {
   }, [filteredInitiatives, selectedId, setSelectedId]);
 
   const selectedInitiative = useMemo(
-    () => initiatives.find((item) => item.id === selectedId) || initiatives[0],
-    [initiatives, selectedId]
+    () =>
+      filteredInitiatives.find((item) => item.id === selectedId) ||
+      initiatives.find((item) => item.id === selectedId) ||
+      initiatives[0],
+    [filteredInitiatives, initiatives, selectedId]
   );
 
   const selectedIndex = useMemo(
-    () => initiatives.findIndex((item) => item.id === selectedId),
-    [initiatives, selectedId]
+    () => filteredInitiatives.findIndex((item) => item.id === selectedId),
+    [filteredInitiatives, selectedId]
   );
 
   const handlePrev = () => {
     if (selectedIndex > 0) {
-      setSelectedId(initiatives[selectedIndex - 1].id);
+      setSelectedId(filteredInitiatives[selectedIndex - 1].id);
     }
   };
 
   const handleNext = () => {
-    if (selectedIndex < initiatives.length - 1) {
-      setSelectedId(initiatives[selectedIndex + 1].id);
+    if (selectedIndex >= 0 && selectedIndex < filteredInitiatives.length - 1) {
+      setSelectedId(filteredInitiatives[selectedIndex + 1].id);
     }
   };
 
@@ -314,6 +313,10 @@ function IniciativasContent() {
 
   return (
     <div className="prio-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast Notification */}
       {notification && (
         <div className="prio-toast">
@@ -331,34 +334,6 @@ function IniciativasContent() {
           </p>
         </div>
       </div>
-
-      {/* Banner de Alerta si hay iniciativas pendientes en Cartera de Pendientes TI */}
-      {pendingTiCount > 0 && (
-        <div
-          style={{
-            background: "#fef3c7",
-            border: "1px solid #fde68a",
-            color: "#92400e",
-            borderRadius: 8,
-            padding: "10px 16px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 16,
-            fontSize: 12.5,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Icon icon={Alert} size={16} />
-            <span>
-              Hay <strong>{pendingTiCount}</strong> iniciativas pendientes de validación tecnológica en la Cartera de Pendientes.
-            </span>
-          </div>
-          <Link href="/backlog" style={{ color: "#b45309", fontWeight: 700, textDecoration: "underline" }}>
-            Validar en Backlog TI →
-          </Link>
-        </div>
-      )}
 
       {/* Selector de Cartera de Negocio Independiente */}
       <div
@@ -560,18 +535,30 @@ function IniciativasContent() {
           </div>
         </div>
 
-        {/* COLUMNA DERECHA: RESUMEN DE DISCOVERY Y EVALUACIÓN */}
+        {/* COLUMNA DERECHA: CARD CONTEXTUAL SEGÚN LA ETAPA SELECCIONADA */}
         <div className="prio-detail-panel">
           {/* Header del detalle con paginador */}
           <div className="prio-detail-header">
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {getStatusBadge(selectedInitiative.status)}
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  padding: "2px 9px",
+                  borderRadius: 999,
+                  background: "#f5edf5",
+                  color: "var(--brand-primary)",
+                }}
+              >
+                Etapa: {selectedStage}
+              </span>
             </div>
             <div className="prio-detail-nav">
               <button
                 type="button"
                 className="prio-detail-nav-btn"
-                disabled={selectedIndex === 0}
+                disabled={selectedIndex <= 0}
                 onClick={handlePrev}
                 aria-label="Iniciativa anterior"
               >
@@ -580,7 +567,7 @@ function IniciativasContent() {
               <button
                 type="button"
                 className="prio-detail-nav-btn"
-                disabled={selectedIndex === initiatives.length - 1}
+                disabled={selectedIndex === -1 || selectedIndex >= filteredInitiatives.length - 1}
                 onClick={handleNext}
                 aria-label="Siguiente iniciativa"
               >
@@ -595,307 +582,694 @@ function IniciativasContent() {
             <span>{selectedInitiative.area}</span>
           </div>
 
-          {/* Tabs del detalle */}
-          <div className="prio-detail-tabs">
-            <button
-              type="button"
-              className={`prio-detail-tab ${activeDetailTab === "resumen" ? "prio-detail-tab--active" : ""}`}
-              onClick={() => setActiveDetailTab("resumen")}
-            >
-              Resumen
-            </button>
-            <button
-              type="button"
-              className={`prio-detail-tab ${activeDetailTab === "discovery" ? "prio-detail-tab--active" : ""}`}
-              onClick={() => setActiveDetailTab("discovery")}
-            >
-              Discovery
-            </button>
-            <button
-              type="button"
-              className={`prio-detail-tab ${activeDetailTab === "evaluacion" ? "prio-detail-tab--active" : ""}`}
-              onClick={() => setActiveDetailTab("evaluacion")}
-            >
-              Evaluación
-            </button>
-            <button
-              type="button"
-              className={`prio-detail-tab ${activeDetailTab === "comentarios" ? "prio-detail-tab--active" : ""}`}
-              onClick={() => setActiveDetailTab("comentarios")}
-            >
-              Comentarios
-            </button>
-          </div>
-
-          {/* Contenido del Tab seleccionado */}
-          <div className="prio-detail-body">
-            {activeDetailTab === "resumen" && (
-              <>
-                <div className="prio-section-label">Descripción</div>
-                <p className="prio-detail-desc">{selectedInitiative.description}</p>
-
-                {/* Grid de 2x2 metadatos */}
-                <div className="prio-meta-grid">
-                  <div className="prio-meta-item">
-                    <div className="prio-meta-label">
-                      <Icon icon={Person} size={14} />
-                      <span>Solicitante</span>
-                    </div>
-                    <div className="prio-meta-val">{selectedInitiative.solicitante}</div>
-                  </div>
-
-                  <div className="prio-meta-item">
-                    <div className="prio-meta-label">
-                      <Icon icon={Timeline} size={14} />
-                      <span>Fecha de creación</span>
-                    </div>
-                    <div className="prio-meta-val">{selectedInitiative.creationDate}</div>
-                  </div>
-
-                  <div className="prio-meta-item">
-                    <div className="prio-meta-label">
-                      <Icon icon={Settings} size={14} />
-                      <span>Impacto TI</span>
-                    </div>
-                    <div className="prio-meta-val">{selectedInitiative.impactoTI}</div>
-                  </div>
-
-                  <div className="prio-meta-item">
-                    <div className="prio-meta-label">
-                      <span style={{ fontWeight: 800 }}>$</span>
-                      <span>Beneficio estimado</span>
-                    </div>
-                    <div className="prio-meta-val prio-meta-val--highlight">
-                      {selectedInitiative.beneficioEstimado}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Estado y Madurez */}
-                <div className="prio-meta-grid" style={{ marginTop: 14 }}>
-                  <div>
-                    <div className="prio-meta-label">Estado actual</div>
-                    <div style={{ marginTop: 4 }}>{getStatusBadge(selectedInitiative.status)}</div>
-                  </div>
-
-                  <div>
-                    <div className="prio-meta-label">
-                      <span>Madurez</span>
-                      <span style={{ marginLeft: "auto", fontWeight: 700, color: "#1e2022" }}>
-                        {selectedInitiative.madurez}%
-                      </span>
-                    </div>
-                    <div className="prio-progress-track">
-                      <div
-                        className="prio-progress-fill"
-                        style={{ width: `${selectedInitiative.madurez}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Botón CTA: Iniciar evaluación */}
-                <div style={{ marginTop: 20 }}>
-                  <Link
-                    href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
-                    className="prio-btn-eval-cta"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <span>
-                      {selectedInitiative.score === null
-                        ? "Iniciar evaluación"
-                        : "Re-evaluar iniciativa"}
-                    </span>
-                    <Icon icon={NavigationChevronRight} size={16} />
-                  </Link>
-                </div>
-              </>
-            )}
-
-            {activeDetailTab === "discovery" && (
-              <div className="prio-discovery-tab">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <div className="prio-section-label" style={{ margin: 0 }}>Ficha Canvas de Discovery</div>
-                  <span className="disc-status-pill disc-status-pill--complete" style={{ fontSize: 10.5 }}>
-                    ✓ Discovery completo
-                  </span>
-                </div>
-
-                <div className="prio-discovery-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Gobierno / Dirección:</span>
-                    <span className="prio-discovery-val">
-                      {selectedInitiative.direccionNegocio || selectedInitiative.area} ·{" "}
-                      {selectedInitiative.oficinaArea || "Oficina Central"}
-                    </span>
-                  </div>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">PMO / Portfolio Mgr:</span>
-                    <span className="prio-discovery-val">
-                      {selectedInitiative.pmoResponsable || "EPL"} ·{" "}
-                      {selectedInitiative.portafolioManager ||
-                        selectedInitiative.sponsor ||
-                        "AL UBAMARI MALINALLI MORENO MERAZ"}
-                    </span>
-                  </div>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Alineación piramidal:</span>
-                    <span className="prio-discovery-val" style={{ color: "#db2777", fontWeight: 700 }}>
-                      {selectedInitiative.alineacionEstrategicaNivel || "(N2) Habilitadores/Regulatorios"}
-                    </span>
-                  </div>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Impacto Tecnología:</span>
-                    <span className="prio-discovery-val">{selectedInitiative.impactoTI}</span>
-                  </div>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Dimensiones:</span>
-                    <span className="prio-discovery-val">
-                      {selectedInitiative.dimensionesImpacto?.length
-                        ? selectedInitiative.dimensionesImpacto.join(", ")
-                        : "Tecnología, Procesos"}
-                    </span>
-                  </div>
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Sistemas involucrados:</span>
-                    <span className="prio-discovery-val">
-                      {selectedInitiative.sistemasInvolucrados?.join(", ") || "SAP ERP, BigQuery"}
-                    </span>
-                  </div>
-                  {selectedInitiative.okrs && selectedInitiative.okrs.length > 0 && (
-                    <div className="prio-discovery-row" style={{ alignItems: "flex-start" }}>
-                      <span className="prio-discovery-key">OKRs Clave:</span>
-                      <span className="prio-discovery-val" style={{ fontSize: 11.5 }}>
-                        {selectedInitiative.okrs[0].objetivo} → {selectedInitiative.okrs[0].resultadoClave}
-                      </span>
-                    </div>
-                  )}
-                  {selectedInitiative.roiData && (
-                    <div className="prio-discovery-row">
-                      <span className="prio-discovery-key">ROI Estimado:</span>
-                      <span className="prio-discovery-val" style={{ color: "#15803d", fontWeight: 700 }}>
-                        +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~
-                        {selectedInitiative.roiData.paybackMeses || 3.8} meses)
-                      </span>
-                    </div>
-                  )}
-                  <div className="prio-discovery-row">
-                    <span className="prio-discovery-key">Asistente IA:</span>
-                    <span className="prio-discovery-val">DataSwat Copilot (Fase 1 Discovery Completada)</span>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-                  <Link
-                    href="/discovery"
-                    className="prio-btn-link"
-                    style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
-                  >
-                    <span>Abrir nuevo Discovery asistido por IA →</span>
-                  </Link>
-                </div>
+          {/* CONTENIDO SEGÚN STAGE SELECCIONADO */}
+          {selectedStage === "Priorización" && (
+            <>
+              {/* Tabs del detalle de Priorización */}
+              <div className="prio-detail-tabs">
+                <button
+                  type="button"
+                  className={`prio-detail-tab ${activeDetailTab === "resumen" ? "prio-detail-tab--active" : ""}`}
+                  onClick={() => setActiveDetailTab("resumen")}
+                >
+                  Resumen
+                </button>
+                <button
+                  type="button"
+                  className={`prio-detail-tab ${activeDetailTab === "discovery" ? "prio-detail-tab--active" : ""}`}
+                  onClick={() => setActiveDetailTab("discovery")}
+                >
+                  Discovery
+                </button>
+                <button
+                  type="button"
+                  className={`prio-detail-tab ${activeDetailTab === "evaluacion" ? "prio-detail-tab--active" : ""}`}
+                  onClick={() => setActiveDetailTab("evaluacion")}
+                >
+                  Evaluación
+                </button>
+                <button
+                  type="button"
+                  className={`prio-detail-tab ${activeDetailTab === "comentarios" ? "prio-detail-tab--active" : ""}`}
+                  onClick={() => setActiveDetailTab("comentarios")}
+                >
+                  Comentarios
+                </button>
               </div>
-            )}
 
-            {activeDetailTab === "evaluacion" && (
-              <div className="prio-eval-tab">
-                {selectedInitiative.score ? (
-                  <div>
-                    <div className="prio-score-summary-box">
-                      <div>
-                        <div style={{ fontSize: 12, color: "#6b7280" }}>Score obtenido</div>
-                        <div style={{ fontSize: 32, fontWeight: 800, color: "var(--brand-primary)" }}>
-                          {selectedInitiative.score}
-                          <span style={{ fontSize: 16, color: "#9ca3af", fontWeight: 500 }}>/100</span>
+              <div className="prio-detail-body">
+                {activeDetailTab === "resumen" && (
+                  <>
+                    <div className="prio-section-label">Descripción</div>
+                    <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+                    <div className="prio-meta-grid">
+                      <div className="prio-meta-item">
+                        <div className="prio-meta-label">
+                          <Icon icon={Person} size={14} />
+                          <span>Solicitante</span>
                         </div>
+                        <div className="prio-meta-val">{selectedInitiative.solicitante}</div>
                       </div>
-                      <div>
-                        <div style={{ fontSize: 12, color: "#6b7280" }}>Prioridad preliminar</div>
-                        <div style={{ marginTop: 4 }}>
-                          {getPriorityBadge(selectedInitiative.priority)}
+
+                      <div className="prio-meta-item">
+                        <div className="prio-meta-label">
+                          <Icon icon={Timeline} size={14} />
+                          <span>Fecha de creación</span>
+                        </div>
+                        <div className="prio-meta-val">{selectedInitiative.creationDate}</div>
+                      </div>
+
+                      <div className="prio-meta-item">
+                        <div className="prio-meta-label">
+                          <Icon icon={Settings} size={14} />
+                          <span>Impacto TI</span>
+                        </div>
+                        <div className="prio-meta-val">{selectedInitiative.impactoTI}</div>
+                      </div>
+
+                      <div className="prio-meta-item">
+                        <div className="prio-meta-label">
+                          <span style={{ fontWeight: 800 }}>$</span>
+                          <span>Beneficio estimado</span>
+                        </div>
+                        <div className="prio-meta-val prio-meta-val--highlight">
+                          {selectedInitiative.beneficioEstimado}
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ marginTop: 16 }}>
-                      <div className="prio-section-label">Desglose de calificaciones</div>
-                      <div className="prio-breakdown-list">
-                        <div className="prio-breakdown-row">
-                          <span>Impacto al negocio (30%)</span>
-                          <b>{selectedInitiative.evaluacion?.impactoNegocio ?? 8}/10</b>
+                    <div className="prio-meta-grid" style={{ marginTop: 14 }}>
+                      <div>
+                        <div className="prio-meta-label">Estado actual</div>
+                        <div style={{ marginTop: 4 }}>{getStatusBadge(selectedInitiative.status)}</div>
+                      </div>
+
+                      <div>
+                        <div className="prio-meta-label">
+                          <span>Madurez</span>
+                          <span style={{ marginLeft: "auto", fontWeight: 700, color: "#1e2022" }}>
+                            {selectedInitiative.madurez}%
+                          </span>
                         </div>
-                        <div className="prio-breakdown-row">
-                          <span>Alineación estratégica (25%)</span>
-                          <b>{selectedInitiative.evaluacion?.alineacionEstrategica ?? 8}/10</b>
-                        </div>
-                        <div className="prio-breakdown-row">
-                          <span>Urgencia / oportunidad (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.urgencia ?? 7}/10</b>
-                        </div>
-                        <div className="prio-breakdown-row">
-                          <span>Esfuerzo estimado (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.esfuerzoEstimado ?? 7}/10</b>
-                        </div>
-                        <div className="prio-breakdown-row">
-                          <span>Riesgos y dependencias (15%)</span>
-                          <b>{selectedInitiative.evaluacion?.riesgos ?? 8}/10</b>
+                        <div className="prio-progress-track">
+                          <div
+                            className="prio-progress-fill"
+                            style={{ width: `${selectedInitiative.madurez}%` }}
+                          />
                         </div>
                       </div>
+                    </div>
+
+                    {/* Botón CTA: Evaluar iniciativa */}
+                    <div style={{ marginTop: 20 }}>
+                      <Link
+                        href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
+                        className="prio-btn-eval-cta"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <span>Evaluar iniciativa</span>
+                        <Icon icon={NavigationChevronRight} size={16} />
+                      </Link>
+                    </div>
+                  </>
+                )}
+
+                {activeDetailTab === "discovery" && (
+                  <div className="prio-discovery-tab">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <div className="prio-section-label" style={{ margin: 0 }}>Ficha Canvas de Discovery</div>
+                      <span className="disc-status-pill disc-status-pill--complete" style={{ fontSize: 10.5 }}>
+                        ✓ Discovery completo
+                      </span>
+                    </div>
+
+                    <div className="prio-discovery-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Gobierno / Dirección:</span>
+                        <span className="prio-discovery-val">
+                          {selectedInitiative.direccionNegocio || selectedInitiative.area} ·{" "}
+                          {selectedInitiative.oficinaArea || "Oficina Central"}
+                        </span>
+                      </div>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">PMO / Portfolio Mgr:</span>
+                        <span className="prio-discovery-val">
+                          {selectedInitiative.pmoResponsable || "EPL"} ·{" "}
+                          {selectedInitiative.portafolioManager ||
+                            selectedInitiative.sponsor ||
+                            "AL UBAMARI MALINALLI MORENO MERAZ"}
+                        </span>
+                      </div>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Alineación piramidal:</span>
+                        <span className="prio-discovery-val" style={{ color: "#db2777", fontWeight: 700 }}>
+                          {selectedInitiative.alineacionEstrategicaNivel || "(N2) Habilitadores/Regulatorios"}
+                        </span>
+                      </div>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Impacto Tecnología:</span>
+                        <span className="prio-discovery-val">{selectedInitiative.impactoTI}</span>
+                      </div>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Dimensiones:</span>
+                        <span className="prio-discovery-val">
+                          {selectedInitiative.dimensionesImpacto?.length
+                            ? selectedInitiative.dimensionesImpacto.join(", ")
+                            : "Tecnología, Procesos"}
+                        </span>
+                      </div>
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Sistemas involucrados:</span>
+                        <span className="prio-discovery-val">
+                          {selectedInitiative.sistemasInvolucrados?.join(", ") || "SAP ERP, BigQuery"}
+                        </span>
+                      </div>
+                      {selectedInitiative.okrs && selectedInitiative.okrs.length > 0 && (
+                        <div className="prio-discovery-row" style={{ alignItems: "flex-start" }}>
+                          <span className="prio-discovery-key">OKRs Clave:</span>
+                          <span className="prio-discovery-val" style={{ fontSize: 11.5 }}>
+                            {selectedInitiative.okrs[0].objetivo} → {selectedInitiative.okrs[0].resultadoClave}
+                          </span>
+                        </div>
+                      )}
+                      {selectedInitiative.roiData && (
+                        <div className="prio-discovery-row">
+                          <span className="prio-discovery-key">ROI Estimado:</span>
+                          <span className="prio-discovery-val" style={{ color: "#15803d", fontWeight: 700 }}>
+                            +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~
+                            {selectedInitiative.roiData.paybackMeses || 3.8} meses)
+                          </span>
+                        </div>
+                      )}
+                      <div className="prio-discovery-row">
+                        <span className="prio-discovery-key">Asistente IA:</span>
+                        <span className="prio-discovery-val">DataSwat Copilot (Fase 1 Discovery Completada)</span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+                      <Link
+                        href="/discovery"
+                        className="prio-btn-link"
+                        style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                      >
+                        <span>Abrir nuevo Discovery asistido por IA →</span>
+                      </Link>
                     </div>
                   </div>
-                ) : (
-                  <div style={{ textAlign: "center", padding: "30px 10px" }}>
-                    <div style={{ color: "#9ca3af", marginBottom: 10 }}>
-                      <Icon icon={CheckList} size={36} />
+                )}
+
+                {activeDetailTab === "evaluacion" && (
+                  <div className="prio-eval-tab">
+                    {selectedInitiative.score ? (
+                      <div>
+                        <div className="prio-score-summary-box">
+                          <div>
+                            <div style={{ fontSize: 12, color: "#6b7280" }}>Score obtenido</div>
+                            <div style={{ fontSize: 32, fontWeight: 800, color: "var(--brand-primary)" }}>
+                              {selectedInitiative.score}
+                              <span style={{ fontSize: 16, color: "#9ca3af", fontWeight: 500 }}>/100</span>
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 12, color: "#6b7280" }}>Prioridad preliminar</div>
+                            <div style={{ marginTop: 4 }}>
+                              {getPriorityBadge(selectedInitiative.priority)}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ marginTop: 16 }}>
+                          <div className="prio-section-label">Desglose de calificaciones</div>
+                          <div className="prio-breakdown-list">
+                            <div className="prio-breakdown-row">
+                              <span>Impacto al negocio (30%)</span>
+                              <b>{selectedInitiative.evaluacion?.impactoNegocio ?? 8}/10</b>
+                            </div>
+                            <div className="prio-breakdown-row">
+                              <span>Alineación estratégica (25%)</span>
+                              <b>{selectedInitiative.evaluacion?.alineacionEstrategica ?? 8}/10</b>
+                            </div>
+                            <div className="prio-breakdown-row">
+                              <span>Urgencia / oportunidad (15%)</span>
+                              <b>{selectedInitiative.evaluacion?.urgencia ?? 7}/10</b>
+                            </div>
+                            <div className="prio-breakdown-row">
+                              <span>Esfuerzo estimado (15%)</span>
+                              <b>{selectedInitiative.evaluacion?.esfuerzoEstimado ?? 7}/10</b>
+                            </div>
+                            <div className="prio-breakdown-row">
+                              <span>Riesgos y dependencias (15%)</span>
+                              <b>{selectedInitiative.evaluacion?.riesgos ?? 8}/10</b>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ marginTop: 18 }}>
+                          <Link
+                            href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
+                            className="prio-btn-eval-cta"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <span>Evaluar iniciativa</span>
+                            <Icon icon={NavigationChevronRight} size={16} />
+                          </Link>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: "center", padding: "30px 10px" }}>
+                        <div style={{ color: "#9ca3af", marginBottom: 10 }}>
+                          <Icon icon={CheckList} size={36} />
+                        </div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: "#374151" }}>
+                          Esta iniciativa aún no ha sido evaluada
+                        </div>
+                        <p style={{ fontSize: 12.5, color: "#6b7280", margin: "6px 0 16px 0" }}>
+                          Evalúa los criterios de impacto, alineación y complejidad para asignarle score y prioridad.
+                        </p>
+                        <Link
+                          href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
+                          className="prio-btn-eval-cta"
+                          style={{ textDecoration: "none" }}
+                        >
+                          <span>Evaluar iniciativa</span>
+                          <Icon icon={NavigationChevronRight} size={16} />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeDetailTab === "comentarios" && (
+                  <div className="prio-comments-tab">
+                    <div className="prio-comment-box">
+                      <div className="prio-comment-author">
+                        <b>Mariana Solís</b> (Portfolio Manager) · Hace 2 días
+                      </div>
+                      <div className="prio-comment-text">
+                        Iniciativa registrada con caso de negocio inicial. Falta afinar la estimación de licencias de pasarelas de pago.
+                      </div>
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#374151" }}>
-                      Esta iniciativa aún no ha sido evaluada
+                    <div style={{ marginTop: 14 }}>
+                      <textarea
+                        className="prio-comment-input"
+                        placeholder="Escribe un comentario o solicitud de ajuste..."
+                        rows={3}
+                      />
+                      <button
+                        type="button"
+                        className="prio-btn-export"
+                        style={{ marginTop: 8 }}
+                        onClick={() => showNotification("Comentario registrado")}
+                      >
+                        <Icon icon={Comment} size={14} />
+                        <span>Agregar comentario</span>
+                      </button>
                     </div>
-                    <p style={{ fontSize: 12.5, color: "#6b7280", margin: "6px 0 16px 0" }}>
-                      Evalúa los criterios de impacto, alineación y complejidad para asignarle score y prioridad.
-                    </p>
-                    <Link
-                      href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
-                      className="prio-btn-eval-cta"
-                      style={{ textDecoration: "none" }}
-                    >
-                      <span>Iniciar evaluación ahora</span>
-                      <Icon icon={NavigationChevronRight} size={16} />
-                    </Link>
                   </div>
                 )}
               </div>
-            )}
+            </>
+          )}
 
-            {activeDetailTab === "comentarios" && (
-              <div className="prio-comments-tab">
-                <div className="prio-comment-box">
-                  <div className="prio-comment-author">
-                    <b>Mariana Solís</b> (Portfolio Manager) · Hace 2 días
+          {selectedStage === "Estimación" && (
+            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
+              <div className="prio-section-label">Resumen de Estimación Técnica y Sizing IA</div>
+              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+              <div className="prio-meta-grid">
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Settings} size={14} />
+                    <span>Arquitectura propuesta</span>
                   </div>
-                  <div className="prio-comment-text">
-                    Iniciativa registrada con caso de negocio inicial. Falta afinar la estimación de licencias de pasarelas de pago.
+                  <div className="prio-meta-val">
+                    {selectedInitiative.estimacionTecnica?.tipoArquitectura ||
+                      "Microservicios en Google Cloud Platform"}
                   </div>
                 </div>
-                <div style={{ marginTop: 14 }}>
-                  <textarea
-                    className="prio-comment-input"
-                    placeholder="Escribe un comentario o solicitud de ajuste..."
-                    rows={3}
-                  />
-                  <button
-                    type="button"
-                    className="prio-btn-export"
-                    style={{ marginTop: 8 }}
-                    onClick={() => showNotification("Comentario registrado")}
-                  >
-                    <Icon icon={Comment} size={14} />
-                    <span>Agregar comentario</span>
-                  </button>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Timeline} size={14} />
+                    <span>Esfuerzo de desarrollo</span>
+                  </div>
+                  <div className="prio-meta-val prio-meta-val--highlight">
+                    {selectedInitiative.estimacionTecnica?.horasDesarrolloEstimadas ?? 480} hrs estimadas
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <span style={{ fontWeight: 800 }}>$</span>
+                    <span>Costo Cloud (FinOps)</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {selectedInitiative.estimacionTecnica?.costoNubeMensualEstimado || "$3,200 USD/mes"}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Person} size={14} />
+                    <span>Volumen / Concurrencia</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {selectedInitiative.estimacionTecnica?.tps ?? 350} TPS ·{" "}
+                    {selectedInitiative.estimacionTecnica?.usuariosMensuales || "2.4M"} usuarios/mes
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
+
+              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Servicios Nube (GCP):</span>
+                  <span className="prio-discovery-val">
+                    {(selectedInitiative.estimacionTecnica?.serviciosNube || [
+                      "Cloud Run",
+                      "Cloud SQL",
+                      "Pub/Sub",
+                      "BigQuery",
+                    ]).join(", ")}
+                  </span>
+                </div>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">VoBo Líder Técnico:</span>
+                  <span
+                    className="prio-discovery-val"
+                    style={{
+                      fontWeight: 700,
+                      color:
+                        selectedInitiative.estimacionTecnica?.voboLiderTecnico === "aprobado"
+                          ? "#059669"
+                          : "#d97706",
+                    }}
+                  >
+                    {selectedInitiative.estimacionTecnica?.voboLiderTecnico === "aprobado"
+                      ? "✓ Aprobado"
+                      : "⏳ Pendiente de revisión"}
+                  </span>
+                </div>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">VoBo Arquitectura:</span>
+                  <span
+                    className="prio-discovery-val"
+                    style={{
+                      fontWeight: 700,
+                      color:
+                        selectedInitiative.estimacionTecnica?.voboLiderArquitectura === "aprobado"
+                          ? "#059669"
+                          : "#d97706",
+                    }}
+                  >
+                    {selectedInitiative.estimacionTecnica?.voboLiderArquitectura === "aprobado"
+                      ? "✓ Aprobado"
+                      : "⏳ Pendiente de revisión"}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <Link
+                  href={`/estimacion?id=${selectedInitiative.id}`}
+                  onClick={() => setSelectedId(selectedInitiative.id)}
+                  className="prio-btn-eval-cta"
+                  style={{ textDecoration: "none" }}
+                >
+                  <span>Ir a estimación</span>
+                  <Icon icon={NavigationChevronRight} size={16} />
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {selectedStage === "Autorización" && (
+            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
+              <div className="prio-section-label">Dictamen Financiero y Comité de Autorización</div>
+              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+              <div className="prio-meta-grid">
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Person} size={14} />
+                    <span>Sponsor Ejecutivo</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {selectedInitiative.sponsor || "Carlos Méndez"} ({selectedInitiative.sponsorRole || "CFO"})
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <span style={{ fontWeight: 800 }}>$</span>
+                    <span>Beneficio anual esperado</span>
+                  </div>
+                  <div className="prio-meta-val prio-meta-val--highlight">
+                    {selectedInitiative.beneficioEstimado}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Timeline} size={14} />
+                    <span>ROI / Payback estimado</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    +{selectedInitiative.roiData?.roiPorcentaje ?? 210}% (~
+                    {selectedInitiative.roiData?.paybackMeses ?? 3.8} meses)
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Security} size={14} />
+                    <span>Presupuesto CapEx / OpEx</span>
+                  </div>
+                  <div className="prio-meta-val">$4.2M MXN (70% CapEx / 30% OpEx)</div>
+                </div>
+              </div>
+
+              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Folio de Comité:</span>
+                  <span className="prio-discovery-val">COM-2026-{selectedInitiative.id.toUpperCase()}</span>
+                </div>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Estatus de Firmas:</span>
+                  <span className="prio-discovery-val" style={{ color: "#d97706", fontWeight: 700 }}>
+                    En validación por Comité de Inversiones y Finanzas
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <button type="button" className="prio-btn-eval-cta">
+                  <span>Ir a autorización</span>
+                  <Icon icon={NavigationChevronRight} size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {selectedStage === "Formalización" && (
+            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
+              <div className="prio-section-label">Formalización Contractual y Alta en Monday</div>
+              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+              <div className="prio-meta-grid">
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Person} size={14} />
+                    <span>PMO Responsable</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {selectedInitiative.pmoResponsable || "PMO Corporativa · Alexis Labrada"}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Clipboard} size={14} />
+                    <span>Tablero Monday</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    Tablero Maestro · {selectedInitiative.cartera || selectedInitiative.area}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={FileIcon} size={14} />
+                    <span>Anexos y Contratos</span>
+                  </div>
+                  <div className="prio-meta-val">Validados por Jurídico y Compras TI</div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Timeline} size={14} />
+                    <span>Ventana de Arranque</span>
+                  </div>
+                  <div className="prio-meta-val prio-meta-val--highlight">Q4 2026 · Célula Asignada</div>
+                </div>
+              </div>
+
+              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Sincronización Monday:</span>
+                  <span className="prio-discovery-val" style={{ color: "#0284c7", fontWeight: 700 }}>
+                    ✓ Workspace y cronograma base generados
+                  </span>
+                </div>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Orden de Compra:</span>
+                  <span className="prio-discovery-val">OC-88412 liberada en SAP FI</span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <button type="button" className="prio-btn-eval-cta">
+                  <span>Ir a formalización</span>
+                  <Icon icon={NavigationChevronRight} size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {selectedStage === "Ejecución" && (
+            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
+              <div className="prio-section-label">Seguimiento Operativo de Ejecución</div>
+              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+              <div className="prio-meta-grid">
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Play} size={14} />
+                    <span>Sprint Actual</span>
+                  </div>
+                  <div className="prio-meta-val">Sprint 6 de 8 · En tiempo (On Track)</div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Check} size={14} />
+                    <span>Semáforo PMO</span>
+                  </div>
+                  <div className="prio-meta-val" style={{ color: "#059669", fontWeight: 700 }}>
+                    ● Verde (Sin bloqueos críticos)
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Settings} size={14} />
+                    <span>Sistemas en intervención</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {(selectedInitiative.sistemasInvolucrados || ["SAP ERP", "Cloud Run"]).join(", ")}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Timeline} size={14} />
+                    <span>Próximo Hito</span>
+                  </div>
+                  <div className="prio-meta-val">Pruebas integrales UAT y salida a producción</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 14 }}>
+                <div className="prio-meta-label">
+                  <span>Avance físico de ejecución</span>
+                  <span style={{ marginLeft: "auto", fontWeight: 700, color: "#1e2022" }}>
+                    {selectedInitiative.madurez || 85}%
+                  </span>
+                </div>
+                <div className="prio-progress-track">
+                  <div
+                    className="prio-progress-fill"
+                    style={{ width: `${selectedInitiative.madurez || 85}%` }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <button type="button" className="prio-btn-eval-cta">
+                  <span>Ir a ejecución</span>
+                  <Icon icon={NavigationChevronRight} size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {selectedStage === "Cierre" && (
+            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
+              <div className="prio-section-label">Acta de Cierre y Captura de Valor</div>
+              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+
+              <div className="prio-meta-grid">
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Check} size={14} />
+                    <span>Estado de Entrega</span>
+                  </div>
+                  <div className="prio-meta-val" style={{ color: "#059669", fontWeight: 700 }}>
+                    100% Finalizado en Producción
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <span style={{ fontWeight: 800 }}>$</span>
+                    <span>Beneficio Capturado</span>
+                  </div>
+                  <div className="prio-meta-val prio-meta-val--highlight">
+                    {selectedInitiative.beneficioEstimado}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={Timeline} size={14} />
+                    <span>KPI Alcanzado</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    {selectedInitiative.kpiEsperado || "100% de meta operativa cumplida"}
+                  </div>
+                </div>
+
+                <div className="prio-meta-item">
+                  <div className="prio-meta-label">
+                    <Icon icon={FileIcon} size={14} />
+                    <span>Acta de Cierre</span>
+                  </div>
+                  <div className="prio-meta-val">
+                    Firmada por {selectedInitiative.sponsor || "Sponsor"} y PMO
+                  </div>
+                </div>
+              </div>
+
+              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Transición a Soporte:</span>
+                  <span className="prio-discovery-val">Handover completado con Operaciones TI</span>
+                </div>
+                <div className="prio-discovery-row">
+                  <span className="prio-discovery-key">Lecciones aprendidas:</span>
+                  <span className="prio-discovery-val">Documentadas en repositorio de gobernanza</span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <button type="button" className="prio-btn-eval-cta">
+                  <span>Ir a cierre</span>
+                  <Icon icon={NavigationChevronRight} size={16} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

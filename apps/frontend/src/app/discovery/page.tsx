@@ -20,6 +20,7 @@ import {
   File as FileIcon,
 } from "@vibe/icons";
 import { usePriorizacionStore, OKRItem, DependenciaItem } from "@/store/priorizacionStore";
+import { BackButton } from "@/components/BackButton";
 
 // ==========================================
 // CATÁLOGOS CORPORATIVOS LIVERPOOL / DEVCYCLE
@@ -645,21 +646,8 @@ export default function DiscoveryPage() {
   return (
     <div>
       {/* 1. NAVEGACIÓN SUPERIOR */}
-      <div style={{ marginBottom: 14 }}>
-        <Link
-          href="/"
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--brand-primary)",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-          }}
-        >
-          <Icon icon={NavigationChevronLeft} size={16} />
-          <span>Inicio / Portafolio</span>
-        </Link>
+      <div className="app-back-bar">
+        <BackButton />
       </div>
 
       {/* 2. ENCABEZADO PRINCIPAL DE DISCOVERY */}
@@ -2526,20 +2514,13 @@ export default function DiscoveryPage() {
             >
               <strong>Siguiente paso en el flujo:</strong>
               <br />
-              ➔ <strong>Validación en Cartera de Pendientes (Backlog TI)</strong>: el Portfolio Manager y Arquitectura confirmarán los sistemas afectados antes de habilitar su priorización.
+              ➔ <strong>Revisión y Priorización de Iniciativas</strong>: el Portfolio Manager revisará y evaluará tu solicitud dentro del portafolio.
             </div>
 
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
               <button
                 type="button"
                 className="btn-purple-solid"
-                onClick={() => router.push("/backlog")}
-              >
-                Ir a Cartera de Pendientes (Backlog TI)
-              </button>
-              <button
-                type="button"
-                className="btn-purple-outline"
                 onClick={() => router.push("/iniciativas")}
               >
                 Ir a Iniciativas

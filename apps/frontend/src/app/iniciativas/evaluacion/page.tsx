@@ -15,6 +15,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 function EvaluacionContent() {
   const router = useRouter();
@@ -214,6 +215,10 @@ function EvaluacionContent() {
 
   return (
     <div className="eval-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast flotante */}
       {toastMessage && (
         <div className="prio-toast">

@@ -17,6 +17,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 function ConfirmacionContent() {
   const router = useRouter();
@@ -185,6 +186,10 @@ function ConfirmacionContent() {
 
   return (
     <div className="eval-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast de confirmación */}
       {toastMessage && (
         <div className="prio-toast">

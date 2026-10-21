@@ -18,6 +18,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore, getMacroStage } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 const CARTERAS = [
   "Todas",
@@ -261,6 +262,10 @@ export default function PortfolioPage() {
 
   return (
     <div>
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* 1. SECCIÓN HERO (Bienvenida ejecutiva) */}
       <section className="hero-card">
         <div>

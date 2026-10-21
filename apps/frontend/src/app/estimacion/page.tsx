@@ -21,6 +21,7 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore, InitiativeItem } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 interface SizingMessage {
   id: string;
@@ -209,6 +210,10 @@ function EstimacionContent() {
 
   return (
     <div className="prio-page-container">
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Toast Notification */}
       {notification && (
         <div className="prio-toast">

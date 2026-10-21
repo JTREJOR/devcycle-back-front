@@ -9,6 +9,7 @@ import { useRoles, useUsers } from "@/lib/queries";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { CopilotChat } from "./CopilotChat";
 import { MainMenuOverlay } from "./MainMenuOverlay";
+import { BackButton } from "./BackButton";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const isChatOpen = useUiStore((s) => s.isChatOpen);
@@ -34,8 +35,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (pathname === "/iniciativas" || pathname.startsWith("/iniciativas/")) {
       setActiveMenuTitle("Iniciativas");
-    } else if (pathname === "/backlog") {
-      setActiveMenuTitle("Cartera de Pendientes");
     } else if (pathname === "/estimacion") {
       setActiveMenuTitle("Estimación y VoBo");
     } else if (pathname === "/discovery") {
@@ -45,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     } else if (pathname.startsWith("/project/")) {
       setActiveMenuTitle("Ficha de Proyecto");
     } else if (pathname === "/") {
-      const homeOptions = ["Portafolio", "Priorización", "Aprobaciones", "Comité", "Auditoría"];
+      const homeOptions = ["Portafolio", "Iniciativas", "Aprobaciones", "Comité", "Auditoría"];
       if (!homeOptions.includes(activeMenuTitle)) {
         setActiveMenuTitle("Portafolio");
       }
@@ -66,6 +65,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Icon icon={MoreActions} size={20} />
           </button>
+
+          <BackButton />
 
           {/* Título de la página con punto morado (Imagen 3) */}
           <div className="app-header__brand">
