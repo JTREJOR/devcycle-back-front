@@ -51,11 +51,11 @@ export const MAIN_MENU_ITEMS: MenuItemDef[] = [
     href: "/backlog",
   },
   {
-    id: "priorizacion",
-    title: "Priorización",
-    subtitle: "Matriz y ordenamiento visual",
+    id: "iniciativas",
+    title: "Iniciativas",
+    subtitle: "Todas las iniciativas por etapa",
     icon: CheckList,
-    href: "/priorizacion",
+    href: "/iniciativas",
   },
   {
     id: "estimacion",

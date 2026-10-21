@@ -2540,9 +2540,9 @@ export default function DiscoveryPage() {
               <button
                 type="button"
                 className="btn-purple-outline"
-                onClick={() => router.push("/priorizacion")}
+                onClick={() => router.push("/iniciativas")}
               >
-                Ir al Portafolio
+                Ir a Iniciativas
               </button>
             </div>
           </div>

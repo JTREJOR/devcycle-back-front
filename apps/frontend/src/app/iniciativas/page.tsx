@@ -12,8 +12,6 @@ import {
   Clipboard,
   NavigationChevronRight,
   NavigationChevronLeft,
-  Download,
-  Search,
   Send,
   Comment,
   Delete,
@@ -22,13 +20,103 @@ import {
   Settings,
   MoreActions,
   Security,
-  Bolt,
+  Play,
   Alert,
 } from "@vibe/icons";
 import { usePriorizacionStore, InitiativeItem } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
 
-function PriorizacionContent() {
+type StageFilter =
+  | "Priorización"
+  | "Estimación"
+  | "Autorización"
+  | "Formalización"
+  | "Ejecución"
+  | "Cierre";
+
+const STAGES_CONFIG: {
+  id: StageFilter;
+  step: number;
+  title: string;
+  subtitle: string;
+  accentColor: string;
+  bgColor: string;
+  borderColor: string;
+  icon: typeof Clipboard;
+}[] = [
+  {
+    id: "Priorización",
+    step: 1,
+    title: "Priorización",
+    subtitle: "Evaluación y score",
+    accentColor: "#b52670",
+    bgColor: "#fdf5f9",
+    borderColor: "#f3c5de",
+    icon: Clipboard,
+  },
+  {
+    id: "Estimación",
+    step: 2,
+    title: "Estimación",
+    subtitle: "Sizing y VoBo TI",
+    accentColor: "#7c3aed",
+    bgColor: "#f5f3ff",
+    borderColor: "#ddd6fe",
+    icon: Timeline,
+  },
+  {
+    id: "Autorización",
+    step: 3,
+    title: "Autorización",
+    subtitle: "Dictamen y presupuesto",
+    accentColor: "#d97706",
+    bgColor: "#fffbeb",
+    borderColor: "#fde68a",
+    icon: Security,
+  },
+  {
+    id: "Formalización",
+    step: 4,
+    title: "Formalización",
+    subtitle: "Contratos y planeación",
+    accentColor: "#0284c7",
+    bgColor: "#f0f9ff",
+    borderColor: "#bae6fd",
+    icon: FileIcon,
+  },
+  {
+    id: "Ejecución",
+    step: 5,
+    title: "Ejecución",
+    subtitle: "Desarrollo y entrega",
+    accentColor: "#059669",
+    bgColor: "#ecfdf5",
+    borderColor: "#a7f3d0",
+    icon: Play,
+  },
+  {
+    id: "Cierre",
+    step: 6,
+    title: "Cierre",
+    subtitle: "Valor capturado",
+    accentColor: "#1e293b",
+    bgColor: "#f1f5f9",
+    borderColor: "#cbd5e1",
+    icon: Check,
+  },
+];
+
+function getNormalizedStage(etapa?: InitiativeItem["etapaCiclo"]): StageFilter {
+  if (!etapa || etapa === "Definición" || etapa === "Priorización") return "Priorización";
+  if (etapa === "Estimación") return "Estimación";
+  if (etapa === "Autorización") return "Autorización";
+  if (etapa === "Formalización") return "Formalización";
+  if (etapa === "Ejecución") return "Ejecución";
+  if (etapa === "Cierre") return "Cierre";
+  return "Priorización";
+}
+
+function IniciativasContent() {
   const searchParams = useSearchParams();
   const initiatives = usePriorizacionStore((s) => s.initiatives);
   const selectedId = usePriorizacionStore((s) => s.selectedInitiativeId);
@@ -37,43 +125,33 @@ function PriorizacionContent() {
   const requestAdjustmentsStore = usePriorizacionStore((s) => s.requestAdjustments);
   const discardInitiativeStore = usePriorizacionStore((s) => s.discardInitiative);
   const sendToCommitteeStore = usePriorizacionStore((s) => s.sendToCommittee);
-  const reorderInitiativesStore = usePriorizacionStore((s) => s.reorderInitiatives);
-  const formalizePrioritiesStore = usePriorizacionStore((s) => s.formalizePriorities);
   const selectedCartera = usePriorizacionStore((s) => s.selectedCartera);
   const setSelectedCartera = usePriorizacionStore((s) => s.setSelectedCartera);
   const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
 
   useEffect(() => {
-    setActiveMenuTitle("Priorización");
+    setActiveMenuTitle("Iniciativas");
   }, [setActiveMenuTitle]);
 
-  // Si viene con query param ?id=..., sincronizar selección
+  // Filtro activo de los 6 stages (por defecto: "Priorización")
+  const [selectedStage, setSelectedStage] = useState<StageFilter>("Priorización");
+
+  // Si viene con query param ?id=..., sincronizar selección y su stage correspondiente
   useEffect(() => {
     const idFromUrl = searchParams.get("id");
-    if (idFromUrl && initiatives.some((i) => i.id === idFromUrl)) {
-      setSelectedId(idFromUrl);
+    if (idFromUrl) {
+      const target = initiatives.find((i) => i.id === idFromUrl);
+      if (target) {
+        setSelectedId(idFromUrl);
+        setSelectedStage(getNormalizedStage(target.etapaCiclo));
+      }
     }
   }, [searchParams, initiatives, setSelectedId]);
 
-  // Estados de etapas del portafolio (Imagen 3)
-  const [selectedKpiCard, setSelectedKpiCard] = useState<"backlog" | "aprobadas" | "rechazadas" | "sin_etapa">("backlog");
-  const [selectedBacklogPill, setSelectedBacklogPill] = useState<"registradas" | "revision">("registradas");
-
-  const [activeTableTab, setActiveTableTab] = useState<"revision" | "priorizacion" | "comite" | "todas">("revision");
-  const [activeDetailTab, setActiveDetailTab] = useState<"resumen" | "discovery" | "evaluacion" | "comentarios">("resumen");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeDetailTab, setActiveDetailTab] = useState<
+    "resumen" | "discovery" | "evaluacion" | "comentarios"
+  >("resumen");
   const [notification, setNotification] = useState<string | null>(null);
-
-  // Estado del modal de formalización y de desplazamiento
-  const [isFormalizeModalOpen, setIsFormalizeModalOpen] = useState(false);
-  const [pendingMove, setPendingMove] = useState<{
-    sourceId: string;
-    targetId: string;
-    sourceName: string;
-    sourcePos: number;
-    targetPos: number;
-    displacedCount: number;
-  } | null>(null);
 
   const CARTERAS = [
     "Todas",
@@ -89,94 +167,28 @@ function PriorizacionContent() {
     [initiatives]
   );
 
-  // ========================================================
-  // MÉTRICAS REACTIVAS DE LAS 4 ETAPAS (Imagen 3)
-  // ========================================================
-  const totalIdeas = initiatives.length;
+  // Iniciativas filtradas por Cartera de Negocio
+  const initiativesInCartera = useMemo(() => {
+    if (selectedCartera === "Todas") return initiatives;
+    return initiatives.filter((i) => i.cartera === selectedCartera);
+  }, [initiatives, selectedCartera]);
 
-  const countRechazadas = useMemo(
-    () => initiatives.filter((i) => i.status === "Descartada" || i.decision === "descartar").length,
-    [initiatives]
-  );
-
-  const countSinEtapa = useMemo(
-    () => initiatives.filter((i) => !i.etapaCiclo).length,
-    [initiatives]
-  );
-
-  const countEjecucion = useMemo(
-    () => initiatives.filter((i) => i.etapaCiclo === "Ejecución" && i.status !== "Descartada").length,
-    [initiatives]
-  );
-
-  const countAutorizacion = useMemo(
-    () =>
-      initiatives.filter(
-        (i) => (i.etapaCiclo === "Autorización" || i.etapaCiclo === "Formalización") && i.status !== "Descartada"
-      ).length,
-    [initiatives]
-  );
-
-  const countAprobadasEnProceso = useMemo(
-    () => countEjecucion + countAutorizacion,
-    [countEjecucion, countAutorizacion]
-  );
-
-  const countEnRevisionPill = useMemo(
-    () =>
-      initiatives.filter(
-        (i) =>
-          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
-          (i.status === "En revisión" || i.status === "Con comentarios")
-      ).length,
-    [initiatives]
-  );
-
-  const countRegistradasPill = useMemo(
-    () =>
-      initiatives.filter(
-        (i) =>
-          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
-          (i.status === "Nueva" || i.status === "En priorización" || i.status === "Lista")
-      ).length,
-    [initiatives]
-  );
-
-  const countBacklog = useMemo(
-    () => countRegistradasPill + countEnRevisionPill,
-    [countRegistradasPill, countEnRevisionPill]
-  );
-
-  // Contadores para pestañas de la tabla dentro del backlog
-  const countRevision = useMemo(
-    () =>
-      initiatives.filter(
-        (i) =>
-          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
-          (i.status === "Nueva" || i.status === "En revisión" || i.status === "Con comentarios")
-      ).length,
-    [initiatives]
-  );
-
-  const countPriorizacion = useMemo(
-    () =>
-      initiatives.filter(
-        (i) =>
-          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
-          i.status === "En priorización"
-      ).length,
-    [initiatives]
-  );
-
-  const countComite = useMemo(
-    () =>
-      initiatives.filter(
-        (i) =>
-          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
-          i.status === "Lista"
-      ).length,
-    [initiatives]
-  );
+  // Conteos reactivos por cada uno de los 6 stages
+  const stageCounts = useMemo(() => {
+    const counts: Record<StageFilter, number> = {
+      Priorización: 0,
+      Estimación: 0,
+      Autorización: 0,
+      Formalización: 0,
+      Ejecución: 0,
+      Cierre: 0,
+    };
+    initiativesInCartera.forEach((item) => {
+      const st = getNormalizedStage(item.etapaCiclo);
+      counts[st] = (counts[st] || 0) + 1;
+    });
+    return counts;
+  }, [initiativesInCartera]);
 
   // Estado del modal interactivo de evaluación rápida
   const [isEvalModalOpen, setIsEvalModalOpen] = useState(false);
@@ -186,14 +198,28 @@ function PriorizacionContent() {
   const [evalC4, setEvalC4] = useState(3); // Complejidad
   const [evalC5, setEvalC5] = useState(3); // Riesgos
 
+  // Filtrado de tabla por Cartera y Stage seleccionado
+  const filteredInitiatives = useMemo(() => {
+    return initiativesInCartera.filter(
+      (item) => getNormalizedStage(item.etapaCiclo) === selectedStage
+    );
+  }, [initiativesInCartera, selectedStage]);
+
+  // Sincronizar selección de iniciativa si la lista filtrada cambia
+  useEffect(() => {
+    if (filteredInitiatives.length > 0 && !filteredInitiatives.some((i) => i.id === selectedId)) {
+      setSelectedId(filteredInitiatives[0].id);
+    }
+  }, [filteredInitiatives, selectedId, setSelectedId]);
+
   const selectedInitiative = useMemo(
     () => initiatives.find((item) => item.id === selectedId) || initiatives[0],
-    [initiatives, selectedId],
+    [initiatives, selectedId]
   );
 
   const selectedIndex = useMemo(
     () => initiatives.findIndex((item) => item.id === selectedId),
-    [initiatives, selectedId],
+    [initiatives, selectedId]
   );
 
   const handlePrev = () => {
@@ -208,118 +234,9 @@ function PriorizacionContent() {
     }
   };
 
-  // Filtrado de tabla por Cartera, Tab y Búsqueda
-  const filteredInitiatives = useMemo(() => {
-    return initiatives.filter((item) => {
-      // 1. Filtro de Cartera
-      if (selectedCartera !== "Todas" && item.cartera !== selectedCartera) {
-        return false;
-      }
-
-      // 2. Filtro de búsqueda
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matches =
-          item.name.toLowerCase().includes(q) ||
-          item.area.toLowerCase().includes(q) ||
-          item.status.toLowerCase().includes(q);
-        if (!matches) return false;
-      }
-
-      // 2. Filtro por tarjeta de etapa activa (Imagen 3)
-      if (selectedKpiCard === "aprobadas") {
-        return (
-          ["Ejecución", "Autorización", "Formalización", "Cierre"].includes(item.etapaCiclo || "") &&
-          item.status !== "Descartada"
-        );
-      }
-      if (selectedKpiCard === "rechazadas") {
-        return item.status === "Descartada" || item.decision === "descartar";
-      }
-      if (selectedKpiCard === "sin_etapa") {
-        return !item.etapaCiclo;
-      }
-
-      // 3. Tarjeta Backlog por priorizar
-      const isBacklogCandidate =
-        !item.etapaCiclo || item.etapaCiclo === "Priorización" || item.etapaCiclo === "Estimación";
-      if (!isBacklogCandidate) return false;
-
-      // Si la pill activa es "revision"
-      if (selectedBacklogPill === "revision") {
-        return item.status === "En revisión" || item.status === "Con comentarios";
-      }
-
-      // Si la pill activa es "registradas", aplica el tab de la tabla
-      if (activeTableTab === "revision") {
-        return item.status === "Nueva" || item.status === "En revisión" || item.status === "Con comentarios";
-      }
-      if (activeTableTab === "priorizacion") {
-        return item.status === "En priorización" || item.status === "Lista";
-      }
-      if (activeTableTab === "comite") {
-        return item.status === "Lista" && (item.score ?? 0) >= 80;
-      }
-      return true; // "todas"
-    });
-  }, [initiatives, selectedCartera, selectedKpiCard, selectedBacklogPill, activeTableTab, searchQuery]);
-
-  // Sincronizar selección de iniciativa si la lista filtrada cambia
-  useEffect(() => {
-    if (filteredInitiatives.length > 0 && !filteredInitiatives.some((i) => i.id === selectedId)) {
-      setSelectedId(filteredInitiatives[0].id);
-    }
-  }, [filteredInitiatives, selectedId, setSelectedId]);
-
-  // Manejo de reordenamiento visual y cálculo de iniciativas desplazadas
-  const handleTriggerReorder = (item: InitiativeItem, direction: "up" | "down" | "top") => {
-    const currentIndex = filteredInitiatives.findIndex((i) => i.id === item.id);
-    if (currentIndex === -1) return;
-
-    let targetIndex = currentIndex;
-    if (direction === "up" && currentIndex > 0) {
-      targetIndex = currentIndex - 1;
-    } else if (direction === "down" && currentIndex < filteredInitiatives.length - 1) {
-      targetIndex = currentIndex + 1;
-    } else if (direction === "top" && currentIndex > 0) {
-      targetIndex = 0;
-    }
-
-    if (targetIndex === currentIndex) return;
-
-    const targetItem = filteredInitiatives[targetIndex];
-    const displaced = Math.abs(targetIndex - currentIndex);
-
-    setPendingMove({
-      sourceId: item.id,
-      targetId: targetItem.id,
-      sourceName: item.name,
-      sourcePos: currentIndex + 1,
-      targetPos: targetIndex + 1,
-      displacedCount: displaced,
-    });
-  };
-
-  const handleConfirmMove = () => {
-    if (!pendingMove) return;
-    reorderInitiativesStore(pendingMove.sourceId, pendingMove.targetId);
-    showNotification(
-      `✓ Iniciativa "${pendingMove.sourceName}" movida a la posición #${pendingMove.targetPos}. Se desplazaron ${pendingMove.displacedCount} iniciativas en el backlog.`
-    );
-    setPendingMove(null);
-  };
-
-  const handleConfirmFormalization = () => {
-    const result = formalizePrioritiesStore();
-    setIsFormalizeModalOpen(false);
-    showNotification(
-      `✓ Se formalizaron ${result.count} iniciativas en el backlog (${result.timestamp}). Notificaciones enviadas por correo y Google Chat a PMO, BRM y Directores.`
-    );
-  };
-
   // Cálculos de score en tiempo real en modal
   const liveScore = Math.round(
-    (evalC1 * 0.3 + evalC2 * 0.25 + evalC3 * 0.15 + evalC4 * 0.15 + evalC5 * 0.15) * 10,
+    (evalC1 * 0.3 + evalC2 * 0.25 + evalC3 * 0.15 + evalC4 * 0.15 + evalC5 * 0.15) * 10
   );
   const livePriority = liveScore >= 80 ? "Alta" : liveScore >= 65 ? "Media" : "Baja";
 
@@ -405,38 +322,13 @@ function PriorizacionContent() {
         </div>
       )}
 
-      {/* 1. ENCABEZADO DE VISTA (Imagen 5) */}
+      {/* 1. ENCABEZADO DE VISTA (Sin Breadcrumb y sin botones de Formalizar/Exportar) */}
       <div className="prio-header">
         <div>
-          <div className="prio-breadcrumb">
-            <Link href="/" className="prio-breadcrumb__link">Portafolio</Link>
-            <span className="prio-breadcrumb__sep">&gt;</span>
-            <span className="prio-breadcrumb__current">Revisión y Priorización</span>
-          </div>
-          <h1 className="prio-header__title">Revisión y Priorización de Iniciativas</h1>
+          <h1 className="prio-header__title">Iniciativas del Portafolio</h1>
           <p className="prio-header__subtitle">
-            Analiza, evalúa y define el orden de atención de las iniciativas del portafolio.
+            Visualiza y da seguimiento a todas las iniciativas del portafolio a través de sus 6 etapas.
           </p>
-        </div>
-
-        <div className="prio-header__right">
-          <button
-            type="button"
-            className="btn-purple-solid"
-            style={{ background: "var(--brand-primary)", borderColor: "var(--brand-primary)", fontSize: 12.5 }}
-            onClick={() => setIsFormalizeModalOpen(true)}
-          >
-            <Icon icon={Bolt} size={15} />
-            <span>Formalizar Prioridades</span>
-          </button>
-          <button
-            type="button"
-            className="prio-btn-export"
-            onClick={() => showNotification("Exportando reporte consolidado de priorización (CSV/PDF)...")}
-          >
-            <Icon icon={Download} size={15} />
-            <span>Exportar</span>
-          </button>
         </div>
       </div>
 
@@ -500,258 +392,104 @@ function PriorizacionContent() {
           </div>
         </div>
         <div style={{ fontSize: 11.5, color: "#64748b" }}>
-          Mostrando <strong>{filteredInitiatives.length}</strong> iniciativas en {selectedCartera}
+          Mostrando <strong>{filteredInitiatives.length}</strong> iniciativas en etapa{" "}
+          <strong>{selectedStage}</strong> ({selectedCartera})
         </div>
       </div>
 
-      {/* 2. ETAPAS DEL PORTAFOLIO / KPIS (Imagen 3) */}
-      <div className="prio-kpi-grid">
-        {/* Card 1: Backlog por priorizar */}
-        <div
-          className={`prio-kpi-card prio-kpi-card--backlog ${
-            selectedKpiCard === "backlog" ? "prio-kpi-card--active-backlog" : ""
-          }`}
-          onClick={() => {
-            setSelectedKpiCard("backlog");
-            setSelectedBacklogPill("registradas");
-          }}
-        >
-          <div className="prio-kpi-card__top-header">
-            <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--magenta">
-              <Icon icon={Clipboard} size={17} />
-            </div>
-            <span className="prio-kpi-card__title-magenta">Backlog por priorizar</span>
-          </div>
-
-          <div className="prio-kpi-card__number-row">
-            <span className="prio-kpi-card__big-value">{countBacklog}</span>
-            <span className="prio-kpi-card__total-note">de {totalIdeas} ideas asignadas</span>
-          </div>
-
-          <div className="prio-kpi-card__pills">
+      {/* 2. FILTROS POR LOS 6 STAGES DE UNA INICIATIVA */}
+      <div className="prio-stage-grid">
+        {STAGES_CONFIG.map((stage) => {
+          const isActive = selectedStage === stage.id;
+          const count = stageCounts[stage.id] ?? 0;
+          return (
             <button
+              key={stage.id}
               type="button"
-              className={`prio-kpi-card__pill ${
-                selectedKpiCard === "backlog" && selectedBacklogPill === "registradas"
-                  ? "prio-kpi-card__pill--active"
-                  : ""
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedKpiCard("backlog");
-                setSelectedBacklogPill("registradas");
-              }}
+              className={`prio-kpi-card ${isActive ? "prio-kpi-card--stage-active" : ""}`}
+              style={
+                isActive
+                  ? {
+                      borderColor: stage.accentColor,
+                      backgroundColor: stage.bgColor,
+                      boxShadow: `0 6px 18px ${stage.accentColor}22`,
+                      textAlign: "left",
+                    }
+                  : { textAlign: "left" }
+              }
+              onClick={() => setSelectedStage(stage.id)}
             >
-              Registradas {countRegistradasPill}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <div
+                  className="prio-kpi-card__badge-icon"
+                  style={{
+                    background: isActive ? stage.accentColor : stage.bgColor,
+                    color: isActive ? "#ffffff" : stage.accentColor,
+                    border: `1px solid ${stage.borderColor}`,
+                  }}
+                >
+                  <Icon icon={stage.icon} size={16} />
+                </div>
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: stage.accentColor,
+                    background: "#ffffff",
+                    border: `1px solid ${stage.borderColor}`,
+                    borderRadius: 999,
+                    padding: "2px 8px",
+                  }}
+                >
+                  Etapa {stage.step}
+                </span>
+              </div>
+
+              <div className="prio-kpi-card__big-value" style={{ marginTop: 10, fontSize: 30 }}>
+                {count}
+              </div>
+
+              <div>
+                <div
+                  className="prio-kpi-card__title-normal"
+                  style={{ color: isActive ? stage.accentColor : "#1e293b" }}
+                >
+                  {stage.title}
+                </div>
+                <div className="prio-kpi-card__sub-normal">{stage.subtitle}</div>
+              </div>
             </button>
-            <button
-              type="button"
-              className={`prio-kpi-card__pill ${
-                selectedKpiCard === "backlog" && selectedBacklogPill === "revision"
-                  ? "prio-kpi-card__pill--active"
-                  : ""
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedKpiCard("backlog");
-                setSelectedBacklogPill("revision");
-              }}
-            >
-              En revisión {countEnRevisionPill}
-            </button>
-          </div>
-        </div>
-
-        {/* Card 2: Aprobadas en proceso */}
-        <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "aprobadas" ? "prio-kpi-card--active-aprobadas" : ""
-          }`}
-          onClick={() => setSelectedKpiCard("aprobadas")}
-        >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--green">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#059669"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="8 12 11 15 16 9" />
-            </svg>
-          </div>
-
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
-            {countAprobadasEnProceso}
-          </div>
-
-          <div>
-            <div className="prio-kpi-card__title-normal">Aprobadas en proceso</div>
-            <div className="prio-kpi-card__sub-normal">
-              Ejecución {countEjecucion} · Autorización {countAutorizacion}
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Rechazadas */}
-        <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "rechazadas" ? "prio-kpi-card--active-rechazadas" : ""
-          }`}
-          onClick={() => setSelectedKpiCard("rechazadas")}
-        >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--red">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#DC2626"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="15" y1="9" x2="9" y2="15" />
-              <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
-          </div>
-
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
-            {countRechazadas}
-          </div>
-
-          <div>
-            <div className="prio-kpi-card__title-normal">Rechazadas</div>
-            <div className="prio-kpi-card__sub-normal">Ideas no priorizadas</div>
-          </div>
-        </div>
-
-        {/* Card 4: Sin etapa definida */}
-        <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "sin_etapa" ? "prio-kpi-card--active-sin-etapa" : ""
-          }`}
-          onClick={() => setSelectedKpiCard("sin_etapa")}
-        >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--gray">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#64748B"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="12 2 2 7 12 12 22 7 12 2" />
-              <polyline points="2 17 12 22 22 17" />
-              <polyline points="2 12 12 17 22 12" />
-            </svg>
-          </div>
-
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
-            {countSinEtapa}
-          </div>
-
-          <div>
-            <div className="prio-kpi-card__title-normal">Sin etapa definida</div>
-            <div className="prio-kpi-card__sub-normal">
-              Aprobadas sin confirmar ruta ni iniciar proceso
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       {/* 3. BANDEJA CENTRAL (Tabla izquierda + Detalle derecho) */}
       <div className="prio-main-split">
-        {/* COLUMNA IZQUIERDA: TABLA Y PESTAÑAS */}
+        {/* COLUMNA IZQUIERDA: TABLA DE INICIATIVAS (Sin columna orden, sin reordenamiento, sin tabs ni buscador) */}
         <div className="prio-table-panel">
-          {/* Pestañas y Buscador */}
-          <div className="prio-table-toolbar">
-            <div className="prio-tabs">
-              <button
-                type="button"
-                className={`prio-tab ${selectedKpiCard === "backlog" && activeTableTab === "revision" ? "prio-tab--active" : ""}`}
-                onClick={() => {
-                  setSelectedKpiCard("backlog");
-                  setSelectedBacklogPill("registradas");
-                  setActiveTableTab("revision");
-                }}
-              >
-                Revisión ({countRevision})
-              </button>
-              <button
-                type="button"
-                className={`prio-tab ${selectedKpiCard === "backlog" && activeTableTab === "priorizacion" ? "prio-tab--active" : ""}`}
-                onClick={() => {
-                  setSelectedKpiCard("backlog");
-                  setSelectedBacklogPill("registradas");
-                  setActiveTableTab("priorizacion");
-                }}
-              >
-                Priorización ({countPriorizacion})
-              </button>
-              <button
-                type="button"
-                className={`prio-tab ${selectedKpiCard === "backlog" && activeTableTab === "comite" ? "prio-tab--active" : ""}`}
-                onClick={() => {
-                  setSelectedKpiCard("backlog");
-                  setSelectedBacklogPill("registradas");
-                  setActiveTableTab("comite");
-                }}
-              >
-                Comité ({countComite})
-              </button>
-              <button
-                type="button"
-                className={`prio-tab ${selectedKpiCard === "backlog" && activeTableTab === "todas" ? "prio-tab--active" : ""}`}
-                onClick={() => {
-                  setSelectedKpiCard("backlog");
-                  setSelectedBacklogPill("registradas");
-                  setActiveTableTab("todas");
-                }}
-              >
-                Todas ({initiatives.length})
-              </button>
-            </div>
-
-            <div className="prio-search-box">
-              <Icon icon={Search} size={15} />
-              <input
-                type="text"
-                placeholder="Buscar iniciativas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="prio-search-input"
-              />
-            </div>
-          </div>
-
-          {/* Tabla de iniciativas con ordenamiento visual de Backlog */}
           <div className="prio-table-wrapper">
             <table className="prio-table">
               <thead>
                 <tr>
-                  <th style={{ width: "6%", textAlign: "center" }}>#</th>
-                  <th style={{ width: "26%" }}>Iniciativa</th>
-                  <th style={{ width: "16%" }}>Área</th>
-                  <th style={{ width: "11%" }}>Estado</th>
-                  <th style={{ width: "7%" }}>Score</th>
-                  <th style={{ width: "8%" }}>Prioridad</th>
-                  <th style={{ width: "12%", textAlign: "center" }}>Reorden</th>
-                  <th style={{ width: "14%", textAlign: "center" }}>Acción</th>
+                  <th style={{ width: "34%" }}>Iniciativa</th>
+                  <th style={{ width: "20%" }}>Área</th>
+                  <th style={{ width: "14%" }}>Estado</th>
+                  <th style={{ width: "9%" }}>Score</th>
+                  <th style={{ width: "10%" }}>Prioridad</th>
+                  <th style={{ width: "13%", textAlign: "center" }}>Acción</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInitiatives.length === 0 ? (
                   <tr>
-                    <td colSpan={8} style={{ textAlign: "center", padding: "48px 20px" }}>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "48px 20px" }}>
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
                         <div
                           style={{
@@ -768,34 +506,16 @@ function PriorizacionContent() {
                           <Icon icon={FileIcon} size={22} />
                         </div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>
-                          No hay iniciativas en este estado
+                          No hay iniciativas en la etapa {selectedStage}
                         </div>
                         <p style={{ fontSize: 13, color: "#64748b", margin: 0, maxWidth: 360, lineHeight: 1.4 }}>
-                          {selectedKpiCard === "rechazadas"
-                            ? "Actualmente no existen iniciativas descartadas en el portafolio."
-                            : selectedKpiCard === "sin_etapa"
-                            ? "Todas las iniciativas cuentan con una etapa de ciclo asignada."
-                            : selectedBacklogPill === "revision"
-                            ? "No hay iniciativas con solicitudes de ajuste o en revisión en este momento."
-                            : "No se encontraron iniciativas que coincidan con los filtros aplicados."}
+                          No se encontraron solicitudes registradas en esta etapa para la cartera seleccionada.
                         </p>
-                        <button
-                          type="button"
-                          className="prio-btn-ver"
-                          onClick={() => {
-                            setSelectedKpiCard("backlog");
-                            setSelectedBacklogPill("registradas");
-                            setActiveTableTab("revision");
-                          }}
-                          style={{ marginTop: 8 }}
-                        >
-                          Volver al Backlog por priorizar
-                        </button>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  filteredInitiatives.map((item, index) => {
+                  filteredInitiatives.map((item) => {
                     const isSelected = item.id === selectedId;
                     return (
                       <tr
@@ -803,22 +523,6 @@ function PriorizacionContent() {
                         className={`prio-row ${isSelected ? "prio-row--selected" : ""}`}
                         onClick={() => setSelectedId(item.id)}
                       >
-                        <td style={{ textAlign: "center" }}>
-                          <span
-                            style={{
-                              display: "inline-block",
-                              background: index === 0 ? "#eff6ff" : "#f1f5f9",
-                              color: index === 0 ? "var(--brand-primary)" : "#475569",
-                              fontWeight: 800,
-                              fontSize: 11.5,
-                              padding: "2px 7px",
-                              borderRadius: 10,
-                              border: index === 0 ? "1px solid #bfdbfe" : "1px solid #e2e8f0",
-                            }}
-                          >
-                            #{index + 1}
-                          </span>
-                        </td>
                         <td>
                           <div className="prio-initiative-name">{item.name}</div>
                         </td>
@@ -828,57 +532,6 @@ function PriorizacionContent() {
                         <td>{getStatusBadge(item.status)}</td>
                         <td>{getScoreBadge(item.score)}</td>
                         <td>{getPriorityBadge(item.priority)}</td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: "inline-flex", gap: 3, alignItems: "center", justifyContent: "center", width: "100%" }}>
-                            <button
-                              type="button"
-                              title="Subir prioridad en backlog"
-                              disabled={index === 0}
-                              className="prio-btn-dots"
-                              style={{
-                                opacity: index === 0 ? 0.3 : 1,
-                                padding: "2px 6px",
-                                fontSize: 10.5,
-                                cursor: index === 0 ? "not-allowed" : "pointer",
-                              }}
-                              onClick={() => handleTriggerReorder(item, "up")}
-                            >
-                              ▲
-                            </button>
-                            <button
-                              type="button"
-                              title="Bajar prioridad en backlog"
-                              disabled={index === filteredInitiatives.length - 1}
-                              className="prio-btn-dots"
-                              style={{
-                                opacity: index === filteredInitiatives.length - 1 ? 0.3 : 1,
-                                padding: "2px 6px",
-                                fontSize: 10.5,
-                                cursor: index === filteredInitiatives.length - 1 ? "not-allowed" : "pointer",
-                              }}
-                              onClick={() => handleTriggerReorder(item, "down")}
-                            >
-                              ▼
-                            </button>
-                            <button
-                              type="button"
-                              title="Mover a la posición #1"
-                              disabled={index === 0}
-                              className="prio-btn-dots"
-                              style={{
-                                opacity: index === 0 ? 0.3 : 1,
-                                padding: "2px 5px",
-                                fontSize: 9.5,
-                                color: "var(--brand-primary)",
-                                fontWeight: 700,
-                                cursor: index === 0 ? "not-allowed" : "pointer",
-                              }}
-                              onClick={() => handleTriggerReorder(item, "top")}
-                            >
-                              TOP
-                            </button>
-                          </div>
-                        </td>
                         <td style={{ textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
                           <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                             <button
@@ -889,7 +542,7 @@ function PriorizacionContent() {
                               Previsualizar
                             </button>
                             <Link
-                              href={`/priorizacion/evaluacion?id=${item.id}`}
+                              href={`/iniciativas/evaluacion?id=${item.id}`}
                               className="prio-btn-dots"
                               aria-label="Evaluar iniciativa"
                               title="Evaluar iniciativa"
@@ -1044,7 +697,7 @@ function PriorizacionContent() {
                 {/* Botón CTA: Iniciar evaluación */}
                 <div style={{ marginTop: 20 }}>
                   <Link
-                    href={`/priorizacion/evaluacion?id=${selectedInitiative.id}`}
+                    href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
                     className="prio-btn-eval-cta"
                     style={{ textDecoration: "none" }}
                   >
@@ -1071,11 +724,19 @@ function PriorizacionContent() {
                 <div className="prio-discovery-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <div className="prio-discovery-row">
                     <span className="prio-discovery-key">Gobierno / Dirección:</span>
-                    <span className="prio-discovery-val">{selectedInitiative.direccionNegocio || selectedInitiative.area} · {selectedInitiative.oficinaArea || "Oficina Central"}</span>
+                    <span className="prio-discovery-val">
+                      {selectedInitiative.direccionNegocio || selectedInitiative.area} ·{" "}
+                      {selectedInitiative.oficinaArea || "Oficina Central"}
+                    </span>
                   </div>
                   <div className="prio-discovery-row">
                     <span className="prio-discovery-key">PMO / Portfolio Mgr:</span>
-                    <span className="prio-discovery-val">{selectedInitiative.pmoResponsable || "EPL"} · {selectedInitiative.portafolioManager || selectedInitiative.sponsor || "AL UBAMARI MALINALLI MORENO MERAZ"}</span>
+                    <span className="prio-discovery-val">
+                      {selectedInitiative.pmoResponsable || "EPL"} ·{" "}
+                      {selectedInitiative.portafolioManager ||
+                        selectedInitiative.sponsor ||
+                        "AL UBAMARI MALINALLI MORENO MERAZ"}
+                    </span>
                   </div>
                   <div className="prio-discovery-row">
                     <span className="prio-discovery-key">Alineación piramidal:</span>
@@ -1090,9 +751,9 @@ function PriorizacionContent() {
                   <div className="prio-discovery-row">
                     <span className="prio-discovery-key">Dimensiones:</span>
                     <span className="prio-discovery-val">
-                      {(selectedInitiative.dimensionesImpacto?.length
+                      {selectedInitiative.dimensionesImpacto?.length
                         ? selectedInitiative.dimensionesImpacto.join(", ")
-                        : "Tecnología, Procesos")}
+                        : "Tecnología, Procesos"}
                     </span>
                   </div>
                   <div className="prio-discovery-row">
@@ -1113,7 +774,8 @@ function PriorizacionContent() {
                     <div className="prio-discovery-row">
                       <span className="prio-discovery-key">ROI Estimado:</span>
                       <span className="prio-discovery-val" style={{ color: "#15803d", fontWeight: 700 }}>
-                        +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~{selectedInitiative.roiData.paybackMeses || 3.8} meses)
+                        +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~
+                        {selectedInitiative.roiData.paybackMeses || 3.8} meses)
                       </span>
                     </div>
                   )}
@@ -1193,7 +855,7 @@ function PriorizacionContent() {
                       Evalúa los criterios de impacto, alineación y complejidad para asignarle score y prioridad.
                     </p>
                     <Link
-                      href={`/priorizacion/evaluacion?id=${selectedInitiative.id}`}
+                      href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
                       className="prio-btn-eval-cta"
                       style={{ textDecoration: "none" }}
                     >
@@ -1288,8 +950,6 @@ function PriorizacionContent() {
               {/* Puntos de iniciativas sobre la matriz */}
               {initiatives.map((item) => {
                 const isSelected = item.id === selectedId;
-                // Eje X: esfuerzo (0..100) -> left: 10% .. 90%
-                // Eje Y: impacto (0..100) -> bottom: 10% .. 90%
                 const leftPos = 10 + (item.esfuerzo / 100) * 78;
                 const bottomPos = 10 + (item.impacto / 100) * 78;
 
@@ -1386,7 +1046,7 @@ function PriorizacionContent() {
         {/* BLOQUE 3: ACCIONES RÁPIDAS Y BANNER LIVERPOOL */}
         <div className="prio-bottom-card prio-bottom-card--actions">
           <div className="prio-quick-actions-col">
-            <div className="prio-bottom-card__title" style={{ marginBottom: 14 }}>
+            <div className="prio-bottom-card__title" style={{ marginBottom: 10 }}>
               Acciones rápidas
             </div>
             <button
@@ -1593,148 +1253,14 @@ function PriorizacionContent() {
           </div>
         </div>
       )}
-
-      {/* 6. MODAL INTERACTIVO DE CONFIRMACIÓN DE REORDENAMIENTO Y DESPLAZAMIENTO */}
-      {pendingMove && (
-        <div className="prio-modal-overlay">
-          <div className="prio-modal-card" style={{ maxWidth: 460, padding: 24 }} role="dialog">
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-              <div
-                style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: "50%",
-                  background: "#fef3c7",
-                  color: "#d97706",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon icon={Alert} size={22} />
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#0f172a" }}>
-                  Alerta de Desplazamiento en Backlog
-                </h3>
-                <div style={{ fontSize: 12, color: "#64748b" }}>
-                  Reordenamiento de iniciativa en {selectedCartera}
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                background: "#f8fafc",
-                padding: 14,
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
-                fontSize: 13,
-                lineHeight: 1.5,
-                color: "#334155",
-                marginBottom: 20,
-              }}
-            >
-              Mover la iniciativa <strong>&quot;{pendingMove.sourceName}&quot;</strong> de la posición{" "}
-              <span className="tag-pill tag-pill--gray">#{pendingMove.sourcePos}</span> a la posición{" "}
-              <span className="tag-pill tag-pill--purple">#{pendingMove.targetPos}</span> provocará el desplazamiento de{" "}
-              <strong>{pendingMove.displacedCount}</strong>{" "}
-              {pendingMove.displacedCount === 1 ? "iniciativa" : "iniciativas"} en la cartera.
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
-                type="button"
-                className="btn-purple-outline"
-                onClick={() => setPendingMove(null)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="btn-purple-solid"
-                style={{ background: "var(--brand-primary)", borderColor: "var(--brand-primary)" }}
-                onClick={handleConfirmMove}
-              >
-                Confirmar Reordenamiento
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 7. MODAL DE FORMALIZACIÓN Y NOTIFICACIONES AUTOMÁTICAS */}
-      {isFormalizeModalOpen && (
-        <div className="prio-modal-overlay">
-          <div className="prio-modal-card" style={{ maxWidth: 540, padding: 26 }} role="dialog">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#0f172a" }}>
-                  Formalizar Prioridades de Portafolio
-                </h3>
-                <p style={{ margin: "4px 0 0 0", fontSize: 12, color: "#64748b" }}>
-                  Fijación oficial de orden y notificación automática a directores y sponsors.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="main-menu-panel__close-btn"
-                onClick={() => setIsFormalizeModalOpen(false)}
-              >
-                <Icon icon={Close} size={18} />
-              </button>
-            </div>
-
-            <div style={{ background: "#f8fafc", padding: 14, borderRadius: 8, border: "1px solid #e2e8f0", marginBottom: 16 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 4 }}>
-                Cartera actual: {selectedCartera} ({filteredInitiatives.length} iniciativas)
-              </div>
-              <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.45 }}>
-                El orden visual actual se guardará como la secuencia oficial para estimación técnica, sizing de nube y asignación de presupuesto por la PMO.
-              </div>
-            </div>
-
-            <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: 14, marginBottom: 20 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: "#475569", textTransform: "uppercase", marginBottom: 8 }}>
-                Notificaciones Inmediatas vía Correo y Google Chat:
-              </div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#334155", display: "flex", flexDirection: "column", gap: 5 }}>
-                <li><strong>Alexis Labrada</strong> (PMO / Sincronización en Monday)</li>
-                <li><strong>Clemente</strong> (Business Requirements Manager / BRM)</li>
-                <li><strong>Jorge Sánchez</strong> (Patrocinador Principal)</li>
-                <li><strong>Portfolio Managers y Solicitantes</strong> de la cartera de negocio</li>
-              </ul>
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button
-                type="button"
-                className="btn-purple-outline"
-                onClick={() => setIsFormalizeModalOpen(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="btn-purple-solid"
-                style={{ background: "#e6007e", borderColor: "#e6007e" }}
-                onClick={handleConfirmFormalization}
-              >
-                <Icon icon={Bolt} size={15} />
-                <span>Confirmar y Disparar Notificaciones</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-export default function PriorizacionPage() {
+export default function IniciativasPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando priorización...</div>}>
-      <PriorizacionContent />
+    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando iniciativas...</div>}>
+      <IniciativasContent />
     </Suspense>
   );
 }

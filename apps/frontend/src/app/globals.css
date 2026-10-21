@@ -2004,6 +2004,32 @@ a {
   }
 }
 
+/* 6 Stages Grid */
+.prio-stage-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1280px) {
+  .prio-stage-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .prio-stage-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .prio-stage-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .prio-kpi-card {
   background: #ffffff;
   border-radius: 16px;

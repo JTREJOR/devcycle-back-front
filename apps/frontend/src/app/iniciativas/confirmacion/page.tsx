@@ -29,7 +29,7 @@ function ConfirmacionContent() {
   const setActiveMenuTitle = useUiStore((s) => s.setActiveMenuTitle);
 
   useEffect(() => {
-    setActiveMenuTitle("Priorización");
+    setActiveMenuTitle("Iniciativas");
   }, [setActiveMenuTitle]);
 
   const initiative = useMemo(() => {
@@ -174,7 +174,7 @@ function ConfirmacionContent() {
     confirmDecisionStore(initiative.id, decision, prioridadFinal, justificacion, destino);
     showToast(`Decisión guardada: ${decision.toUpperCase()} → ${destino}`);
     setTimeout(() => {
-      router.push("/priorizacion");
+      router.push("/iniciativas");
     }, 800);
   };
 
@@ -201,8 +201,8 @@ function ConfirmacionContent() {
               Portafolio
             </Link>
             <span className="prio-breadcrumb__sep">&gt;</span>
-            <Link href="/priorizacion" className="prio-breadcrumb__link">
-              Revisión y Priorización
+            <Link href="/iniciativas" className="prio-breadcrumb__link">
+              Iniciativas
             </Link>
             <span className="prio-breadcrumb__sep">&gt;</span>
             <span className="prio-breadcrumb__current">Evaluación</span>
@@ -597,7 +597,7 @@ function ConfirmacionContent() {
 
         <div className="eval-bottom-bar__right">
           <Link
-            href={`/priorizacion/evaluacion?id=${initiative.id}`}
+            href={`/iniciativas/evaluacion?id=${initiative.id}`}
             className="eval-btn-outline-pink"
             style={{ textDecoration: "none" }}
           >

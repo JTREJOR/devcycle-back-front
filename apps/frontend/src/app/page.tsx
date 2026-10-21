@@ -6,7 +6,6 @@ import { Icon } from "@vibe/core";
 import {
   Sun,
   Calendar,
-  Check,
   CheckList,
   Bolt,
   Alert,
@@ -14,9 +13,7 @@ import {
   NavigationChevronRight,
   File as FileIcon,
   Timeline,
-  Show,
-  Settings,
-  Play,
+  Clipboard,
   Info,
 } from "@vibe/icons";
 import { usePriorizacionStore, getMacroStage } from "@/store/priorizacionStore";
@@ -40,7 +37,14 @@ export default function PortfolioPage() {
 
   const [currentDateStr, setCurrentDateStr] = useState("");
   const [currentTimeStr, setCurrentTimeStr] = useState("");
-  const [selectedStageFilter, setSelectedStageFilter] = useState<string | null>(null);
+
+  // Filtro activo en el Home (por defecto: "Aprobadas en proceso")
+  const [selectedKpiCard, setSelectedKpiCard] = useState<
+    "aprobadas" | "backlog" | "sin_etapa" | "rechazadas"
+  >("aprobadas");
+  const [selectedBacklogPill, setSelectedBacklogPill] = useState<"registradas" | "revision">(
+    "registradas"
+  );
 
   useEffect(() => {
     setActiveMenuTitle("Portafolio");
@@ -76,7 +80,72 @@ export default function PortfolioPage() {
     return initiatives.filter((i) => i.cartera === selectedCartera);
   }, [initiatives, selectedCartera]);
 
-  // Conteo de iniciativas en las 4 etapas macro acordadas
+  // Métricas reactivas de los 4 botones de filtro en Home
+  const totalIdeas = initiativesInCartera.length;
+
+  const countEjecucion = useMemo(
+    () =>
+      initiativesInCartera.filter(
+        (i) => (i.etapaCiclo === "Ejecución" || i.etapaCiclo === "Cierre") && i.status !== "Descartada"
+      ).length,
+    [initiativesInCartera]
+  );
+
+  const countAutorizacion = useMemo(
+    () =>
+      initiativesInCartera.filter(
+        (i) =>
+          (i.etapaCiclo === "Autorización" || i.etapaCiclo === "Formalización") &&
+          i.status !== "Descartada"
+      ).length,
+    [initiativesInCartera]
+  );
+
+  const countAprobadasEnProceso = useMemo(
+    () => countEjecucion + countAutorizacion,
+    [countEjecucion, countAutorizacion]
+  );
+
+  const countRegistradasPill = useMemo(
+    () =>
+      initiativesInCartera.filter(
+        (i) =>
+          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
+          (i.status === "Nueva" || i.status === "En priorización" || i.status === "Lista") &&
+          i.decision !== "descartar"
+      ).length,
+    [initiativesInCartera]
+  );
+
+  const countEnRevisionPill = useMemo(
+    () =>
+      initiativesInCartera.filter(
+        (i) =>
+          (!i.etapaCiclo || i.etapaCiclo === "Priorización" || i.etapaCiclo === "Estimación") &&
+          (i.status === "En revisión" || i.status === "Con comentarios") &&
+          i.decision !== "descartar"
+      ).length,
+    [initiativesInCartera]
+  );
+
+  const countBacklog = useMemo(
+    () => countRegistradasPill + countEnRevisionPill,
+    [countRegistradasPill, countEnRevisionPill]
+  );
+
+  const countSinEtapa = useMemo(
+    () => initiativesInCartera.filter((i) => !i.etapaCiclo).length,
+    [initiativesInCartera]
+  );
+
+  const countRechazadas = useMemo(
+    () =>
+      initiativesInCartera.filter((i) => i.status === "Descartada" || i.decision === "descartar")
+        .length,
+    [initiativesInCartera]
+  );
+
+  // Conteo de iniciativas en las 4 etapas macro acordadas (para el widget de dona)
   const countStage1_Definicion = useMemo(
     () => initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === "Definición").length,
     [initiativesInCartera]
@@ -105,16 +174,52 @@ export default function PortfolioPage() {
 
   const pctDef = Math.round((countStage1_Definicion / totalInitiatives) * 100);
   const pctEst = Math.round((countStage2_Estimacion / totalInitiatives) * 100);
-  const pctEje = Math.round((countStage3_Ejecucion / totalInitiatives) * 100);
+  const pctEje = Math.round((countStage2_Estimacion ? countStage3_Ejecucion / totalInitiatives : countStage3_Ejecucion / totalInitiatives) * 100);
   const pctCie = Math.round((countStage4_Cierre / totalInitiatives) * 100);
 
-  // Lista prioritaria filtrada por etapa y cartera
+  // Lista prioritaria filtrada según el botón seleccionado en los 4 KPIs
   const displayedInitiatives = useMemo(() => {
-    if (selectedStageFilter) {
-      return initiativesInCartera.filter((i) => getMacroStage(i.etapaCiclo) === selectedStageFilter);
+    return initiativesInCartera.filter((item) => {
+      if (selectedKpiCard === "aprobadas") {
+        return (
+          ["Ejecución", "Autorización", "Formalización", "Cierre"].includes(item.etapaCiclo || "") &&
+          item.status !== "Descartada" &&
+          item.decision !== "descartar"
+        );
+      }
+      if (selectedKpiCard === "rechazadas") {
+        return item.status === "Descartada" || item.decision === "descartar";
+      }
+      if (selectedKpiCard === "sin_etapa") {
+        return !item.etapaCiclo;
+      }
+      // "backlog"
+      const isBacklogCandidate =
+        (!item.etapaCiclo || item.etapaCiclo === "Priorización" || item.etapaCiclo === "Estimación") &&
+        item.status !== "Descartada" &&
+        item.decision !== "descartar";
+      if (!isBacklogCandidate) return false;
+
+      if (selectedBacklogPill === "revision") {
+        return item.status === "En revisión" || item.status === "Con comentarios";
+      }
+      return item.status === "Nueva" || item.status === "En priorización" || item.status === "Lista";
+    });
+  }, [initiativesInCartera, selectedKpiCard, selectedBacklogPill]);
+
+  const filterSubtitle = useMemo(() => {
+    if (selectedKpiCard === "aprobadas") {
+      return `Mostrando: Aprobadas en proceso (${displayedInitiatives.length})`;
     }
-    return initiativesInCartera.slice(0, 6);
-  }, [initiativesInCartera, selectedStageFilter]);
+    if (selectedKpiCard === "backlog") {
+      const subLabel = selectedBacklogPill === "revision" ? "En revisión" : "Registradas";
+      return `Mostrando: Backlog por priorizar · ${subLabel} (${displayedInitiatives.length})`;
+    }
+    if (selectedKpiCard === "sin_etapa") {
+      return `Mostrando: Sin etapa definida (${displayedInitiatives.length})`;
+    }
+    return `Mostrando: Rechazadas (${displayedInitiatives.length})`;
+  }, [selectedKpiCard, selectedBacklogPill, displayedInitiatives.length]);
 
   const getEtapaPill = (etapa?: string) => {
     const macro = getMacroStage(etapa);
@@ -221,86 +326,169 @@ export default function PortfolioPage() {
         </div>
       </div>
 
-      {/* 2. ETAPAS DEL PORTAFOLIO (4 ETAPAS HOMOLOGADAS DEL CICLO DE VIDA) */}
-      <section className="home-lifecycle-card">
-        <div className="home-lifecycle-header">
-          <div className="home-lifecycle-header-icon">
-            <Icon icon={FileIcon} size={18} />
+      {/* 2. FILTROS DE PORTAFOLIO (4 BOTONES DE ESTADO) */}
+      <div className="prio-kpi-grid" style={{ marginTop: 16 }}>
+        {/* 1. Aprobadas en proceso */}
+        <div
+          className={`prio-kpi-card ${
+            selectedKpiCard === "aprobadas" ? "prio-kpi-card--active-aprobadas" : ""
+          }`}
+          onClick={() => setSelectedKpiCard("aprobadas")}
+        >
+          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--green">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#059669"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="8 12 11 15 16 9" />
+            </svg>
           </div>
+
+          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+            {countAprobadasEnProceso}
+          </div>
+
           <div>
-            <h2 className="home-lifecycle-header-title">Etapas del portafolio</h2>
-            <p className="home-lifecycle-header-sub">Ciclo completo de vida de las iniciativas (4 etapas macro).</p>
-          </div>
-        </div>
-
-        <div className="home-lifecycle-ribbon">
-          {/* Etapa 1: Definición */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Definición" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Definición" ? null : "Definición")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#eff6ff", color: "#2563eb", border: "1px solid #bfdbfe" }}>
-              <Icon icon={CheckList} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#2563eb" }}>1</div>
-            <div>
-              <div className="home-stage-title">Definición</div>
-              <div className="home-stage-count">{countStage1_Definicion} iniciativas</div>
-            </div>
-          </div>
-
-          <div className="home-lifecycle-chevron">&gt;</div>
-
-          {/* Etapa 2: Estimación */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Estimación" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Estimación" ? null : "Estimación")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#f5f3ff", color: "#8b5cf6", border: "1px solid #ddd6fe" }}>
-              <Icon icon={Timeline} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#8b5cf6" }}>2</div>
-            <div>
-              <div className="home-stage-title">Estimación</div>
-              <div className="home-stage-count">{countStage2_Estimacion} iniciativas</div>
-            </div>
-          </div>
-
-          <div className="home-lifecycle-chevron">&gt;</div>
-
-          {/* Etapa 3: Ejecución */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Ejecución" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Ejecución" ? null : "Ejecución")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#ecfdf5", color: "#10b981", border: "1px solid #a7f3d0" }}>
-              <Icon icon={Play} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#10b981" }}>3</div>
-            <div>
-              <div className="home-stage-title">Ejecución</div>
-              <div className="home-stage-count">{countStage3_Ejecucion} iniciativas</div>
-            </div>
-          </div>
-
-          <div className="home-lifecycle-chevron">&gt;</div>
-
-          {/* Etapa 4: Cierre */}
-          <div
-            className={`home-lifecycle-item ${selectedStageFilter === "Cierre" ? "home-lifecycle-item--active" : ""}`}
-            onClick={() => setSelectedStageFilter(selectedStageFilter === "Cierre" ? null : "Cierre")}
-          >
-            <div className="home-stage-icon-box" style={{ background: "#f1f5f9", color: "#1e293b", border: "1px solid #cbd5e1" }}>
-              <Icon icon={Check} size={16} />
-            </div>
-            <div className="home-stage-num-badge" style={{ background: "#1e293b" }}>4</div>
-            <div>
-              <div className="home-stage-title">Cierre</div>
-              <div className="home-stage-count">{countStage4_Cierre} iniciativas</div>
+            <div className="prio-kpi-card__title-normal">Aprobadas en proceso</div>
+            <div className="prio-kpi-card__sub-normal">
+              Ejecución {countEjecucion} · Autorización {countAutorizacion}
             </div>
           </div>
         </div>
-      </section>
+
+        {/* 2. Backlog por priorizar */}
+        <div
+          className={`prio-kpi-card prio-kpi-card--backlog ${
+            selectedKpiCard === "backlog" ? "prio-kpi-card--active-backlog" : ""
+          }`}
+          onClick={() => {
+            setSelectedKpiCard("backlog");
+            setSelectedBacklogPill("registradas");
+          }}
+        >
+          <div className="prio-kpi-card__top-header">
+            <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--magenta">
+              <Icon icon={Clipboard} size={17} />
+            </div>
+            <span className="prio-kpi-card__title-magenta">Backlog por priorizar</span>
+          </div>
+
+          <div className="prio-kpi-card__number-row">
+            <span className="prio-kpi-card__big-value">{countBacklog}</span>
+            <span className="prio-kpi-card__total-note">de {totalIdeas} ideas asignadas</span>
+          </div>
+
+          <div className="prio-kpi-card__pills">
+            <button
+              type="button"
+              className={`prio-kpi-card__pill ${
+                selectedKpiCard === "backlog" && selectedBacklogPill === "registradas"
+                  ? "prio-kpi-card__pill--active"
+                  : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedKpiCard("backlog");
+                setSelectedBacklogPill("registradas");
+              }}
+            >
+              Registradas {countRegistradasPill}
+            </button>
+            <button
+              type="button"
+              className={`prio-kpi-card__pill ${
+                selectedKpiCard === "backlog" && selectedBacklogPill === "revision"
+                  ? "prio-kpi-card__pill--active"
+                  : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedKpiCard("backlog");
+                setSelectedBacklogPill("revision");
+              }}
+            >
+              En revisión {countEnRevisionPill}
+            </button>
+          </div>
+        </div>
+
+        {/* 3. Sin etapa definida */}
+        <div
+          className={`prio-kpi-card ${
+            selectedKpiCard === "sin_etapa" ? "prio-kpi-card--active-sin-etapa" : ""
+          }`}
+          onClick={() => setSelectedKpiCard("sin_etapa")}
+        >
+          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--gray">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#64748B"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+          </div>
+
+          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+            {countSinEtapa}
+          </div>
+
+          <div>
+            <div className="prio-kpi-card__title-normal">Sin etapa definida</div>
+            <div className="prio-kpi-card__sub-normal">
+              Aprobadas sin confirmar ruta ni iniciar proceso
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Rechazadas */}
+        <div
+          className={`prio-kpi-card ${
+            selectedKpiCard === "rechazadas" ? "prio-kpi-card--active-rechazadas" : ""
+          }`}
+          onClick={() => setSelectedKpiCard("rechazadas")}
+        >
+          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--red">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#DC2626"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+          </div>
+
+          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+            {countRechazadas}
+          </div>
+
+          <div>
+            <div className="prio-kpi-card__title-normal">Rechazadas</div>
+            <div className="prio-kpi-card__sub-normal">Ideas no priorizadas</div>
+          </div>
+        </div>
+      </div>
 
       {/* 3. BARRA DE ACCIONES CLAVE */}
       <section className="home-actions-bar">
@@ -318,29 +506,17 @@ export default function PortfolioPage() {
 
         <div className="home-actions-bar__buttons">
           <Link
-            href="/backlog"
-            className="btn-purple-outline"
-            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-          >
-            <Icon icon={CheckList} size={15} />
-            <span>Cartera de Pendientes (TI)</span>
-          </Link>
-
-          <Link
-            href="/priorizacion"
+            href="/discovery"
             className="btn-purple-solid"
-            style={{ background: "#833177", borderColor: "#833177" }}
+            style={{
+              background: "#833177",
+              borderColor: "#833177",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
           >
-            <span>→ Ir a priorización</span>
-          </Link>
-
-          <Link
-            href="/estimacion"
-            className="btn-purple-outline"
-            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-          >
-            <Icon icon={Timeline} size={15} />
-            <span>Estimación y VoBo</span>
+            <span>+ Crear nueva iniciativa</span>
           </Link>
         </div>
       </section>
@@ -359,15 +535,13 @@ export default function PortfolioPage() {
                   Bandeja prioritaria
                 </h2>
                 <div style={{ fontSize: 12.5, color: "var(--color-text-secondary)", marginTop: 2 }}>
-                  {selectedStageFilter
-                    ? `Iniciativas en etapa ${selectedStageFilter} (${displayedInitiatives.length})`
-                    : "Iniciativas que requieren tu atención"}
+                  {filterSubtitle}
                 </div>
               </div>
             </div>
 
             <Link
-              href="/priorizacion"
+              href="/iniciativas"
               style={{
                 fontSize: 12.5,
                 fontWeight: 600,
@@ -395,52 +569,65 @@ export default function PortfolioPage() {
                 </tr>
               </thead>
               <tbody>
-                {displayedInitiatives.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="inbox-row-accent"
-                    style={{ "--row-accent": item.color || "#833177" } as React.CSSProperties}
-                  >
-                    <td>
-                      <Link
-                        href={`/priorizacion?id=${item.id}`}
-                        onClick={() => setSelectedInitiativeId(item.id)}
-                        style={{
-                          fontWeight: 700,
-                          color: "#1e2022",
-                          fontSize: 13.5,
-                          paddingLeft: 8,
-                          display: "inline-block",
-                        }}
-                      >
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td>
-                      <span style={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
-                        {item.area}
-                      </span>
-                    </td>
-                    <td>
-                      {getEtapaPill(item.etapaCiclo)}
-                    </td>
-                    <td>
-                      {getScoreBadge(item.score)}
-                    </td>
-                    <td>
-                      {getEstadoPill(item.estadoOperativo, item.status)}
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <Link
-                        href={`/priorizacion?id=${item.id}`}
-                        onClick={() => setSelectedInitiativeId(item.id)}
-                        className="home-btn-action-ver"
-                      >
-                        Ver
-                      </Link>
+                {displayedInitiatives.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "36px 20px" }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", marginBottom: 4 }}>
+                        No hay iniciativas en este estado
+                      </div>
+                      <div style={{ fontSize: 12.5, color: "#64748b" }}>
+                        Selecciona otro filtro en las tarjetas superiores para consultar las iniciativas.
+                      </div>
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  displayedInitiatives.map((item) => (
+                    <tr
+                      key={item.id}
+                      className="inbox-row-accent"
+                      style={{ "--row-accent": item.color || "#833177" } as React.CSSProperties}
+                    >
+                      <td>
+                        <Link
+                          href={`/iniciativas?id=${item.id}`}
+                          onClick={() => setSelectedInitiativeId(item.id)}
+                          style={{
+                            fontWeight: 700,
+                            color: "#1e2022",
+                            fontSize: 13.5,
+                            paddingLeft: 8,
+                            display: "inline-block",
+                          }}
+                        >
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td>
+                        <span style={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
+                          {item.area}
+                        </span>
+                      </td>
+                      <td>
+                        {getEtapaPill(item.etapaCiclo)}
+                      </td>
+                      <td>
+                        {getScoreBadge(item.score)}
+                      </td>
+                      <td>
+                        {getEstadoPill(item.estadoOperativo, item.status)}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <Link
+                          href={`/iniciativas?id=${item.id}`}
+                          onClick={() => setSelectedInitiativeId(item.id)}
+                          className="home-btn-action-ver"
+                        >
+                          Ver
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -588,13 +775,13 @@ export default function PortfolioPage() {
                 <h3 className="widget-card__title">Pendientes clave</h3>
                 <div className="widget-card__subtitle">Temas que requieren tu atención</div>
               </div>
-              <Link href="/priorizacion" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
+              <Link href="/iniciativas" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
                 Ver todas →
               </Link>
             </div>
 
             <div className="pending-list">
-              <Link href="/priorizacion?tab=revision" className="pending-item">
+              <Link href="/iniciativas" className="pending-item">
                 <div className="pending-item__left">
                   <div className="pending-item__icon" style={{ background: "#fef2f2", color: "#ef4444" }}>
                     <Icon icon={Alert} size={14} />
@@ -604,7 +791,7 @@ export default function PortfolioPage() {
                 <Icon icon={NavigationChevronRight} size={14} />
               </Link>
 
-              <Link href="/priorizacion?tab=comite" className="pending-item">
+              <Link href="/iniciativas" className="pending-item">
                 <div className="pending-item__left">
                   <div className="pending-item__icon" style={{ background: "#fffbeb", color: "#d97706" }}>
                     <Icon icon={Time} size={14} />
@@ -636,7 +823,7 @@ export default function PortfolioPage() {
                 <h3 className="widget-card__title">Próximos hitos</h3>
                 <div className="widget-card__subtitle">Fechas importantes del portafolio</div>
               </div>
-              <Link href="/priorizacion" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
+              <Link href="/iniciativas" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
                 Ver calendario →
               </Link>
             </div>

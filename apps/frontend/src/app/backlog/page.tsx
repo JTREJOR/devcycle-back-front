@@ -175,9 +175,9 @@ export default function BacklogTiPage() {
         </div>
 
         <div className="prio-header__right">
-          <Link href="/priorizacion" className="btn-purple-outline" style={{ fontSize: 12.5 }}>
+          <Link href="/iniciativas" className="btn-purple-outline" style={{ fontSize: 12.5 }}>
             <Icon icon={Timeline} size={15} />
-            <span>Ver Matriz de Priorización</span>
+            <span>Ver Iniciativas</span>
           </Link>
         </div>
       </div>
@@ -499,7 +499,7 @@ export default function BacklogTiPage() {
                   </button>
 
                   <Link
-                    href={`/priorizacion?id=${activeInitiative.id}`}
+                    href={`/iniciativas?id=${activeInitiative.id}`}
                     className="btn-purple-outline"
                     style={{ fontSize: 12 }}
                   >

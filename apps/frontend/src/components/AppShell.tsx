@@ -32,8 +32,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Sincronizar el título de la página según la ruta cuando el usuario navega directamente
   useEffect(() => {
-    if (pathname === "/priorizacion") {
-      setActiveMenuTitle("Priorización");
+    if (pathname === "/iniciativas" || pathname.startsWith("/iniciativas/")) {
+      setActiveMenuTitle("Iniciativas");
     } else if (pathname === "/backlog") {
       setActiveMenuTitle("Cartera de Pendientes");
     } else if (pathname === "/estimacion") {
