@@ -44,18 +44,11 @@ export const MAIN_MENU_ITEMS: MenuItemDef[] = [
     href: "/discovery",
   },
   {
-    id: "backlog",
-    title: "Cartera de Pendientes",
-    subtitle: "Validación obligatoria de TI",
-    icon: Security,
-    href: "/backlog",
-  },
-  {
-    id: "priorizacion",
-    title: "Priorización",
-    subtitle: "Matriz y ordenamiento visual",
+    id: "iniciativas",
+    title: "Iniciativas",
+    subtitle: "Todas las iniciativas por etapa",
     icon: CheckList,
-    href: "/priorizacion",
+    href: "/iniciativas",
   },
   {
     id: "estimacion",

@@ -12,6 +12,7 @@ import { StageTracker } from "@/components/StageTracker";
 import { SubflowStepper } from "@/components/SubflowStepper";
 import { FileDropzone } from "@/components/FileDropzone";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { BackButton } from "@/components/BackButton";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
@@ -44,22 +45,9 @@ export default function ProjectDetailPage() {
 
   return (
     <div>
-      {/* Breadcrumb estilo Imagen 2 */}
-      <div style={{ marginBottom: 12 }}>
-        <Link
-          href="/"
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--brand-primary)",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-          }}
-        >
-          <Icon icon={NavigationChevronLeft} size={16} />
-          <span>Inicio / Portafolio</span>
-        </Link>
+      {/* Navegación Atrás */}
+      <div className="app-back-bar">
+        <BackButton />
       </div>
 
       {/* Header de la Iniciativa */}

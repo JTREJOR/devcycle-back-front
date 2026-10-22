@@ -32,10 +32,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Sincronizar el título de la página según la ruta cuando el usuario navega directamente
   useEffect(() => {
-    if (pathname === "/priorizacion") {
-      setActiveMenuTitle("Priorización");
-    } else if (pathname === "/backlog") {
-      setActiveMenuTitle("Cartera de Pendientes");
+    if (pathname === "/iniciativas" || pathname.startsWith("/iniciativas/")) {
+      setActiveMenuTitle("Iniciativas");
     } else if (pathname === "/estimacion") {
       setActiveMenuTitle("Estimación y VoBo");
     } else if (pathname === "/discovery") {
@@ -45,7 +43,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     } else if (pathname.startsWith("/project/")) {
       setActiveMenuTitle("Ficha de Proyecto");
     } else if (pathname === "/") {
-      const homeOptions = ["Portafolio", "Priorización", "Aprobaciones", "Comité", "Auditoría"];
+      const homeOptions = ["Portafolio", "Iniciativas", "Aprobaciones", "Comité", "Auditoría"];
       if (!homeOptions.includes(activeMenuTitle)) {
         setActiveMenuTitle("Portafolio");
       }

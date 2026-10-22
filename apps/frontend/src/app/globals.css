@@ -49,6 +49,9 @@
 
   --app-header-height: 58px;
   --app-copilot-width: 360px;
+  --font-family: "Montserrat", "Figtree", "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --title-font-family: "Montserrat", "Figtree", "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --h1-font-family: "Montserrat", "Figtree", "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color-scheme: light;
 }
 
@@ -63,8 +66,42 @@ body {
   height: 100%;
   background: var(--bg-page);
   color: var(--color-text-main);
-  font-family: var(--font-family, "Figtree", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-family: "Montserrat", "Figtree", "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.app-back-bar {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.app-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  color: var(--brand-primary);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.app-back-btn:hover {
+  background: var(--brand-primary-light);
+  border-color: var(--brand-primary);
 }
 
 a {
@@ -2000,6 +2037,32 @@ a {
 
 @media (max-width: 600px) {
   .prio-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 6 Stages Grid */
+.prio-stage-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1280px) {
+  .prio-stage-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .prio-stage-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .prio-stage-grid {
     grid-template-columns: 1fr;
   }
 }

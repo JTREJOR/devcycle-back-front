@@ -6,6 +6,7 @@ import { Settings, Person, Check } from "@vibe/icons";
 import { useRoles, useUsers } from "@/lib/queries";
 import { RoleTag } from "@/components/RoleTag";
 import { useUiStore } from "@/store/uiStore";
+import { BackButton } from "@/components/BackButton";
 
 const USER_COLUMNS = [
   { id: "id", title: "ID", width: 120 },
@@ -123,6 +124,10 @@ export default function TeamPage() {
 
   return (
     <div>
+      <div className="app-back-bar">
+        <BackButton />
+      </div>
+
       {/* Título de la vista */}
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 6px 0", color: "#1e2022" }}>
