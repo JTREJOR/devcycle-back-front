@@ -13,7 +13,18 @@ import {
   Check,
   Comment,
 } from "@vibe/icons";
-import { usePriorizacionStore } from "@/store/priorizacionStore";
+import {
+  usePriorizacionStore,
+  PIRAMIDE_OPTIONS,
+  PIZZA_OBJETIVOS_CLAVE,
+  PIZZA_BATALLAS,
+  PIZZA_HABILITADORES,
+  PiramideNivel,
+  normalizePiramideNivel,
+  getPiramidePoints,
+  getPizzaPoints,
+  getCriteriosPoints,
+} from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
 import { BackButton } from "@/components/BackButton";
 
@@ -35,9 +46,31 @@ function EvaluacionContent() {
     return initiatives.find((i) => i.id === initiativeId) || initiatives[0];
   }, [initiatives, initiativeId]);
 
-  // Criterios de evaluación (1 al 5)
-  // Valores iniciales que coinciden exactamente con la Imagen 4:
-  // 1: 4, 2: 5, 3: 4, 4: 3, 5: 3
+  // ========================================================
+  // SECCIÓN 1: ALINEACIÓN ESTRATÉGICA ("PIRÁMIDE") - Máx 30 pts
+  // ========================================================
+  const [piramideNivel, setPiramideNivel] = useState<PiramideNivel>(
+    initiative.evaluacion?.piramideNivel ||
+      normalizePiramideNivel(initiative.alineacionEstrategicaNivel)
+  );
+
+  // ========================================================
+  // SECCIÓN 2: OKR'S ESTRATÉGICOS ("PIZZA" · COMERCIO UNIFICADO) - Máx 30 pts
+  // ========================================================
+  const [pizzaObjetivoClave, setPizzaObjetivoClave] = useState<string>(
+    initiative.evaluacion?.pizzaObjetivoClave || PIZZA_OBJETIVOS_CLAVE[2]
+  );
+  const [pizzaBatalla, setPizzaBatalla] = useState<string>(
+    initiative.evaluacion?.pizzaBatalla || PIZZA_BATALLAS[6]
+  );
+  const [pizzaHabilitador, setPizzaHabilitador] = useState<string>(
+    initiative.evaluacion?.pizzaHabilitador || PIZZA_HABILITADORES[1]
+  );
+
+  // ========================================================
+  // SECCIÓN 3: CRITERIOS DE EVALUACIÓN (1 al 5) - Máx 40 pts
+  // Pesos: 12% + 10% + 6% + 6% + 6% = 40% (40 puntos restantes)
+  // ========================================================
   const [c1, setC1] = useState<number>(initiative.evaluacion?.impactoNegocio ?? 4);
   const [c2, setC2] = useState<number>(initiative.evaluacion?.alineacionEstrategica ?? 5);
   const [c3, setC3] = useState<number>(initiative.evaluacion?.urgencia ?? 4);
@@ -68,6 +101,17 @@ function EvaluacionContent() {
 
   // Sincronizar criterios si cambia la iniciativa seleccionada
   useEffect(() => {
+    setPiramideNivel(
+      initiative.evaluacion?.piramideNivel ||
+        normalizePiramideNivel(initiative.alineacionEstrategicaNivel)
+    );
+    setPizzaObjetivoClave(
+      initiative.evaluacion?.pizzaObjetivoClave || PIZZA_OBJETIVOS_CLAVE[2]
+    );
+    setPizzaBatalla(initiative.evaluacion?.pizzaBatalla || PIZZA_BATALLAS[6]);
+    setPizzaHabilitador(
+      initiative.evaluacion?.pizzaHabilitador || PIZZA_HABILITADORES[1]
+    );
     setC1(initiative.evaluacion?.impactoNegocio ?? 4);
     setC2(initiative.evaluacion?.alineacionEstrategica ?? 5);
     setC3(initiative.evaluacion?.urgencia ?? 4);
@@ -101,18 +145,26 @@ function EvaluacionContent() {
     setToastMessage(msg);
   };
 
-  // Cálculo ponderado dinámico:
-  // Con (4, 5, 4, 3, 3) resulta exactamente en 82/100 como en la Imagen 4
+  // Cálculo de puntos por bloque (Total máximo = 100 puntos)
+  // 1) Pirámide: N0=0, N1=30, N2=20, N3=10 (máx 30 pts)
+  const piramidePuntos = useMemo(() => getPiramidePoints(piramideNivel), [piramideNivel]);
+
+  // 2) Pizza OKR's: 10 pts por cada una de las 3 listas si != "Ninguna" (máx 30 pts)
+  const pizzaPuntos = useMemo(
+    () => getPizzaPoints(pizzaObjetivoClave, pizzaBatalla, pizzaHabilitador),
+    [pizzaObjetivoClave, pizzaBatalla, pizzaHabilitador]
+  );
+
+  // 3) Criterios de evaluación (1..5): reparten los 40 puntos restantes (12% + 10% + 6% + 6% + 6% = 40 pts)
+  const criteriosPuntos = useMemo(
+    () => getCriteriosPoints(c1, c2, c3, c4, c5),
+    [c1, c2, c3, c4, c5]
+  );
+
+  // Score total (nunca supera 100 puntos)
   const calculatedScore = useMemo(() => {
-    const raw =
-      c1 * 6 +
-      c2 * 5 +
-      c3 * 3 +
-      c4 * 3 +
-      c5 * 3 +
-      (c1 >= 4 && c2 >= 4 ? 3 : 0);
-    return Math.min(100, Math.max(10, Math.round(raw)));
-  }, [c1, c2, c3, c4, c5]);
+    return Math.min(100, Math.max(0, piramidePuntos + pizzaPuntos + criteriosPuntos));
+  }, [piramidePuntos, pizzaPuntos, criteriosPuntos]);
 
   const { prioritySugerida, confianza, feedbackText } = useMemo(() => {
     if (calculatedScore >= 85) {
@@ -156,6 +208,13 @@ function EvaluacionContent() {
         urgencia: c3,
         complejidad: c4,
         riesgos: c5,
+        piramideNivel,
+        piramidePuntos,
+        pizzaObjetivoClave,
+        pizzaBatalla,
+        pizzaHabilitador,
+        pizzaPuntos,
+        criteriosPuntos,
         justificaciones: {
           impactoNegocio: j1,
           alineacionEstrategica: j2,
@@ -185,6 +244,13 @@ function EvaluacionContent() {
         urgencia: c3,
         complejidad: c4,
         riesgos: c5,
+        piramideNivel,
+        piramidePuntos,
+        pizzaObjetivoClave,
+        pizzaBatalla,
+        pizzaHabilitador,
+        pizzaPuntos,
+        criteriosPuntos,
         justificaciones: {
           impactoNegocio: j1,
           alineacionEstrategica: j2,
@@ -412,235 +478,391 @@ function EvaluacionContent() {
                 </div>
               </div>
             </div>
+
+            {/* Resumen de Alineación Estratégica activa */}
+            <div className="eval-summary-item eval-summary-item--split">
+              <div className="eval-summary-label">Alineación Estratégica (Pirámide & Pizza)</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12 }}>
+                  <span style={{ color: "#64748b" }}>Pirámide:</span>
+                  <span style={{ fontWeight: 700, color: "#833177" }}>
+                    {piramideNivel}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12 }}>
+                  <span style={{ color: "#64748b" }}>OKR&apos;s Pizza:</span>
+                  <span style={{ fontWeight: 700, color: "#e6007e" }}>
+                    {pizzaPuntos / 10} de 3 seleccionados
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* COLUMNA DERECHA: CRITERIOS DE EVALUACIÓN */}
-        <div className="eval-criteria-card">
-          <div className="eval-card-header">
-            <span style={{ color: "#e6007e", display: "flex", alignItems: "center" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="20" x2="18" y2="10" />
-                <line x1="12" y1="20" x2="12" y2="4" />
-                <line x1="6" y1="20" x2="6" y2="14" />
-              </svg>
-            </span>
-            <div>
-              <h3 className="eval-card-header__title">Criterios de evaluación</h3>
-              <p className="eval-card-header__sub">
-                Califica cada criterio del 1 al 5, donde 5 es el mayor impacto.
-              </p>
+        {/* COLUMNA DERECHA: PIRÁMIDE + PIZZA + CRITERIOS DE EVALUACIÓN */}
+        <div className="eval-right-stack">
+          {/* ============================================================== */}
+          {/* SECCIÓN 1: ¿A QUÉ ALINEACIÓN ESTRATÉGICA PERTENECE? ("PIRÁMIDE") */}
+          {/* ============================================================== */}
+          <div className="eval-criteria-card">
+            <div className="eval-card-header">
+              <span className="eval-section-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <polygon points="12 2 2 21 22 21 12 2" />
+                  <line x1="6.5" y1="12.5" x2="17.5" y2="12.5" />
+                  <line x1="4.2" y1="17" x2="19.8" y2="17" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="eval-card-header__title">
+                  ¿A qué alineación estratégica pertenece? (&quot;Pirámide&quot;)
+                </h3>
+                <p className="eval-card-header__sub">
+                  Selecciona 1 opción de la pirámide estratégica.
+                </p>
+              </div>
+            </div>
+
+            <div className="eval-piramide-grid">
+              {PIRAMIDE_OPTIONS.map((opt) => {
+                const isSelected = piramideNivel === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`eval-piramide-card ${isSelected ? "eval-piramide-card--active" : ""}`}
+                    onClick={() => setPiramideNivel(opt.id)}
+                  >
+                    <div className="eval-piramide-check" aria-hidden="true">
+                      <Icon icon={Check} size={13} />
+                    </div>
+                    <div className="eval-piramide-body">
+                      <div className="eval-piramide-top">
+                        <span className="eval-piramide-title">{opt.label}</span>
+                      </div>
+                      <div className="eval-piramide-desc">{opt.desc}</div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="eval-criteria-rows">
-            {/* Criterio 1: Impacto al negocio */}
-            <div className="eval-criterion-row">
-              <div className="eval-criterion-left">
-                <div className="eval-criterion-badge">1</div>
-                <div className="eval-criterion-info">
-                  <div className="eval-criterion-title">Impacto al negocio</div>
-                  <div className="eval-criterion-desc">
-                    Magnitud del beneficio en ingresos, costos, experiencia del cliente o eficiencia operativa.
-                  </div>
-                </div>
-              </div>
-
-              <div className="eval-criterion-weight">
-                <span className="eval-weight-label">Peso</span>
-                <span className="eval-weight-val">30%</span>
-              </div>
-
-              <div className="eval-scale-buttons">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`eval-scale-btn ${c1 === val ? "eval-scale-btn--active" : ""}`}
-                    onClick={() => setC1(val)}
-                  >
-                    {val}
-                  </button>
-                ))}
-              </div>
-
-              <div className="eval-justification-box">
-                <label className="eval-justification-label">Justificación breve (opcional)</label>
-                <input
-                  type="text"
-                  value={j1}
-                  onChange={(e) => setJ1(e.target.value)}
-                  className="eval-justification-input"
-                  placeholder="Justificación para impacto al negocio..."
-                />
+          {/* ============================================================== */}
+          {/* SECCIÓN 2: ¿A QUÉ OKR'S ESTRATÉGICOS PERTENECE? ("PIZZA")       */}
+          {/* ============================================================== */}
+          <div className="eval-criteria-card">
+            <div className="eval-card-header">
+              <span className="eval-section-icon-box eval-section-icon-box--purple">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2v10l7 7" />
+                  <path d="M12 12L4.93 4.93" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="eval-card-header__title">
+                  ¿A qué OKR&apos;s estratégicos pertenece? (&quot;Pizza&quot;)
+                </h3>
+                <p className="eval-card-header__sub">
+                  Selecciona hasta 1 elemento en cada una de las 3 listas desplegables.
+                </p>
               </div>
             </div>
 
-            {/* Criterio 2: Alineación estratégica */}
-            <div className="eval-criterion-row">
-              <div className="eval-criterion-left">
-                <div className="eval-criterion-badge">2</div>
-                <div className="eval-criterion-info">
-                  <div className="eval-criterion-title">Alineación estratégica</div>
-                  <div className="eval-criterion-desc">
-                    Contribución a los objetivos estratégicos de la empresa.
+            {/* Banner Ambición Comercio Unificado 2025 (Imagen 2) */}
+            <div className="eval-pizza-ambition">
+              <span className="eval-pizza-ambition__tag">Ambición 2025</span>
+              <span>
+                &quot;EPDL es parte de tu vida&quot;, para todos los clientes, en todos los canales: convertirnos en la primera opción de compra para los mexicanos.
+              </span>
+            </div>
+
+            <div className="eval-pizza-list">
+              {/* Lista 1: Objetivo Clave */}
+              <div
+                className={`eval-pizza-row ${
+                  pizzaObjetivoClave !== "Ninguna" ? "eval-pizza-row--selected" : ""
+                }`}
+              >
+                <div className="eval-pizza-row__header">
+                  <div className="eval-pizza-row__label-group">
+                    <span className="eval-criterion-badge">1</span>
+                    <span className="eval-pizza-row__title">Objetivo Clave</span>
                   </div>
                 </div>
+                <select
+                  className="eval-pizza-select"
+                  value={pizzaObjetivoClave}
+                  onChange={(e) => setPizzaObjetivoClave(e.target.value)}
+                >
+                  {PIZZA_OBJETIVOS_CLAVE.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="eval-criterion-weight">
-                <span className="eval-weight-label">Peso</span>
-                <span className="eval-weight-val">25%</span>
+              {/* Lista 2: ¿A qué batalla o a qué iniciativa clave pertenece? */}
+              <div
+                className={`eval-pizza-row ${
+                  pizzaBatalla !== "Ninguna" ? "eval-pizza-row--selected" : ""
+                }`}
+              >
+                <div className="eval-pizza-row__header">
+                  <div className="eval-pizza-row__label-group">
+                    <span className="eval-criterion-badge">2</span>
+                    <span className="eval-pizza-row__title">
+                      ¿A qué batalla o a qué iniciativa clave pertenece?
+                    </span>
+                  </div>
+                </div>
+                <select
+                  className="eval-pizza-select"
+                  value={pizzaBatalla}
+                  onChange={(e) => setPizzaBatalla(e.target.value)}
+                >
+                  {PIZZA_BATALLAS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="eval-scale-buttons">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`eval-scale-btn ${c2 === val ? "eval-scale-btn--active" : ""}`}
-                    onClick={() => setC2(val)}
-                  >
-                    {val}
-                  </button>
-                ))}
+              {/* Lista 3: Habilitadores */}
+              <div
+                className={`eval-pizza-row ${
+                  pizzaHabilitador !== "Ninguna" ? "eval-pizza-row--selected" : ""
+                }`}
+              >
+                <div className="eval-pizza-row__header">
+                  <div className="eval-pizza-row__label-group">
+                    <span className="eval-criterion-badge">3</span>
+                    <span className="eval-pizza-row__title">Habilitadores</span>
+                  </div>
+                </div>
+                <select
+                  className="eval-pizza-select"
+                  value={pizzaHabilitador}
+                  onChange={(e) => setPizzaHabilitador(e.target.value)}
+                >
+                  {PIZZA_HABILITADORES.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
+            </div>
+          </div>
 
-              <div className="eval-justification-box">
-                <label className="eval-justification-label">Justificación breve (opcional)</label>
-                <input
-                  type="text"
-                  value={j2}
-                  onChange={(e) => setJ2(e.target.value)}
-                  className="eval-justification-input"
-                  placeholder="Justificación para alineación estratégica..."
-                />
+          {/* ============================================================== */}
+          {/* SECCIÓN 3: CRITERIOS DE EVALUACIÓN                             */}
+          {/* ============================================================== */}
+          <div className="eval-criteria-card">
+            <div className="eval-card-header">
+              <span className="eval-section-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+              </span>
+              <div>
+                <h3 className="eval-card-header__title">Criterios de evaluación</h3>
+                <p className="eval-card-header__sub">
+                  Califica cada criterio del 1 al 5, donde 5 es el mayor impacto.
+                </p>
               </div>
             </div>
 
-            {/* Criterio 3: Urgencia / oportunidad */}
-            <div className="eval-criterion-row">
-              <div className="eval-criterion-left">
-                <div className="eval-criterion-badge">3</div>
-                <div className="eval-criterion-info">
-                  <div className="eval-criterion-title">Urgencia / oportunidad</div>
-                  <div className="eval-criterion-desc">
-                    Sensibilidad del tiempo, ventanas de oportunidad y presión del negocio.
+            <div className="eval-criteria-rows">
+              {/* Criterio 1: Impacto al negocio */}
+              <div className="eval-criterion-row">
+                <div className="eval-criterion-left">
+                  <div className="eval-criterion-badge">1</div>
+                  <div className="eval-criterion-info">
+                    <div className="eval-criterion-title">Impacto al negocio</div>
+                    <div className="eval-criterion-desc">
+                      Magnitud del beneficio en ingresos, costos, experiencia del cliente o eficiencia operativa.
+                    </div>
                   </div>
+                </div>
+
+                <div className="eval-scale-buttons">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      className={`eval-scale-btn ${c1 === val ? "eval-scale-btn--active" : ""}`}
+                      onClick={() => setC1(val)}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="eval-justification-box">
+                  <label className="eval-justification-label">Justificación breve (opcional)</label>
+                  <input
+                    type="text"
+                    value={j1}
+                    onChange={(e) => setJ1(e.target.value)}
+                    className="eval-justification-input"
+                    placeholder="Justificación para impacto al negocio..."
+                  />
                 </div>
               </div>
 
-              <div className="eval-criterion-weight">
-                <span className="eval-weight-label">Peso</span>
-                <span className="eval-weight-val">15%</span>
-              </div>
-
-              <div className="eval-scale-buttons">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`eval-scale-btn ${c3 === val ? "eval-scale-btn--active" : ""}`}
-                    onClick={() => setC3(val)}
-                  >
-                    {val}
-                  </button>
-                ))}
-              </div>
-
-              <div className="eval-justification-box">
-                <label className="eval-justification-label">Justificación breve (opcional)</label>
-                <input
-                  type="text"
-                  value={j3}
-                  onChange={(e) => setJ3(e.target.value)}
-                  className="eval-justification-input"
-                  placeholder="Justificación para urgencia y oportunidad..."
-                />
-              </div>
-            </div>
-
-            {/* Criterio 4: Complejidad preliminar */}
-            <div className="eval-criterion-row">
-              <div className="eval-criterion-left">
-                <div className="eval-criterion-badge">4</div>
-                <div className="eval-criterion-info">
-                  <div className="eval-criterion-title">Complejidad preliminar</div>
-                  <div className="eval-criterion-desc">
-                    Nivel de complejidad estimado (técnica, operativa y de cambio organizacional).
+              {/* Criterio 2: Alineación estratégica */}
+              <div className="eval-criterion-row">
+                <div className="eval-criterion-left">
+                  <div className="eval-criterion-badge">2</div>
+                  <div className="eval-criterion-info">
+                    <div className="eval-criterion-title">Alineación estratégica</div>
+                    <div className="eval-criterion-desc">
+                      Contribución a los objetivos estratégicos de la empresa.
+                    </div>
                   </div>
+                </div>
+
+                <div className="eval-scale-buttons">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      className={`eval-scale-btn ${c2 === val ? "eval-scale-btn--active" : ""}`}
+                      onClick={() => setC2(val)}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="eval-justification-box">
+                  <label className="eval-justification-label">Justificación breve (opcional)</label>
+                  <input
+                    type="text"
+                    value={j2}
+                    onChange={(e) => setJ2(e.target.value)}
+                    className="eval-justification-input"
+                    placeholder="Justificación para alineación estratégica..."
+                  />
                 </div>
               </div>
 
-              <div className="eval-criterion-weight">
-                <span className="eval-weight-label">Peso</span>
-                <span className="eval-weight-val">15%</span>
-              </div>
-
-              <div className="eval-scale-buttons">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`eval-scale-btn ${c4 === val ? "eval-scale-btn--active" : ""}`}
-                    onClick={() => setC4(val)}
-                  >
-                    {val}
-                  </button>
-                ))}
-              </div>
-
-              <div className="eval-justification-box">
-                <label className="eval-justification-label">Justificación breve (opcional)</label>
-                <input
-                  type="text"
-                  value={j4}
-                  onChange={(e) => setJ4(e.target.value)}
-                  className="eval-justification-input"
-                  placeholder="Justificación para complejidad..."
-                />
-              </div>
-            </div>
-
-            {/* Criterio 5: Riesgos / dependencias */}
-            <div className="eval-criterion-row">
-              <div className="eval-criterion-left">
-                <div className="eval-criterion-badge">5</div>
-                <div className="eval-criterion-info">
-                  <div className="eval-criterion-title">Riesgos / dependencias</div>
-                  <div className="eval-criterion-desc">
-                    Exposición a riesgos, dependencias de terceros o factores inciertos.
+              {/* Criterio 3: Urgencia / oportunidad */}
+              <div className="eval-criterion-row">
+                <div className="eval-criterion-left">
+                  <div className="eval-criterion-badge">3</div>
+                  <div className="eval-criterion-info">
+                    <div className="eval-criterion-title">Urgencia / oportunidad</div>
+                    <div className="eval-criterion-desc">
+                      Sensibilidad del tiempo, ventanas de oportunidad y presión del negocio.
+                    </div>
                   </div>
+                </div>
+
+                <div className="eval-scale-buttons">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      className={`eval-scale-btn ${c3 === val ? "eval-scale-btn--active" : ""}`}
+                      onClick={() => setC3(val)}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="eval-justification-box">
+                  <label className="eval-justification-label">Justificación breve (opcional)</label>
+                  <input
+                    type="text"
+                    value={j3}
+                    onChange={(e) => setJ3(e.target.value)}
+                    className="eval-justification-input"
+                    placeholder="Justificación para urgencia y oportunidad..."
+                  />
                 </div>
               </div>
 
-              <div className="eval-criterion-weight">
-                <span className="eval-weight-label">Peso</span>
-                <span className="eval-weight-val">15%</span>
+              {/* Criterio 4: Complejidad preliminar */}
+              <div className="eval-criterion-row">
+                <div className="eval-criterion-left">
+                  <div className="eval-criterion-badge">4</div>
+                  <div className="eval-criterion-info">
+                    <div className="eval-criterion-title">Complejidad preliminar</div>
+                    <div className="eval-criterion-desc">
+                      Nivel de complejidad estimado (técnica, operativa y de cambio organizacional).
+                    </div>
+                  </div>
+                </div>
+
+                <div className="eval-scale-buttons">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      className={`eval-scale-btn ${c4 === val ? "eval-scale-btn--active" : ""}`}
+                      onClick={() => setC4(val)}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="eval-justification-box">
+                  <label className="eval-justification-label">Justificación breve (opcional)</label>
+                  <input
+                    type="text"
+                    value={j4}
+                    onChange={(e) => setJ4(e.target.value)}
+                    className="eval-justification-input"
+                    placeholder="Justificación para complejidad..."
+                  />
+                </div>
               </div>
 
-              <div className="eval-scale-buttons">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`eval-scale-btn ${c5 === val ? "eval-scale-btn--active" : ""}`}
-                    onClick={() => setC5(val)}
-                  >
-                    {val}
-                  </button>
-                ))}
-              </div>
+              {/* Criterio 5: Riesgos / dependencias */}
+              <div className="eval-criterion-row">
+                <div className="eval-criterion-left">
+                  <div className="eval-criterion-badge">5</div>
+                  <div className="eval-criterion-info">
+                    <div className="eval-criterion-title">Riesgos / dependencias</div>
+                    <div className="eval-criterion-desc">
+                      Exposición a riesgos, dependencias de terceros o factores inciertos.
+                    </div>
+                  </div>
+                </div>
 
-              <div className="eval-justification-box">
-                <label className="eval-justification-label">Justificación breve (opcional)</label>
-                <input
-                  type="text"
-                  value={j5}
-                  onChange={(e) => setJ5(e.target.value)}
-                  className="eval-justification-input"
-                  placeholder="Justificación para riesgos y dependencias..."
-                />
+                <div className="eval-scale-buttons">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      className={`eval-scale-btn ${c5 === val ? "eval-scale-btn--active" : ""}`}
+                      onClick={() => setC5(val)}
+                    >
+                      {val}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="eval-justification-box">
+                  <label className="eval-justification-label">Justificación breve (opcional)</label>
+                  <input
+                    type="text"
+                    value={j5}
+                    onChange={(e) => setJ5(e.target.value)}
+                    className="eval-justification-input"
+                    placeholder="Justificación para riesgos y dependencias..."
+                  />
+                </div>
               </div>
             </div>
           </div>

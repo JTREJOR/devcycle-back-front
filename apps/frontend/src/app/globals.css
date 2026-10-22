@@ -3226,7 +3226,7 @@ a {
    EVALUACIÓN DE INICIATIVA (PASO 1 DE 2 - IMAGEN 4)
    ======================================================== */
 .eval-page-container {
-  padding: 0 4px 100px 4px;
+  padding: 0 4px 48px 4px;
 }
 
 .eval-header-row {
@@ -3476,6 +3476,334 @@ a {
   font-weight: 600;
 }
 
+/* Right Column Stack & New Sections (Pirámide + Pizza + Criterios) */
+.eval-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.eval-card-header--between {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.eval-card-header__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.eval-section-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fdf2f8;
+  color: #e6007e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #fbcfe8;
+}
+
+.eval-section-icon-box--purple {
+  background: #f5eef5;
+  color: #833177;
+  border-color: #e9d5e8;
+}
+
+.eval-section-weight-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #fdf2f8;
+  border: 1px solid #f5d0e6;
+  color: #833177;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.eval-section-weight-pill__pts {
+  color: #e6007e;
+  font-weight: 800;
+}
+
+/* Barra resumen de distribución de 100 puntos */
+.eval-score-distribution-bar {
+  background: linear-gradient(90deg, #fdf4f9 0%, #f8f2f7 100%);
+  border: 1px solid #efd6e7;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.eval-score-dist-items {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eval-score-dist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e9d5e8;
+  font-size: 11.5px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.eval-score-dist-chip b {
+  color: #833177;
+  font-weight: 800;
+}
+
+.eval-score-dist-plus {
+  font-size: 13px;
+  font-weight: 800;
+  color: #9ca3af;
+}
+
+.eval-score-dist-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: #833177;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Sección 1: Pirámide Estratégica (2x2 Check Cards) */
+.eval-piramide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .eval-piramide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eval-piramide-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid #e5e7eb;
+  background: #fafbfc;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.16s ease;
+  position: relative;
+}
+
+.eval-piramide-card:hover {
+  background: #ffffff;
+  border-color: #f472b6;
+  box-shadow: 0 3px 10px rgba(230, 0, 126, 0.06);
+}
+
+.eval-piramide-card--active {
+  background: #fdf2f8 !important;
+  border-color: #e6007e !important;
+  box-shadow: 0 3px 12px rgba(230, 0, 126, 0.1);
+}
+
+.eval-piramide-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.15s ease;
+  color: transparent;
+}
+
+.eval-piramide-card--active .eval-piramide-check {
+  background: #e6007e;
+  border-color: #e6007e;
+  color: #ffffff;
+}
+
+.eval-piramide-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.eval-piramide-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.eval-piramide-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e2022;
+}
+
+.eval-piramide-card--active .eval-piramide-title {
+  color: #833177;
+}
+
+.eval-piramide-pts-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.eval-piramide-card--active .eval-piramide-pts-badge {
+  background: #e6007e;
+  color: #ffffff;
+  border-color: #e6007e;
+}
+
+.eval-piramide-desc {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+/* Sección 2: Pizza OKR's Estratégicos (Comercio Unificado 2025) */
+.eval-pizza-ambition {
+  background: linear-gradient(90deg, #833177 0%, #9b3b8c 100%);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.eval-pizza-ambition__tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  flex-shrink: 0;
+}
+
+.eval-pizza-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eval-pizza-row {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fafbfc;
+  transition: all 0.15s ease;
+}
+
+.eval-pizza-row--selected {
+  background: #fdf8fb;
+  border-color: #f3c5de;
+}
+
+.eval-pizza-row__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.eval-pizza-row__label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eval-pizza-row__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e2022;
+}
+
+.eval-pizza-row__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.eval-pizza-row__badge--active {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.eval-pizza-select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #d0d4e4;
+  background: #ffffff;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #1e2022;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.eval-pizza-select:focus {
+  border-color: #833177;
+  box-shadow: 0 0 0 2px rgba(131, 49, 119, 0.12);
+}
+
 /* Criteria Card Right */
 .eval-criteria-card {
   background: #ffffff;
@@ -3494,8 +3822,8 @@ a {
 
 .eval-criterion-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1.4fr) 70px 180px minmax(200px, 1.5fr);
-  gap: 14px;
+  grid-template-columns: minmax(200px, 1.5fr) 180px minmax(220px, 1.5fr);
+  gap: 16px;
   align-items: center;
   padding: 12px 14px;
   border-radius: 10px;
@@ -3638,21 +3966,21 @@ a {
   border-color: var(--brand-primary);
 }
 
-/* Bottom Sticky Bar */
+/* Bottom Summary & Actions Card (same width as sections above, not fixed) */
 .eval-bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  width: 100%;
+  margin-top: 24px;
+  margin-bottom: 32px;
   background: #ffffff;
-  border-top: 1px solid var(--color-border);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
-  padding: 12px 32px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  z-index: 35;
   flex-wrap: wrap;
 }
 

@@ -22,13 +22,143 @@ export interface EstimacionTecnicaData {
   chatSizingCompletado?: boolean;
 }
 
+export type PiramideNivel =
+  | "NA Ninguna"
+  | "N1 Prioritarios"
+  | "N2 Habilitadores/Regulatorios"
+  | "N3 Mejora Continua";
+
+export const PIRAMIDE_OPTIONS: {
+  id: PiramideNivel;
+  code: string;
+  label: string;
+  points: number;
+  weightPct: string;
+  desc: string;
+}[] = [
+  {
+    id: "NA Ninguna",
+    code: "N0 / NA",
+    label: "NA Ninguna",
+    points: 0,
+    weightPct: "0%",
+    desc: "Sin alineación directa a la pirámide estratégica corporativa.",
+  },
+  {
+    id: "N1 Prioritarios",
+    code: "N1",
+    label: "N1 Prioritarios",
+    points: 30,
+    weightPct: "30%",
+    desc: "Iniciativas estratégicas prioritarias de alto impacto en negocio.",
+  },
+  {
+    id: "N2 Habilitadores/Regulatorios",
+    code: "N2",
+    label: "N2 Habilitadores/Regulatorios",
+    points: 20,
+    weightPct: "20%",
+    desc: "Cumplimiento normativo, ciberseguridad o plataformas habilitadoras.",
+  },
+  {
+    id: "N3 Mejora Continua",
+    code: "N3",
+    label: "N3 Mejora Continua",
+    points: 10,
+    weightPct: "10%",
+    desc: "Optimización incremental de procesos y eficiencia operativa.",
+  },
+];
+
+export const PIZZA_OBJETIVOS_CLAVE: string[] = [
+  "Ninguna",
+  "Crecer 3x en E-Commerce en los siguientes 5 años",
+  "Como Jugador omnicanal, convertirnos en el líder indiscutible en el comercio electrónico",
+  "Crear una experiencia diferenciada y 'sticky' para cada travesía del cliente",
+];
+
+export const PIZZA_BATALLAS: string[] = [
+  "Ninguna",
+  "Mejorar Oferta de categorías de acuerdo a las necesidades del cliente - Complemento Marketplace 'Red de carga / Wholesale / Curaduría'",
+  "Proveer el mejor consejo e inspiración - 'Retail Media / UGC / PIM'",
+  "Lealtad y recompensas - 'Relanzamiento Cliente Consentido'",
+  "Diferenciar nuestra oferta con un servicio de valor agregado - 'Crecer/Consolidar VAS'",
+  "Maximizar el alcance del ecosistema - 'Liverpool Express / Crecimiento Suburbia / Galerías'",
+  "Marketplace de Servicios Financieros - 'DILISA off-us / Corresponsalía / Nueva plat. originación'",
+];
+
+export const PIZZA_HABILITADORES: string[] = [
+  "Ninguna",
+  "Transformación TI - 'Ecosistema de pagos, Migración S/4 Hana, Portal Entrada Único'",
+  "CX - 'Modernización CCl Customer Care'",
+  "Data analytics - 'Nuevo modelo op. datos, Nuevo modelo op. analítica'",
+  "Cadena de suministro - 'Plan SL / OMS / PA&A / RFID'",
+  "Capital Humano - 'Optim Comp Total Vendedor, Evolución Core RH, Gestión de Tiempos'",
+];
+
+export function normalizePiramideNivel(raw?: string): PiramideNivel {
+  if (!raw) return "N2 Habilitadores/Regulatorios";
+  const r = raw.toLowerCase();
+  if (r.includes("n1") || r.includes("prioritario")) return "N1 Prioritarios";
+  if (r.includes("n2") || r.includes("habilitador") || r.includes("regulatorio"))
+    return "N2 Habilitadores/Regulatorios";
+  if (r.includes("n3") || r.includes("mejora")) return "N3 Mejora Continua";
+  if (r.includes("n0") || r.includes("na") || r.includes("ninguna")) return "NA Ninguna";
+  return "N2 Habilitadores/Regulatorios";
+}
+
+export function getPiramidePoints(nivel?: PiramideNivel | string): number {
+  const norm = normalizePiramideNivel(nivel);
+  const found = PIRAMIDE_OPTIONS.find((o) => o.id === norm);
+  return found ? found.points : 0;
+}
+
+export function getPizzaPoints(
+  objetivoClave?: string,
+  batalla?: string,
+  habilitador?: string
+): number {
+  let pts = 0;
+  if (objetivoClave && objetivoClave !== "Ninguna") pts += 10;
+  if (batalla && batalla !== "Ninguna") pts += 10;
+  if (habilitador && habilitador !== "Ninguna") pts += 10;
+  return pts;
+}
+
+export function getCriteriosPoints(
+  c1: number,
+  c2: number,
+  c3: number,
+  c4: number,
+  c5: number
+): number {
+  // Pesos de los 5 criterios que reparten los 40 puntos restantes:
+  // 1. Impacto al negocio: 12% (máx 12 pts -> c1 * 2.4)
+  // 2. Alineación estratégica: 10% (máx 10 pts -> c2 * 2.0)
+  // 3. Urgencia / oportunidad: 6% (máx 6 pts -> c3 * 1.2)
+  // 4. Complejidad preliminar: 6% (máx 6 pts -> c4 * 1.2)
+  // 5. Riesgos / dependencias: 6% (máx 6 pts -> c5 * 1.2)
+  const raw = c1 * 2.4 + c2 * 2.0 + c3 * 1.2 + c4 * 1.2 + c5 * 1.2;
+  return Math.min(40, Math.max(8, Math.round(raw)));
+}
+
 export interface EvaluacionData {
-  impactoNegocio: number; // 1..5
-  alineacionEstrategica: number; // 1..5
-  urgencia: number; // 1..5
-  complejidad: number; // 1..5
+  impactoNegocio: number; // 1..5 (Peso 12%)
+  alineacionEstrategica: number; // 1..5 (Peso 10%)
+  urgencia: number; // 1..5 (Peso 6%)
+  complejidad: number; // 1..5 (Peso 6%)
   esfuerzoEstimado?: number; // compatibilidad
-  riesgos: number; // 1..5
+  riesgos: number; // 1..5 (Peso 6%)
+  // Sección 1: Pirámide Estratégica (hasta 30 pts)
+  piramideNivel?: PiramideNivel;
+  piramidePuntos?: number;
+  // Sección 2: Pizza OKR's Comercio Unificado (hasta 30 pts, 10 pts c/u)
+  pizzaObjetivoClave?: string;
+  pizzaBatalla?: string;
+  pizzaHabilitador?: string;
+  pizzaPuntos?: number;
+  // Puntos de los 5 criterios (hasta 40 pts)
+  criteriosPuntos?: number;
   justificaciones?: {
     impactoNegocio?: string;
     alineacionEstrategica?: string;
@@ -990,40 +1120,105 @@ const RAW_DEFAULT_INITIATIVES: InitiativeItem[] = [
   },
 ];
 
-export const DEFAULT_INITIATIVES: InitiativeItem[] = RAW_DEFAULT_INITIATIVES.map((item) => ({
-  ...item,
-  cartera: item.cartera || getCarteraByArea(item.area),
-  solicitanteEmail:
-    item.solicitanteEmail ||
-    `${item.solicitante.toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
-  sponsorEmail:
-    item.sponsorEmail ||
-    `${(item.sponsor || "sponsor").toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
-  interesadosEmails: item.interesadosEmails || [
-    "pm_cartera@liverpool.com.mx",
-    "brm_lider@liverpool.com.mx",
-  ],
-  enCarteraPendientes:
-    item.enCarteraPendientes ??
-    (item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
-  impactoTIConfirmado:
-    item.impactoTIConfirmado ??
-    !(item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
-  sistemasConfirmados:
-    item.sistemasConfirmados || item.sistemasInvolucrados || ["SAP ERP", "API Gateway"],
-  requiereTI: item.requiereTI ?? true,
-  estimacionTecnica: item.estimacionTecnica || {
-    tps: 350,
-    usuariosMensuales: "2.4M",
-    tipoArquitectura: "Microservicios en Google Cloud Platform",
-    serviciosNube: ["Cloud Run", "Cloud SQL", "Pub/Sub", "BigQuery"],
-    horasDesarrolloEstimadas: 480,
-    costoNubeMensualEstimado: "$3,200 USD/mes",
-    voboLiderTecnico: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
-    voboLiderArquitectura: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
-    chatSizingCompletado: true,
-  },
-}));
+export const DEFAULT_INITIATIVES: InitiativeItem[] = RAW_DEFAULT_INITIATIVES.map((item) => {
+  const defaultPiramide: PiramideNivel = item.alineacionEstrategicaNivel
+    ? normalizePiramideNivel(item.alineacionEstrategicaNivel)
+    : (item.score ?? 82) >= 85
+    ? "N1 Prioritarios"
+    : "N2 Habilitadores/Regulatorios";
+  const defaultObj =
+    PIZZA_OBJETIVOS_CLAVE[2]; // "Como Jugador omnicanal, convertirnos en el líder indiscutible en el comercio electrónico"
+  const defaultBat =
+    item.area.toLowerCase().includes("finanzas") || item.area.toLowerCase().includes("pago") || item.area.toLowerCase().includes("banca") || item.area.toLowerCase().includes("crédito")
+      ? PIZZA_BATALLAS[6] // "Marketplace de Servicios Financieros..."
+      : item.area.toLowerCase().includes("marketing") || item.area.toLowerCase().includes("lealtad")
+      ? PIZZA_BATALLAS[3] // "Lealtad y recompensas..."
+      : PIZZA_BATALLAS[1]; // "Mejorar Oferta de categorías..."
+  const defaultHab =
+    item.area.toLowerCase().includes("suministro") || item.area.toLowerCase().includes("logística")
+      ? PIZZA_HABILITADORES[4] // "Cadena de suministro..."
+      : item.area.toLowerCase().includes("datos") || item.area.toLowerCase().includes("analítica")
+      ? PIZZA_HABILITADORES[3] // "Data analytics..."
+      : PIZZA_HABILITADORES[1]; // "Transformación TI..."
+
+  const c1 = item.evaluacion?.impactoNegocio ?? 4;
+  const c2 = item.evaluacion?.alineacionEstrategica ?? 5;
+  const c3 = item.evaluacion?.urgencia ?? 4;
+  const c4 = item.evaluacion?.complejidad ?? 3;
+  const c5 = item.evaluacion?.riesgos ?? 3;
+  const pirPts = getPiramidePoints(defaultPiramide);
+  const pizPts = getPizzaPoints(defaultObj, defaultBat, defaultHab);
+  const critPts = getCriteriosPoints(c1, c2, c3, c4, c5);
+
+  return {
+    ...item,
+    cartera: item.cartera || getCarteraByArea(item.area),
+    alineacionEstrategicaNivel:
+      item.alineacionEstrategicaNivel ||
+      (defaultPiramide === "N1 Prioritarios"
+        ? "(N1) Prioritarios"
+        : defaultPiramide === "N2 Habilitadores/Regulatorios"
+        ? "(N2) Habilitadores/Regulatorios"
+        : defaultPiramide === "N3 Mejora Continua"
+        ? "(N3) Mejora continua"
+        : "(N0) Ninguna"),
+    evaluacion: {
+      impactoNegocio: c1,
+      alineacionEstrategica: c2,
+      urgencia: c3,
+      complejidad: c4,
+      riesgos: c5,
+      piramideNivel: item.evaluacion?.piramideNivel || defaultPiramide,
+      piramidePuntos: item.evaluacion?.piramidePuntos ?? pirPts,
+      pizzaObjetivoClave: item.evaluacion?.pizzaObjetivoClave || defaultObj,
+      pizzaBatalla: item.evaluacion?.pizzaBatalla || defaultBat,
+      pizzaHabilitador: item.evaluacion?.pizzaHabilitador || defaultHab,
+      pizzaPuntos: item.evaluacion?.pizzaPuntos ?? pizPts,
+      criteriosPuntos: item.evaluacion?.criteriosPuntos ?? critPts,
+      justificaciones: item.evaluacion?.justificaciones || {
+        impactoNegocio: "Alta reducción de costos operativos y mejora en la experiencia del cliente.",
+        alineacionEstrategica: "Está alineada con la estrategia de omnicanalidad y eficiencia operativa.",
+        urgencia: "Existen dolores actuales y una ventana de oportunidad en el corto plazo.",
+        complejidad: "Requiere integraciones con sistemas críticos, pero es viable con el equipo actual.",
+        riesgos: "Depende de proveedores externos, pero con bajo riesgo de ejecución.",
+      },
+      confianza: item.evaluacion?.confianza || "Media",
+      feedback:
+        item.evaluacion?.feedback ||
+        "La iniciativa muestra alto impacto y buena alineación, pero aún tiene incertidumbre técnica.",
+    },
+    solicitanteEmail:
+      item.solicitanteEmail ||
+      `${item.solicitante.toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
+    sponsorEmail:
+      item.sponsorEmail ||
+      `${(item.sponsor || "sponsor").toLowerCase().replace(/[^a-z0-9]/g, "")}@liverpool.com.mx`,
+    interesadosEmails: item.interesadosEmails || [
+      "pm_cartera@liverpool.com.mx",
+      "brm_lider@liverpool.com.mx",
+    ],
+    enCarteraPendientes:
+      item.enCarteraPendientes ??
+      (item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
+    impactoTIConfirmado:
+      item.impactoTIConfirmado ??
+      !(item.id === "prio-01" || item.id === "prio-02" || item.status === "Nueva"),
+    sistemasConfirmados:
+      item.sistemasConfirmados || item.sistemasInvolucrados || ["SAP ERP", "API Gateway"],
+    requiereTI: item.requiereTI ?? true,
+    estimacionTecnica: item.estimacionTecnica || {
+      tps: 350,
+      usuariosMensuales: "2.4M",
+      tipoArquitectura: "Microservicios en Google Cloud Platform",
+      serviciosNube: ["Cloud Run", "Cloud SQL", "Pub/Sub", "BigQuery"],
+      horasDesarrolloEstimadas: 480,
+      costoNubeMensualEstimado: "$3,200 USD/mes",
+      voboLiderTecnico: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
+      voboLiderArquitectura: (item.score ?? 0) >= 80 ? "aprobado" : "pendiente",
+      chatSizingCompletado: true,
+    },
+  };
+});
 
 interface PriorizacionStore {
   initiatives: InitiativeItem[];
@@ -1072,6 +1267,16 @@ export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
     set((state) => ({
       initiatives: state.initiatives.map((item) => {
         if (item.id === id) {
+          const mappedAlineacion =
+            evalData.piramideNivel === "N1 Prioritarios"
+              ? ("(N1) Prioritarios" as const)
+              : evalData.piramideNivel === "N2 Habilitadores/Regulatorios"
+              ? ("(N2) Habilitadores/Regulatorios" as const)
+              : evalData.piramideNivel === "N3 Mejora Continua"
+              ? ("(N3) Mejora continua" as const)
+              : evalData.piramideNivel === "NA Ninguna"
+              ? ("(N0) Ninguna" as const)
+              : item.alineacionEstrategicaNivel;
           return {
             ...item,
             score,
@@ -1081,6 +1286,7 @@ export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
             madurezTag: "Evaluación completada",
             impacto: Math.min(100, Math.max(20, evalData.impactoNegocio * 20)),
             esfuerzo: Math.min(100, Math.max(20, evalData.complejidad * 20)),
+            alineacionEstrategicaNivel: mappedAlineacion,
             evaluacion: evalData,
           };
         }
@@ -1251,6 +1457,10 @@ export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
 
   addInitiative: (newItem) => {
     const id = newItem.id || `prio-${Date.now().toString(36)}`;
+    const initPiramide = normalizePiramideNivel(newItem.alineacionEstrategicaNivel);
+    const initObj = PIZZA_OBJETIVOS_CLAVE[2];
+    const initBat = PIZZA_BATALLAS[1];
+    const initHab = PIZZA_HABILITADORES[1];
     const initiative: InitiativeItem = {
       id,
       name: newItem.name,
@@ -1285,6 +1495,29 @@ export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
       esfuerzo: newItem.esfuerzo ?? 50,
       impacto: newItem.impacto ?? 70,
       color: newItem.color || "#e6007e",
+      evaluacion: newItem.evaluacion || {
+        impactoNegocio: 4,
+        alineacionEstrategica: 5,
+        urgencia: 4,
+        complejidad: 3,
+        riesgos: 3,
+        piramideNivel: initPiramide,
+        piramidePuntos: getPiramidePoints(initPiramide),
+        pizzaObjetivoClave: initObj,
+        pizzaBatalla: initBat,
+        pizzaHabilitador: initHab,
+        pizzaPuntos: getPizzaPoints(initObj, initBat, initHab),
+        criteriosPuntos: getCriteriosPoints(4, 5, 4, 3, 3),
+        justificaciones: {
+          impactoNegocio: "Alta reducción de costos operativos y mejora en la experiencia del cliente.",
+          alineacionEstrategica: "Está alineada con la estrategia de omnicanalidad y eficiencia operativa.",
+          urgencia: "Existen dolores actuales y una ventana de oportunidad en el corto plazo.",
+          complejidad: "Requiere integraciones con sistemas críticos, pero es viable con el equipo actual.",
+          riesgos: "Depende de proveedores externos, pero con bajo riesgo de ejecución.",
+        },
+        confianza: "Media",
+        feedback: "La iniciativa muestra alto impacto y buena alineación, pero aún tiene incertidumbre técnica.",
+      },
       estimacionTecnica: {
         tps: 150,
         usuariosMensuales: "500k",
