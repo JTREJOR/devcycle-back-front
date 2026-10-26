@@ -18,28 +18,35 @@ function TableField({ field, control, name }: { field: FieldDef; control: any; n
   const { fields, append, remove } = useFieldArray({ control, name });
 
   return (
-    <div className="dynamic-form__field dynamic-form__field--wide">
-      <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 6 }}>{field.label}</label>
-      <table className="dynamic-table">
+    <div className="col-span-full">
+      <label className="mb-1.5 block text-[13px] font-semibold text-text-main">
+        {field.label}
+      </label>
+      <table className="w-full border-collapse text-[13px]">
         <thead>
           <tr>
             {field.columns?.map((col) => (
-              <th key={col.id}>{col.label}</th>
+              <th
+                key={col.id}
+                className="border border-border-default px-2.5 py-2 text-left font-semibold text-text-main"
+              >
+                {col.label}
+              </th>
             ))}
-            <th />
+            <th className="border border-border-default px-2.5 py-2 text-left" />
           </tr>
         </thead>
         <tbody>
           {fields.map((row, index) => (
             <tr key={row.id}>
               {field.columns?.map((col) => (
-                <td key={col.id}>
+                <td key={col.id} className="border border-border-default px-2.5 py-2 text-left">
                   <Controller
                     control={control}
                     name={`${name}.${index}.${col.id}`}
                     render={({ field: f }) => (
                       <input
-                        style={{ border: "none", width: "100%", font: "inherit" }}
+                        className="w-full border-none bg-transparent font-sans text-inherit outline-none"
                         value={(f.value as string) ?? ""}
                         onChange={(e) => f.onChange(e.target.value)}
                       />
@@ -47,8 +54,12 @@ function TableField({ field, control, name }: { field: FieldDef; control: any; n
                   />
                 </td>
               ))}
-              <td>
-                <button type="button" onClick={() => remove(index)} style={{ border: "none", background: "none", cursor: "pointer" }}>
+              <td className="border border-border-default px-2.5 py-2 text-left">
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="cursor-pointer border-none bg-transparent text-text-secondary hover:text-danger-500"
+                >
                   ✕
                 </button>
               </td>
@@ -84,18 +95,18 @@ export function DynamicStageForm({ project, stage, subStep }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 10 }}>
-      <div className="dynamic-form">
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-2.5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
         {fields.map((field) => (
           <FieldRenderer key={field.id} field={field} control={control} name={field.id} />
         ))}
       </div>
-      <div style={{ marginTop: 12 }}>
+      <div className="mt-3 flex items-center">
         <Button type="submit" size="small" loading={patchProject.isPending}>
           Guardar
         </Button>
         {formState.isSubmitSuccessful && !formState.isDirty && (
-          <span style={{ marginLeft: 8, fontSize: 12, color: "#00854d" }}>Guardado</span>
+          <span className="ml-2 text-xs text-success-500">Guardado</span>
         )}
       </div>
     </form>
@@ -104,7 +115,7 @@ export function DynamicStageForm({ project, stage, subStep }: Props) {
 
 function FieldRenderer({ field, control, name }: { field: FieldDef; control: any; name: string }) {
   const wideTypes: FieldDef["type"][] = ["textarea", "table"];
-  const wrapperClass = `dynamic-form__field ${wideTypes.includes(field.type) ? "dynamic-form__field--wide" : ""}`;
+  const wrapperClass = wideTypes.includes(field.type) ? "col-span-full" : "";
 
   if (field.type === "table") {
     return <TableField field={field} control={control} name={name} />;
@@ -120,14 +131,18 @@ function FieldRenderer({ field, control, name }: { field: FieldDef; control: any
             case "textarea":
               return (
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>{field.label}</label>
+                  <label className="mb-1 block text-[13px] font-semibold text-text-main">
+                    {field.label}
+                  </label>
                   <TextArea placeholder={field.placeholder} value={(f.value as string) ?? ""} onChange={(e) => f.onChange(e.target.value)} />
                 </div>
               );
             case "select":
               return (
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>{field.label}</label>
+                  <label className="mb-1 block text-[13px] font-semibold text-text-main">
+                    {field.label}
+                  </label>
                   <Dropdown
                     size="small"
                     placeholder={field.placeholder ?? "Selecciona…"}
@@ -140,7 +155,9 @@ function FieldRenderer({ field, control, name }: { field: FieldDef; control: any
             case "multiselect":
               return (
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>{field.label}</label>
+                  <label className="mb-1 block text-[13px] font-semibold text-text-main">
+                    {field.label}
+                  </label>
                   <Dropdown
                     size="small"
                     multi
@@ -153,9 +170,9 @@ function FieldRenderer({ field, control, name }: { field: FieldDef; control: any
               );
             case "toggle":
               return (
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 18 }}>
+                <div className="mt-4.5 flex items-center gap-2">
                   <Toggle isSelected={Boolean(f.value)} onChange={(value) => f.onChange(value)} />
-                  <span style={{ fontSize: 13 }}>{field.label}</span>
+                  <span className="text-[13px] text-text-main">{field.label}</span>
                 </div>
               );
             case "number":

@@ -150,25 +150,32 @@ export function MainMenuOverlay() {
     <>
       {/* Backdrop transparente para cerrar al hacer clic afuera */}
       <div
-        className="main-menu-backdrop"
+        className="fixed inset-0 top-header z-25 bg-gray-900/28 backdrop-blur-[2px] animate-menu-fade-in"
         onClick={handleClose}
         aria-hidden="true"
       />
 
       {/* Panel del Mega Menú inspirado en Imagen 2 */}
-      <div className="main-menu-panel" role="dialog" aria-modal="true" aria-label="Menú de opciones">
-        <div className="main-menu-panel__inner">
-          <div className="main-menu-panel__header">
-            <div className="main-menu-panel__title-box">
-              <span className="main-menu-panel__badge">•</span>
-              <span className="main-menu-panel__title">Módulos del Sistema</span>
-              <span className="main-menu-panel__hint">
+      <div
+        className="fixed top-header right-0 left-0 z-26 border-b border-border-default bg-bg-card shadow-[0_16px_36px_-4px_rgba(131,49,119,0.08),0_8px_16px_-4px_rgba(0,0,0,0.06)] animate-menu-slide-down"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de opciones"
+      >
+        <div className="mx-auto max-w-[1400px] px-6 pt-4 pb-5">
+          <div className="mb-3.5 flex items-center justify-between border-b border-[#f1f3f5] pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[22px] leading-none font-black text-brand-primary">•</span>
+              <span className="text-[13.5px] font-bold tracking-[0.5px] text-text-main uppercase">
+                Módulos del Sistema
+              </span>
+              <span className="ml-1.5 hidden text-xs text-text-secondary sm:inline">
                 Selecciona un módulo para navegar y actualizar el título de la vista
               </span>
             </div>
             <button
               type="button"
-              className="main-menu-panel__close-btn"
+              className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-text-secondary transition-all duration-150 hover:border-[#f2d8ec] hover:bg-brand-primary-light hover:text-brand-primary"
               onClick={handleClose}
               aria-label="Cerrar menú"
             >
@@ -176,7 +183,7 @@ export function MainMenuOverlay() {
             </button>
           </div>
 
-          <div className="main-menu-grid">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
             {MAIN_MENU_ITEMS.map((item) => {
               const isActive =
                 activeTitle === item.title ||
@@ -187,15 +194,33 @@ export function MainMenuOverlay() {
                 <button
                   key={item.id}
                   type="button"
-                  className={`main-menu-card ${isActive ? "main-menu-card--active" : ""}`}
+                  className={`flex w-full cursor-pointer items-start gap-3 rounded-[10px] border px-3.5 py-3 text-left font-sans transition-all duration-150 ${
+                    isActive
+                      ? "border-brand-primary bg-[#f8eef6] shadow-[0_2px_8px_rgba(131,49,119,0.12)]"
+                      : "border-[#f1f3f5] bg-bg-card hover:-translate-y-[1px] hover:border-[#f2d8ec] hover:bg-[#fdfafc] hover:shadow-[0_4px_12px_rgba(131,49,119,0.05)]"
+                  }`}
                   onClick={() => handleSelect(item)}
                 >
-                  <div className="main-menu-card__icon-box">
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-150 ${
+                      isActive
+                        ? "bg-brand-primary text-white"
+                        : "bg-[#fdf2f8] text-brand-primary"
+                    }`}
+                  >
                     <Icon icon={item.icon} size={20} />
                   </div>
-                  <div className="main-menu-card__content">
-                    <div className="main-menu-card__title">{item.title}</div>
-                    <div className="main-menu-card__subtitle">{item.subtitle}</div>
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className={`mb-0.5 truncate text-[13.5px] font-bold ${
+                        isActive ? "text-brand-primary" : "text-text-main"
+                      }`}
+                    >
+                      {item.title}
+                    </div>
+                    <div className="line-clamp-2 text-[11.5px] leading-[1.35] text-text-secondary">
+                      {item.subtitle}
+                    </div>
                   </div>
                 </button>
               );

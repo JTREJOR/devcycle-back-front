@@ -5,7 +5,9 @@ export default function NotFoundPage() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: 40, textAlign: "center" }}>Cargando vista en construcción...</div>
+        <div className="p-10 text-center text-sm text-text-secondary">
+          Cargando vista en construcción...
+        </div>
       }
     >
       <UnderConstructionView />

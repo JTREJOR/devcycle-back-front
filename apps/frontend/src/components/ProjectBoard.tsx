@@ -46,34 +46,16 @@ export function ProjectBoard() {
                 <Link
                   href={`/project/${project.id}`}
                   title={project.name}
-                  style={{
-                    color: "var(--brand-primary)",
-                    fontWeight: 600,
-                    fontSize: 13.5,
-                    display: "block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+                  className="block truncate text-[13.5px] font-semibold text-brand-primary"
                 >
                   {project.name}
                 </Link>
-                <span style={{ fontSize: 11.5, color: "var(--color-text-secondary)" }}>
+                <span className="text-[11.5px] text-text-secondary">
                   {project.area}
                 </span>
               </TableCell>
               <TableCell>
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "3px 10px",
-                    borderRadius: 12,
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: "#ffffff",
-                    background: stage?.color ?? "#676879",
-                  }}
-                >
+                <span className="inline-block rounded-xl bg-brand-primary px-2.5 py-[3px] text-[11.5px] font-semibold text-white">
                   {stage?.shortName ?? "—"}
                 </span>
               </TableCell>
@@ -81,22 +63,22 @@ export function ProjectBoard() {
                 <StatusPill status={project.status} />
               </TableCell>
               <TableCell>
-                <span className="tag-pill tag-pill--gray">
+                <span className="inline-flex items-center rounded-xl border border-status-gray-border bg-status-gray-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-gray-text">
                   {project.priority}
                 </span>
               </TableCell>
               <TableCell>
-                <span style={{ fontSize: 13, color: "var(--color-text-main)" }}>
+                <span className="text-[13px] text-text-main">
                   {project.owner}
                 </span>
               </TableCell>
               <TableCell>
-                <span style={{ fontSize: 13, fontWeight: 500 }}>
+                <span className="text-[13px] font-medium text-text-main">
                   {formatCurrency(project.budgetEstimate)}
                 </span>
               </TableCell>
               <TableCell>
-                <span style={{ fontSize: 12.5, color: "var(--color-text-secondary)" }}>
+                <span className="text-[12.5px] text-text-secondary">
                   {formatDate(project.targetDate)}
                 </span>
               </TableCell>
@@ -104,17 +86,7 @@ export function ProjectBoard() {
                 <Link
                   href={`/project/${project.id}`}
                   aria-label={`Ver detalle de ${project.name}`}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 30,
-                    height: 30,
-                    borderRadius: 6,
-                    color: "var(--brand-primary)",
-                    background: "var(--brand-primary-light)",
-                    transition: "background 0.15s ease",
-                  }}
+                  className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-md bg-brand-primary-light text-brand-primary transition-colors duration-150 hover:bg-brand-primary hover:text-white"
                 >
                   <Icon icon={Show} size={16} />
                 </Link>

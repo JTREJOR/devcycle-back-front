@@ -40,14 +40,18 @@ export function ApprovalGate({ project, stage, subStep }: { project: Project; st
   }
 
   return (
-    <div style={{ marginTop: 10, padding: 12, borderRadius: 8, background: "#fbfbfd", border: "1px solid var(--ui-border-color, #e6e9ef)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 12, color: "#676879" }}>Requiere aprobación de:</span>
+    <div className="mt-2.5 rounded-lg border border-border-default bg-surface-soft p-3">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-xs text-text-secondary">Requiere aprobación de:</span>
         {approverRole && <RoleTag roleId={approverRole.id} roleName={approverRole.name} />}
       </div>
 
       {existingApproval && (
-        <div style={{ fontSize: 12, marginBottom: 8, color: existingApproval.decision === "aprobado" ? "#00854d" : "#c92929" }}>
+        <div
+          className={`mb-2 text-xs ${
+            existingApproval.decision === "aprobado" ? "text-success-500" : "text-danger-500"
+          }`}
+        >
           {existingApproval.decision === "aprobado" ? "Aprobado" : "Rechazado"} el {formatDate(existingApproval.ts)}
           {existingApproval.comment ? ` — "${existingApproval.comment}"` : ""}
         </div>
@@ -61,7 +65,7 @@ export function ApprovalGate({ project, stage, subStep }: { project: Project; st
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <div className="mt-2 flex gap-2">
               <Button
                 size="small"
                 color="positive"
@@ -84,7 +88,7 @@ export function ApprovalGate({ project, stage, subStep }: { project: Project; st
             </div>
           </>
         ) : (
-          <div style={{ fontSize: 12, color: "#9699a6" }}>
+          <div className="text-xs text-text-muted">
             Actúas como <strong>{activeUser?.name}</strong> ({roles.find((r) => r.id === activeUser?.roleId)?.name}).
             Cambia el rol activo en el encabezado a <strong>{approverRole?.name}</strong> para aprobar este paso.
           </div>

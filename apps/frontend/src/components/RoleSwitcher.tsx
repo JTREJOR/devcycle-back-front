@@ -34,8 +34,8 @@ export function RoleSwitcher() {
   const activeOption = options.find((o) => o.value === activeUserId) ?? null;
 
   return (
-    <div className="role-switcher" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--brand-primary)" }}>
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 text-brand-primary">
         <Icon icon={Labs} size={16} />
       </div>
       {activeOption && (
@@ -46,7 +46,7 @@ export function RoleSwitcher() {
           customBackgroundColor={activeOption.avatarColor}
         />
       )}
-      <div style={{ flex: 1, minWidth: 200 }}>
+      <div className="flex-1 min-w-[200px]">
         <Dropdown
           size="small"
           placeholder="Probar como…"
@@ -54,9 +54,9 @@ export function RoleSwitcher() {
           value={activeOption ?? undefined}
           onChange={(option) => option && setActiveUserId((option as UserOption).value)}
           optionRenderer={(option: UserOption) => (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontWeight: 600 }}>{option.label}</span>
-              <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{option.roleName}</span>
+            <div className="flex flex-col">
+              <span className="font-semibold">{option.label}</span>
+              <span className="text-[11px] text-text-secondary">{option.roleName}</span>
             </div>
           )}
         />
