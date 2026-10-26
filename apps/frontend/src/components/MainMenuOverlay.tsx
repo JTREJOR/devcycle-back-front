@@ -62,7 +62,7 @@ export const MAIN_MENU_ITEMS: MenuItemDef[] = [
     title: "Comité",
     subtitle: "Sesiones y dictamen",
     icon: Calendar,
-    href: "/#comite",
+    href: "/en-construccion?modulo=Comité",
   },
 
   // Fila 2 (Inspirada en Imagen 2)
@@ -99,7 +99,7 @@ export const MAIN_MENU_ITEMS: MenuItemDef[] = [
     title: "Auditoría",
     subtitle: "Historial de operaciones",
     icon: Timeline,
-    href: "/#auditoria",
+    href: "/en-construccion?modulo=Auditoría",
   },
 ];
 

@@ -828,29 +828,29 @@ export default function PortfolioPage() {
                 <h3 className="widget-card__title">Próximos hitos</h3>
                 <div className="widget-card__subtitle">Fechas importantes del portafolio</div>
               </div>
-              <Link href="/iniciativas" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
+              <Link href="/en-construccion?modulo=Calendario%20de%20Hitos" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
                 Ver calendario →
               </Link>
             </div>
 
             <div className="pending-list">
-              <div className="home-milestone-item">
+              <Link href="/en-construccion?modulo=Comité%20de%20Portafolio" className="home-milestone-item">
                 <div className="home-milestone-date">29 Sep 2026</div>
                 <div className="home-milestone-body">
                   <span className="home-milestone-dot" style={{ background: "#8b5cf6" }} />
                   <span>Comité de portafolio</span>
                 </div>
                 <Icon icon={NavigationChevronRight} size={14} />
-              </div>
+              </Link>
 
-              <div className="home-milestone-item">
+              <Link href="/en-construccion?modulo=Cierre%20de%20Estimaciones%20Q4" className="home-milestone-item">
                 <div className="home-milestone-date">15 Oct 2026</div>
                 <div className="home-milestone-body">
                   <span className="home-milestone-dot" style={{ background: "#64748b" }} />
                   <span>Cierre de estimaciones Q4</span>
                 </div>
                 <Icon icon={NavigationChevronRight} size={14} />
-              </div>
+              </Link>
             </div>
           </section>
         </div>

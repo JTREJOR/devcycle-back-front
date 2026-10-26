@@ -1076,10 +1076,15 @@ function IniciativasContent() {
               </div>
 
               <div style={{ marginTop: 20 }}>
-                <button type="button" className="prio-btn-eval-cta">
+                <Link
+                  href={`/en-construccion?modulo=${encodeURIComponent("Autorización")}&id=${selectedInitiative.id}`}
+                  onClick={() => setSelectedId(selectedInitiative.id)}
+                  className="prio-btn-eval-cta"
+                  style={{ textDecoration: "none" }}
+                >
                   <span>Ir a autorización</span>
                   <Icon icon={NavigationChevronRight} size={16} />
-                </button>
+                </Link>
               </div>
             </div>
           )}
@@ -1141,10 +1146,15 @@ function IniciativasContent() {
               </div>
 
               <div style={{ marginTop: 20 }}>
-                <button type="button" className="prio-btn-eval-cta">
+                <Link
+                  href={`/en-construccion?modulo=${encodeURIComponent("Formalización")}&id=${selectedInitiative.id}`}
+                  onClick={() => setSelectedId(selectedInitiative.id)}
+                  className="prio-btn-eval-cta"
+                  style={{ textDecoration: "none" }}
+                >
                   <span>Ir a formalización</span>
                   <Icon icon={NavigationChevronRight} size={16} />
-                </button>
+                </Link>
               </div>
             </div>
           )}
@@ -1208,10 +1218,15 @@ function IniciativasContent() {
               </div>
 
               <div style={{ marginTop: 20 }}>
-                <button type="button" className="prio-btn-eval-cta">
+                <Link
+                  href={`/en-construccion?modulo=${encodeURIComponent("Ejecución")}&id=${selectedInitiative.id}`}
+                  onClick={() => setSelectedId(selectedInitiative.id)}
+                  className="prio-btn-eval-cta"
+                  style={{ textDecoration: "none" }}
+                >
                   <span>Ir a ejecución</span>
                   <Icon icon={NavigationChevronRight} size={16} />
-                </button>
+                </Link>
               </div>
             </div>
           )}
@@ -1275,10 +1290,15 @@ function IniciativasContent() {
               </div>
 
               <div style={{ marginTop: 20 }}>
-                <button type="button" className="prio-btn-eval-cta">
+                <Link
+                  href={`/en-construccion?modulo=${encodeURIComponent("Cierre")}&id=${selectedInitiative.id}`}
+                  onClick={() => setSelectedId(selectedInitiative.id)}
+                  className="prio-btn-eval-cta"
+                  style={{ textDecoration: "none" }}
+                >
                   <span>Ir a cierre</span>
                   <Icon icon={NavigationChevronRight} size={16} />
-                </button>
+                </Link>
               </div>
             </div>
           )}
