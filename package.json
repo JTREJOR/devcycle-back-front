@@ -12,5 +12,10 @@
     "dev:frontend": "pnpm --filter frontend dev",
     "build": "pnpm --filter @devcycle/shared build && pnpm --filter backend build && pnpm --filter frontend build",
     "lint": "pnpm -r lint"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^4.3.3"
   }
 }
