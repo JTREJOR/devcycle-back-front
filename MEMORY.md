@@ -18,6 +18,7 @@ Este documento funciona como memoria persistente para agentes y desarrolladores 
     - Borde: `border-warning-500`
   - Del mismo modo, variables de marca y estado registradas en `@theme inline` (`--color-brand-primary`, `--color-brand-accent`, `--color-text-main`, `--color-text-secondary`, `--color-border-default`, `--color-status-green-bg`, etc.) se usan como `bg-brand-primary`, `text-brand-primary`, `border-border-default`, `bg-status-green-bg`, `text-status-green-text`, etc.
 
-## 3. Plan de Migración por Fases
+## 3. Plan de Migración por Fases y Documentación Oficial
 - **Fase 1 (Completada)**: Migración de todos los componentes en `apps/frontend/src/components/*` a Tailwind CSS v4.
 - **Fase 2 (Completada)**: Migración de todas las páginas en `apps/frontend/src/app/**` (`page.tsx`, `layout.tsx`, `discovery/page.tsx`, `estimacion/page.tsx`, `iniciativas/page.tsx`, `iniciativas/evaluacion/page.tsx`, `iniciativas/confirmacion/page.tsx`, `project/[id]/page.tsx`, `team/page.tsx`, `en-construccion/page.tsx`, `not-found.tsx`) a Tailwind CSS v4 y limpieza total de las clases CSS legacy y variables no utilizadas en `globals.css`.
+- **Guía Oficial de Estilos y Sistema de Diseño**: Ver `docs/GUIA_ESTILOS_SISTEMA_DISENO.md` para la especificación completa de paleta de colores Liverpool + Monday.com, colores por situación y estados de botones, medidas exactas de componentes (px), breakpoints responsivos y diccionario de variables de `globals.css`.

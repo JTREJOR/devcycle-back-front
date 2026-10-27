@@ -448,10 +448,10 @@ export default function PortfolioPage() {
 
         {/* 2. Backlog por priorizar */}
         <div
-          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border-[1.5px] bg-[#fdf5f9] px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#b52670] hover:shadow-[0_6px_18px_rgba(181,38,112,0.12)] ${
+          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border-[1.5px] bg-brand-magenta-bg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-magenta hover:shadow-[0_6px_18px_rgba(181,38,112,0.12)] ${
             selectedKpiCard === "backlog"
-              ? "border-[#b52670] shadow-[0_6px_18px_rgba(181,38,112,0.12)]"
-              : "border-[#f3c5de] shadow-2xs"
+              ? "border-brand-magenta shadow-[0_6px_18px_rgba(181,38,112,0.12)]"
+              : "border-brand-magenta-border shadow-2xs"
           }`}
           onClick={() => {
             setSelectedKpiCard("backlog");
@@ -459,10 +459,10 @@ export default function PortfolioPage() {
           }}
         >
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#b52670] text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-magenta text-white">
               <Icon icon={Clipboard} size={17} />
             </div>
-            <span className="text-[14.5px] font-bold text-[#9d2469]">
+            <span className="text-[14.5px] font-bold text-brand-magenta-text">
               Backlog por priorizar
             </span>
           </div>
@@ -481,8 +481,8 @@ export default function PortfolioPage() {
               type="button"
               className={`cursor-pointer rounded-full bg-bg-card px-3 py-[3px] text-xs leading-[1.3] transition-all duration-150 ${
                 selectedKpiCard === "backlog" && selectedBacklogPill === "registradas"
-                  ? "border-[1.5px] border-[#b52670] font-bold text-[#b52670]"
-                  : "border border-slate-300 font-semibold text-slate-600 hover:border-[#b52670] hover:text-[#b52670]"
+                  ? "border-[1.5px] border-brand-magenta font-bold text-brand-magenta"
+                  : "border border-slate-300 font-semibold text-slate-600 hover:border-brand-magenta hover:text-brand-magenta active:border-brand-magenta-active active:text-brand-magenta-active"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -496,8 +496,8 @@ export default function PortfolioPage() {
               type="button"
               className={`cursor-pointer rounded-full bg-bg-card px-3 py-[3px] text-xs leading-[1.3] transition-all duration-150 ${
                 selectedKpiCard === "backlog" && selectedBacklogPill === "revision"
-                  ? "border-[1.5px] border-[#b52670] font-bold text-[#b52670]"
-                  : "border border-slate-300 font-semibold text-slate-600 hover:border-[#b52670] hover:text-[#b52670]"
+                  ? "border-[1.5px] border-brand-magenta font-bold text-brand-magenta"
+                  : "border border-slate-300 font-semibold text-slate-600 hover:border-brand-magenta hover:text-brand-magenta active:border-brand-magenta-active active:text-brand-magenta-active"
               }`}
               onClick={(e) => {
                 e.stopPropagation();

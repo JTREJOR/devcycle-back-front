@@ -5,10 +5,21 @@
   /* Paleta de marca Liverpool / DevCycle */
   --brand-primary: #833177;
   --brand-primary-hover: #6e2462;
+  --brand-primary-active: #581b4e;
   --brand-primary-light: #f5edf5;
   --brand-primary-soft: #fbf2f7;
+  --brand-primary-border: #f2d8ec;
+
   --brand-accent: #e6007e;
   --brand-accent-dark: #b30079;
+  --brand-accent-active: #8f0060;
+
+  --brand-magenta: #b52670;
+  --brand-magenta-hover: #961e5c;
+  --brand-magenta-active: #7a174a;
+  --brand-magenta-text: #9d2469;
+  --brand-magenta-bg: #fdf5f9;
+  --brand-magenta-border: #f3c5de;
 
   /* Colores de texto, bordes y superficies */
   --color-text-main: #383838;
@@ -17,19 +28,31 @@
   --color-text-muted: #8c8d98;
   --color-border: #e6e9ef;
   --color-border-subtle: #f0f2f7;
+  --color-border-input: #dcdfe4;
 
   /* Fondos */
   --bg-page: #f6f7fb;
   --bg-card: #ffffff;
   --bg-surface-soft: #fbfbfd;
 
-  /* Estados semánticos base */
-  --color-warning-500: #d97706;
-  --color-success-500: #059669;
-  --color-danger-500: #dc2626;
+  /* Colores por situación y estados interactivos (Default 500 / Hover 600 / Active 700) */
   --color-info-500: #0284c7;
+  --color-info-600: #0369a1;
+  --color-info-700: #075985;
 
-  /* Estados semánticos compuestos (Pills y Badges) */
+  --color-success-500: #059669;
+  --color-success-600: #047857;
+  --color-success-700: #065f46;
+
+  --color-warning-500: #d97706;
+  --color-warning-600: #b45309;
+  --color-warning-700: #92400e;
+
+  --color-danger-500: #dc2626;
+  --color-danger-600: #b91c1c;
+  --color-danger-700: #991b1b;
+
+  /* Estados semánticos compuestos (Pills, Badges y Alertas) */
   --status-green-bg: #e6f7ee;
   --status-green-text: #059669;
   --status-green-border: #a7f3d0;
@@ -71,10 +94,21 @@
   /* Colores de marca Liverpool / DevCycle */
   --color-brand-primary: var(--brand-primary);
   --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-active: var(--brand-primary-active);
   --color-brand-primary-light: var(--brand-primary-light);
   --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-primary-border: var(--brand-primary-border);
+
   --color-brand-accent: var(--brand-accent);
   --color-brand-accent-dark: var(--brand-accent-dark);
+  --color-brand-accent-active: var(--brand-accent-active);
+
+  --color-brand-magenta: var(--brand-magenta);
+  --color-brand-magenta-hover: var(--brand-magenta-hover);
+  --color-brand-magenta-active: var(--brand-magenta-active);
+  --color-brand-magenta-text: var(--brand-magenta-text);
+  --color-brand-magenta-bg: var(--brand-magenta-bg);
+  --color-brand-magenta-border: var(--brand-magenta-border);
 
   /* Colores de texto, bordes y superficies */
   --color-text-main: var(--color-text-main);
@@ -83,15 +117,27 @@
   --color-text-muted: var(--color-text-muted);
   --color-border-default: var(--color-border);
   --color-border-subtle: var(--color-border-subtle);
+  --color-border-input: var(--color-border-input);
   --color-bg-page: var(--bg-page);
   --color-bg-card: var(--bg-card);
   --color-surface-soft: var(--bg-surface-soft);
 
-  /* Estados semánticos directos (ej. text-warning-500, bg-warning-500) */
-  --color-warning-500: var(--color-warning-500);
-  --color-success-500: var(--color-success-500);
-  --color-danger-500: var(--color-danger-500);
+  /* Estados semánticos por situación (Default 500 / Hover 600 / Active 700) */
   --color-info-500: var(--color-info-500);
+  --color-info-600: var(--color-info-600);
+  --color-info-700: var(--color-info-700);
+
+  --color-success-500: var(--color-success-500);
+  --color-success-600: var(--color-success-600);
+  --color-success-700: var(--color-success-700);
+
+  --color-warning-500: var(--color-warning-500);
+  --color-warning-600: var(--color-warning-600);
+  --color-warning-700: var(--color-warning-700);
+
+  --color-danger-500: var(--color-danger-500);
+  --color-danger-600: var(--color-danger-600);
+  --color-danger-700: var(--color-danger-700);
 
   /* Tokens de badges de estado */
   --color-status-green-bg: var(--status-green-bg);
