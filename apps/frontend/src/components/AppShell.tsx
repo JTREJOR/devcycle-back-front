@@ -52,11 +52,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <header className="app-header">
-        <div className="app-header__left">
+      <header className="sticky top-0 z-20 flex h-auto flex-wrap items-center justify-between gap-2 border-b border-border-default bg-bg-card px-3.5 py-2.5 sm:h-header sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-0">
+        <div className="flex items-center gap-3.5">
           {/* Botón de menú de opciones (Imagen 3) */}
           <button
-            className={`app-header__icon-btn ${isMainMenuOpen ? "app-header__icon-btn--active" : ""}`}
+            className={`flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-lg border border-transparent transition-colors duration-150 hover:bg-brand-primary-light hover:text-brand-primary ${
+              isMainMenuOpen
+                ? "bg-brand-primary-light text-brand-primary"
+                : "bg-transparent text-text-main"
+            }`}
             aria-label="Abrir menú de opciones"
             title="Abrir menú con todas las opciones"
             type="button"
@@ -66,18 +70,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
 
           {/* Título de la página con punto morado (Imagen 3) */}
-          <div className="app-header__brand">
-            <span className="app-header__dot" aria-hidden>•</span>
-            <span className="app-header__title">{activeMenuTitle}</span>
+          <div className="flex items-center gap-1 text-base font-bold whitespace-nowrap text-text-main">
+            <span
+              className="inline-flex items-center justify-center text-[22px] leading-none font-black text-brand-primary"
+              aria-hidden
+            >
+              •
+            </span>
+            <span className="text-[15.5px] font-bold tracking-[-0.2px] text-text-main">
+              {activeMenuTitle}
+            </span>
           </div>
         </div>
 
-        <div className="app-header__right">
+        <div className="flex items-center gap-3">
           <RoleSwitcher />
-          <span className="app-header__role-pill">
+          <span className="inline-flex items-center rounded-[20px] border border-status-purple-border bg-status-purple-bg px-2.5 py-1 text-[11.5px] font-bold tracking-[0.4px] text-brand-primary">
             {activeRole ? activeRole.name.toUpperCase().replace(/\s+/g, "_") : "ADMIN_ROOT"}
           </span>
-          <span className="app-header__user-email">
+          <span className="hidden text-[12.5px] text-text-secondary md:inline">
             {activeUser ? activeUser.email : "aemartinezz@liverpool.com.mx"}
           </span>
         </div>
@@ -87,23 +98,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <MainMenuOverlay />
 
       {isSimulating && (
-        <div className="simulation-banner">
-          <div className="simulation-banner__left">
-            <div className="simulation-banner__badge">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#f2d8ec] bg-[#faedf6] px-6 py-2">
+          <div className="flex items-center gap-3">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-primary text-white">
               <Icon icon={Labs} size={15} />
             </div>
             <div>
-              <div className="simulation-banner__title">
+              <div className="text-xs font-bold text-brand-primary">
                 MODO PRUEBAS &nbsp; Simulando: {activeUser?.name} · {activeRole?.name.toUpperCase()}
               </div>
-              <div className="simulation-banner__subtitle">
+              <div className="text-[11px] text-text-secondary">
                 Usuario real: Argos Eyra Martinez Zeferino · aemartinezz@liverpool.com.mx
               </div>
             </div>
           </div>
           <button
             type="button"
-            className="simulation-banner__btn"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-brand-primary bg-bg-card px-3 py-[5px] text-[11.5px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
             onClick={() => setActiveUserId("u-01")}
           >
             <Icon icon={LogOut} size={14} />
@@ -112,7 +123,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className={`app-main ${isChatOpen ? "app-main--chat-open" : ""}`}>{children}</main>
+      <main
+        className={`mx-auto w-full max-w-[1400px] flex-1 p-4 transition-[padding-right] duration-200 sm:px-8 sm:py-6 ${
+          isChatOpen ? "lg:pr-[calc(var(--app-copilot-width)+32px)]" : ""
+        }`}
+      >
+        {children}
+      </main>
       <CopilotChat />
     </>
   );

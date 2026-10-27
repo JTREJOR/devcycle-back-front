@@ -226,121 +226,197 @@ export default function PortfolioPage() {
     const macro = getMacroStage(etapa);
     switch (macro) {
       case "Definición":
-        return <span className="prio-stage-pill prio-stage-pill--prio">1. Definición</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-blue-600">
+            1. Definición
+          </span>
+        );
       case "Estimación":
-        return <span className="prio-stage-pill prio-stage-pill--est">2. Estimación</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-violet-600">
+            2. Estimación
+          </span>
+        );
       case "Ejecución":
-        return <span className="prio-stage-pill prio-stage-pill--eje">3. Ejecución</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-status-green-border bg-emerald-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-success-500">
+            3. Ejecución
+          </span>
+        );
       case "Cierre":
-        return <span className="prio-stage-pill prio-stage-pill--cie">4. Cierre</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-gray-200 bg-gray-100 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-gray-700">
+            4. Cierre
+          </span>
+        );
     }
   };
 
   const getEstadoPill = (estado?: string, statusFallback?: string) => {
     const st = estado || statusFallback || "Por iniciar";
     if (st === "Nueva" || st === "Por revisar" || st === "Por iniciar") {
-      return <span className="prio-estado-pill prio-estado-pill--purple">Por iniciar</span>;
+      return (
+        <span className="inline-flex items-center rounded-xl border border-pink-200 bg-pink-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-pink-600">
+          Por iniciar
+        </span>
+      );
     }
     if (st === "En priorización" || st === "En revisión" || st === "En ejecución" || st === "En proceso" || st === "En curso") {
-      return <span className="prio-estado-pill prio-estado-pill--blue">En curso</span>;
+      return (
+        <span className="inline-flex items-center rounded-xl border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-blue-600">
+          En curso
+        </span>
+      );
     }
     if (st === "Lista" || st === "Aprobada" || st === "Finalizado" || st === "Cerrada") {
-      return <span className="prio-estado-pill prio-estado-pill--green">Finalizado</span>;
+      return (
+        <span className="inline-flex items-center rounded-xl border border-green-200 bg-green-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-green-600">
+          Finalizado
+        </span>
+      );
     }
     if (st === "Con comentarios" || st === "Atrasado" || st === "Ajustes solicitados") {
-      return <span className="prio-estado-pill prio-estado-pill--red">Atrasado</span>;
+      return (
+        <span className="inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-red-500">
+          Atrasado
+        </span>
+      );
     }
-    return <span className="prio-estado-pill prio-estado-pill--gray">{st}</span>;
+    return (
+      <span className="inline-flex items-center rounded-xl border border-gray-200 bg-gray-100 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-gray-600">
+        {st}
+      </span>
+    );
   };
 
   const getScoreBadge = (score: number | null) => {
-    if (score === null) return <span style={{ color: "#9ca3af" }}>-</span>;
-    if (score >= 80) return <span className="inbox-score-badge inbox-score-badge--green">{score}</span>;
-    if (score >= 70) return <span className="inbox-score-badge inbox-score-badge--amber">{score}</span>;
-    return <span className="inbox-score-badge inbox-score-badge--orange">{score}</span>;
+    if (score === null) return <span className="text-gray-400">-</span>;
+    if (score >= 80) {
+      return (
+        <span className="inline-flex min-w-[34px] items-center justify-center rounded-lg border border-status-green-border bg-emerald-50 px-2 py-[3px] text-xs font-bold text-success-500">
+          {score}
+        </span>
+      );
+    }
+    if (score >= 70) {
+      return (
+        <span className="inline-flex min-w-[34px] items-center justify-center rounded-lg border border-amber-200 bg-amber-50 px-2 py-[3px] text-xs font-bold text-warning-500">
+          {score}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex min-w-[34px] items-center justify-center rounded-lg border border-status-orange-border bg-status-orange-bg px-2 py-[3px] text-xs font-bold text-orange-600">
+        {score}
+      </span>
+    );
+  };
+
+  const getRowBorderColor = (color?: string) => {
+    const map: Record<string, string> = {
+      "#e6007e": "border-l-brand-accent",
+      "#833177": "border-l-brand-primary",
+      "#8b5cf6": "border-l-violet-500",
+      "#7c3aed": "border-l-violet-600",
+      "#f59e0b": "border-l-amber-500",
+      "#d97706": "border-l-warning-500",
+      "#ea580c": "border-l-orange-600",
+      "#ec4899": "border-l-pink-500",
+      "#db2777": "border-l-pink-600",
+      "#e11d48": "border-l-rose-600",
+      "#10b981": "border-l-emerald-500",
+      "#059669": "border-l-success-500",
+      "#3b82f6": "border-l-blue-500",
+      "#2563eb": "border-l-blue-600",
+      "#0284c7": "border-l-info-500",
+    };
+    return map[color || ""] || "border-l-brand-primary";
   };
 
   return (
     <div>
-      <div className="app-back-bar">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* 1. SECCIÓN HERO (Bienvenida ejecutiva) */}
-      <section className="hero-card">
+      <section className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
         <div>
-          <div className="hero-card__tag">BIENVENIDA</div>
-          <h1 className="hero-card__greeting" style={{ fontSize: 26, fontWeight: 800 }}>
+          <div className="mb-0.5 text-[11px] font-bold tracking-[1px] text-brand-primary uppercase">
+            BIENVENIDA
+          </div>
+          <h1 className="m-0 mb-1 text-[26px] font-extrabold text-text-heading">
             Home • Portafolio
           </h1>
-          <p className="hero-card__sub">
+          <p className="m-0 text-[13.5px] text-text-secondary">
             Consulta el estado de tus iniciativas, aprobaciones y solicitudes del portafolio.
           </p>
         </div>
 
-        <div className="hero-card__time-box">
-          <div style={{ color: "#f59e0b", display: "flex", alignItems: "center" }}>
+        <div className="flex items-center gap-3 text-right">
+          <div className="flex items-center text-amber-500">
             <Icon icon={Sun} size={32} />
           </div>
           <div>
-            <div className="hero-card__time">{currentTimeStr || "9:24 a.m."}</div>
-            <div className="hero-card__date" style={{ textTransform: "capitalize" }}>
+            <div className="text-2xl leading-[1.1] font-bold text-text-heading">
+              {currentTimeStr || "9:24 a.m."}
+            </div>
+            <div className="mt-0.5 text-[12.5px] text-text-secondary capitalize">
               {currentDateStr || "Jueves, 24 de Septiembre de 2026"}
             </div>
-            <div className="hero-card__slogan-box">
-              <span className="hero-card__slogan-bar" />
-              <span className="hero-card__slogan">Grandes ideas, mayores resultados.</span>
+            <div className="mt-1.5 flex items-center justify-end gap-2">
+              <span className="h-[3px] w-6 rounded-xs bg-brand-accent" />
+              <span className="text-[11.5px] font-medium text-text-secondary">
+                Grandes ideas, mayores resultados.
+              </span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Selector de Cartera de Negocio Independiente */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "#ffffff",
-          padding: "10px 16px",
-          borderRadius: 8,
-          border: "1px solid var(--color-border)",
-          margin: "16px 0",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase" }}>
+      <div className="my-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border-default bg-bg-card px-4 py-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold text-slate-600 uppercase">
             Cartera de Negocio:
           </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            {CARTERAS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                className={`tag-pill ${selectedCartera === c ? "tag-pill--purple" : "tag-pill--gray"}`}
-                style={{ cursor: "pointer", fontWeight: selectedCartera === c ? 700 : 500 }}
-                onClick={() => setSelectedCartera(c)}
-              >
-                {c}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-1.5">
+            {CARTERAS.map((c) => {
+              const isSelected = selectedCartera === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  className={`inline-flex cursor-pointer items-center rounded-xl border px-2.5 py-[3px] text-[11.5px] tracking-[0.2px] whitespace-nowrap transition-colors ${
+                    isSelected
+                      ? "border-status-purple-border bg-status-purple-bg font-bold text-status-purple-text"
+                      : "border-status-gray-border bg-status-gray-bg font-medium text-status-gray-text hover:bg-brand-primary-light hover:text-brand-primary"
+                  }`}
+                  onClick={() => setSelectedCartera(c)}
+                >
+                  {c}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div style={{ fontSize: 11.5, color: "#64748b" }}>
+        <div className="text-[11.5px] text-slate-500">
           Portafolio activo: <strong>{initiativesInCartera.length}</strong> iniciativas en {selectedCartera}
         </div>
       </div>
 
       {/* 2. FILTROS DE PORTAFOLIO (4 BOTONES DE ESTADO) */}
-      <div className="prio-kpi-grid" style={{ marginTop: 16 }}>
+      <div className="mt-4 mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* 1. Aprobadas en proceso */}
         <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "aprobadas" ? "prio-kpi-card--active-aprobadas" : ""
+          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
+            selectedKpiCard === "aprobadas"
+              ? "border-success-500 bg-green-50 shadow-[0_6px_18px_rgba(5,150,105,0.12)]"
+              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
           }`}
           onClick={() => setSelectedKpiCard("aprobadas")}
         >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--green">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-success-500">
             <svg
               width="20"
               height="20"
@@ -356,13 +432,15 @@ export default function PortfolioPage() {
             </svg>
           </div>
 
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+          <div className="mt-1.5 text-[34px] leading-none font-extrabold text-text-heading">
             {countAprobadasEnProceso}
           </div>
 
           <div>
-            <div className="prio-kpi-card__title-normal">Aprobadas en proceso</div>
-            <div className="prio-kpi-card__sub-normal">
+            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+              Aprobadas en proceso
+            </div>
+            <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
               Ejecución {countEjecucion} · Autorización {countAutorizacion}
             </div>
           </div>
@@ -370,33 +448,41 @@ export default function PortfolioPage() {
 
         {/* 2. Backlog por priorizar */}
         <div
-          className={`prio-kpi-card prio-kpi-card--backlog ${
-            selectedKpiCard === "backlog" ? "prio-kpi-card--active-backlog" : ""
+          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border-[1.5px] bg-brand-magenta-bg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-magenta hover:shadow-[0_6px_18px_rgba(181,38,112,0.12)] ${
+            selectedKpiCard === "backlog"
+              ? "border-brand-magenta shadow-[0_6px_18px_rgba(181,38,112,0.12)]"
+              : "border-brand-magenta-border shadow-2xs"
           }`}
           onClick={() => {
             setSelectedKpiCard("backlog");
             setSelectedBacklogPill("registradas");
           }}
         >
-          <div className="prio-kpi-card__top-header">
-            <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--magenta">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-magenta text-white">
               <Icon icon={Clipboard} size={17} />
             </div>
-            <span className="prio-kpi-card__title-magenta">Backlog por priorizar</span>
+            <span className="text-[14.5px] font-bold text-brand-magenta-text">
+              Backlog por priorizar
+            </span>
           </div>
 
-          <div className="prio-kpi-card__number-row">
-            <span className="prio-kpi-card__big-value">{countBacklog}</span>
-            <span className="prio-kpi-card__total-note">de {totalIdeas} ideas asignadas</span>
+          <div className="mt-1.5 mb-0.5 flex items-baseline gap-2">
+            <span className="text-[34px] leading-none font-extrabold text-text-heading">
+              {countBacklog}
+            </span>
+            <span className="text-[13px] font-medium text-slate-500">
+              de {totalIdeas} ideas asignadas
+            </span>
           </div>
 
-          <div className="prio-kpi-card__pills">
+          <div className="mt-2.5 flex items-center gap-2">
             <button
               type="button"
-              className={`prio-kpi-card__pill ${
+              className={`cursor-pointer rounded-full bg-bg-card px-3 py-[3px] text-xs leading-[1.3] transition-all duration-150 ${
                 selectedKpiCard === "backlog" && selectedBacklogPill === "registradas"
-                  ? "prio-kpi-card__pill--active"
-                  : ""
+                  ? "border-[1.5px] border-brand-magenta font-bold text-brand-magenta"
+                  : "border border-slate-300 font-semibold text-slate-600 hover:border-brand-magenta hover:text-brand-magenta active:border-brand-magenta-active active:text-brand-magenta-active"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -408,10 +494,10 @@ export default function PortfolioPage() {
             </button>
             <button
               type="button"
-              className={`prio-kpi-card__pill ${
+              className={`cursor-pointer rounded-full bg-bg-card px-3 py-[3px] text-xs leading-[1.3] transition-all duration-150 ${
                 selectedKpiCard === "backlog" && selectedBacklogPill === "revision"
-                  ? "prio-kpi-card__pill--active"
-                  : ""
+                  ? "border-[1.5px] border-brand-magenta font-bold text-brand-magenta"
+                  : "border border-slate-300 font-semibold text-slate-600 hover:border-brand-magenta hover:text-brand-magenta active:border-brand-magenta-active active:text-brand-magenta-active"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -426,12 +512,14 @@ export default function PortfolioPage() {
 
         {/* 3. Sin etapa definida */}
         <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "sin_etapa" ? "prio-kpi-card--active-sin-etapa" : ""
+          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
+            selectedKpiCard === "sin_etapa"
+              ? "border-slate-500 bg-slate-50 shadow-[0_6px_18px_rgba(100,116,139,0.12)]"
+              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
           }`}
           onClick={() => setSelectedKpiCard("sin_etapa")}
         >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--gray">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
             <svg
               width="20"
               height="20"
@@ -448,13 +536,15 @@ export default function PortfolioPage() {
             </svg>
           </div>
 
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+          <div className="mt-1.5 text-[34px] leading-none font-extrabold text-text-heading">
             {countSinEtapa}
           </div>
 
           <div>
-            <div className="prio-kpi-card__title-normal">Sin etapa definida</div>
-            <div className="prio-kpi-card__sub-normal">
+            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+              Sin etapa definida
+            </div>
+            <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
               Aprobadas sin confirmar ruta ni iniciar proceso
             </div>
           </div>
@@ -462,12 +552,14 @@ export default function PortfolioPage() {
 
         {/* 4. Rechazadas */}
         <div
-          className={`prio-kpi-card ${
-            selectedKpiCard === "rechazadas" ? "prio-kpi-card--active-rechazadas" : ""
+          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
+            selectedKpiCard === "rechazadas"
+              ? "border-danger-500 bg-red-50 shadow-[0_6px_18px_rgba(220,38,38,0.12)]"
+              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
           }`}
           onClick={() => setSelectedKpiCard("rechazadas")}
         >
-          <div className="prio-kpi-card__badge-icon prio-kpi-card__badge-icon--red">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-danger-500">
             <svg
               width="20"
               height="20"
@@ -484,42 +576,39 @@ export default function PortfolioPage() {
             </svg>
           </div>
 
-          <div className="prio-kpi-card__big-value" style={{ marginTop: 6 }}>
+          <div className="mt-1.5 text-[34px] leading-none font-extrabold text-text-heading">
             {countRechazadas}
           </div>
 
           <div>
-            <div className="prio-kpi-card__title-normal">Rechazadas</div>
-            <div className="prio-kpi-card__sub-normal">Ideas no priorizadas</div>
+            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+              Rechazadas
+            </div>
+            <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
+              Ideas no priorizadas
+            </div>
           </div>
         </div>
       </div>
 
       {/* 3. BARRA DE ACCIONES CLAVE */}
-      <section className="home-actions-bar">
-        <div className="home-actions-bar__info">
-          <div className="home-actions-bar__icon">
+      <section className="mb-5.5 flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-border-default bg-bg-card px-5 py-3.5 shadow-2xs">
+        <div className="flex items-center gap-3">
+          <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-brand-primary-light text-brand-primary">
             <Icon icon={Bolt} size={20} />
           </div>
           <div>
-            <div className="home-actions-bar__title">Acciones clave</div>
-            <div className="home-actions-bar__sub">
+            <div className="text-[14.5px] font-bold text-text-heading">Acciones clave</div>
+            <div className="text-[12.5px] text-text-secondary">
               Accede a los módulos clave del ciclo automatizado de iniciativas.
             </div>
           </div>
         </div>
 
-        <div className="home-actions-bar__buttons">
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/discovery"
-            className="btn-purple-solid"
-            style={{
-              background: "#833177",
-              borderColor: "#833177",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white no-underline transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
           >
             <span>+ Crear nueva iniciativa</span>
           </Link>
@@ -527,19 +616,22 @@ export default function PortfolioPage() {
       </section>
 
       {/* 4. LAYOUT A DOS COLUMNAS */}
-      <div className="home-content-layout">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1.8fr)_minmax(320px,1fr)]">
         {/* COLUMNA IZQUIERDA: BANDEJA PRIORITARIA */}
-        <section className="inbox-table-card" id="priorizacion">
-          <div className="inbox-table-header">
-            <div className="inbox-table-title-box">
-              <div className="inbox-table-icon">
+        <section
+          className="rounded-[14px] border border-border-default bg-bg-card px-5.5 py-5 shadow-2xs"
+          id="priorizacion"
+        >
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-brand-primary-light text-brand-primary">
                 <Icon icon={CheckList} size={18} />
               </div>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#1e2022" }}>
+                <h2 className="m-0 text-[17px] font-bold text-text-heading">
                   Bandeja prioritaria
                 </h2>
-                <div style={{ fontSize: 12.5, color: "var(--color-text-secondary)", marginTop: 2 }}>
+                <div className="mt-0.5 text-[12.5px] text-text-secondary">
                   {filterSubtitle}
                 </div>
               </div>
@@ -547,40 +639,33 @@ export default function PortfolioPage() {
 
             <Link
               href="/iniciativas"
-              style={{
-                fontSize: 12.5,
-                fontWeight: 600,
-                color: "var(--brand-primary)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-              }}
+              className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-brand-primary no-underline hover:underline"
             >
               <span>Ver todas</span>
               <span>→</span>
             </Link>
           </div>
 
-          <div style={{ overflowX: "auto" }}>
-            <table className="inbox-table">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[13px]">
               <thead>
-                <tr>
-                  <th style={{ width: "27%" }}>Iniciativa</th>
-                  <th style={{ width: "20%" }}>Área</th>
-                  <th style={{ width: "16%" }}>Etapa actual</th>
-                  <th style={{ width: "9%" }}>Score</th>
-                  <th style={{ width: "16%" }}>Estado</th>
-                  <th style={{ width: "12%", textAlign: "center" }}>Acción</th>
+                <tr className="border-b border-border-default bg-[#fafbfc] text-left text-xs font-semibold text-text-secondary">
+                  <th className="w-[27%] px-3 py-2.5">Iniciativa</th>
+                  <th className="w-[20%] px-3 py-2.5">Área</th>
+                  <th className="w-[16%] px-3 py-2.5">Etapa actual</th>
+                  <th className="w-[9%] px-3 py-2.5">Score</th>
+                  <th className="w-[16%] px-3 py-2.5">Estado</th>
+                  <th className="w-[12%] px-3 py-2.5 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody>
                 {displayedInitiatives.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: "center", padding: "36px 20px" }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", marginBottom: 4 }}>
+                    <td colSpan={6} className="px-5 py-9 text-center">
+                      <div className="mb-1 text-sm font-bold text-slate-800">
                         No hay iniciativas en este estado
                       </div>
-                      <div style={{ fontSize: 12.5, color: "#64748b" }}>
+                      <div className="text-[12.5px] text-slate-500">
                         Selecciona otro filtro en las tarjetas superiores para consultar las iniciativas.
                       </div>
                     </td>
@@ -589,43 +674,36 @@ export default function PortfolioPage() {
                   displayedInitiatives.map((item) => (
                     <tr
                       key={item.id}
-                      className="inbox-row-accent"
-                      style={{ "--row-accent": item.color || "#833177" } as React.CSSProperties}
+                      className="border-b border-[#f1f3f7] transition-colors hover:bg-[#fafbfe]"
                     >
-                      <td>
+                      <td className={`border-l-4 py-[13px] pr-3 pl-3.5 align-middle ${getRowBorderColor(item.color)}`}>
                         <Link
                           href={`/iniciativas?id=${item.id}`}
                           onClick={() => setSelectedInitiativeId(item.id)}
-                          style={{
-                            fontWeight: 700,
-                            color: "#1e2022",
-                            fontSize: 13.5,
-                            paddingLeft: 8,
-                            display: "inline-block",
-                          }}
+                          className="inline-block pl-2 text-[13.5px] font-bold text-text-heading no-underline hover:text-brand-primary"
                         >
                           {item.name}
                         </Link>
                       </td>
-                      <td>
-                        <span style={{ color: "var(--color-text-secondary)", fontSize: 13 }}>
+                      <td className="px-3 py-[13px] align-middle">
+                        <span className="text-[13px] text-text-secondary">
                           {item.area}
                         </span>
                       </td>
-                      <td>
+                      <td className="px-3 py-[13px] align-middle">
                         {getEtapaPill(item.etapaCiclo)}
                       </td>
-                      <td>
+                      <td className="px-3 py-[13px] align-middle">
                         {getScoreBadge(item.score)}
                       </td>
-                      <td>
+                      <td className="px-3 py-[13px] align-middle">
                         {getEstadoPill(item.estadoOperativo, item.status)}
                       </td>
-                      <td style={{ textAlign: "center" }}>
+                      <td className="px-3 py-[13px] text-center align-middle">
                         <Link
                           href={`/iniciativas?id=${item.id}`}
                           onClick={() => setSelectedInitiativeId(item.id)}
-                          className="home-btn-action-ver"
+                          className="inline-flex cursor-pointer items-center justify-center rounded-md border border-pink-600 bg-bg-card px-4.5 py-1 text-xs font-semibold text-brand-primary no-underline transition-all duration-150 hover:border-brand-primary hover:bg-[#fdf5fa]"
                         >
                           Ver
                         </Link>
@@ -638,8 +716,8 @@ export default function PortfolioPage() {
           </div>
 
           {/* Banner Informativo explicativo de 4 etapas y 4 estados */}
-          <div className="home-table-info-banner">
-            <span style={{ color: "#0284c7", display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <div className="mt-3.5 flex items-center gap-2.5 rounded-lg border border-[#cce3fd] bg-[#f0f7ff] px-3.5 py-2.5 text-[11.5px] leading-[1.4] text-gray-700">
+            <span className="flex shrink-0 items-center text-info-500">
               <Icon icon={Info} size={16} />
             </span>
             <span>
@@ -649,22 +727,24 @@ export default function PortfolioPage() {
         </section>
 
         {/* COLUMNA DERECHA: 3 WIDGETS (Imagen 2) */}
-        <div className="widget-stack">
+        <div className="flex flex-col gap-5">
           {/* Widget 1: Vista por etapa (Donut con 6 etapas) */}
-          <section className="widget-card">
-            <div className="widget-card__header">
-              <div className="widget-card__icon" style={{ background: "#f5edf5", color: "#833177" }}>
+          <section className="rounded-[14px] border border-border-default bg-bg-card p-5 shadow-2xs">
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary-light text-brand-primary">
                 <Icon icon={Timeline} size={18} />
               </div>
               <div>
-                <h3 className="widget-card__title">Vista por etapa</h3>
-                <div className="widget-card__subtitle">Distribución de iniciativas en el portafolio.</div>
+                <h3 className="m-0 text-sm font-bold text-text-heading">Vista por etapa</h3>
+                <div className="text-[11.5px] text-text-secondary">
+                  Distribución de iniciativas en el portafolio.
+                </div>
               </div>
             </div>
 
-            <div className="donut-widget-body">
+            <div className="flex items-center gap-5">
               {/* Gráfica de dona SVG con 4 segmentos proporcionales homologados */}
-              <div className="donut-chart-container">
+              <div className="relative h-[120px] w-[120px] shrink-0">
                 <svg width="120" height="120" viewBox="0 0 120 120">
                   {/* Segmento 1: Definición (Azul #2563eb) */}
                   <circle
@@ -715,55 +795,57 @@ export default function PortfolioPage() {
                     transform="rotate(-90 60 60)"
                   />
                 </svg>
-                <div className="donut-center-text">
-                  <span className="donut-center-num">{initiativesInCartera.length}</span>
-                  <span className="donut-center-label">iniciativas</span>
+                <div className=" absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span className="text-xl leading-none font-extrabold text-text-heading">
+                    {initiativesInCartera.length}
+                  </span>
+                  <span className="mt-0.5 text-[10px] text-text-secondary">iniciativas</span>
                 </div>
               </div>
 
               {/* Leyenda con las 4 etapas macro, conteos y porcentajes exactos */}
-              <div className="donut-legend">
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#2563eb" }} />
+              <div className="flex min-w-0 flex-1 flex-col gap-[9px]">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-[9px] w-[9px] shrink-0 rounded-full bg-blue-600" />
                     <span>Definición</span>
                   </div>
-                  <div className="donut-legend-counts">
+                  <div className="flex items-center gap-2 font-semibold">
                     <span>{countStage1_Definicion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctDef}%</span>
+                    <span className="font-medium text-text-secondary">{pctDef}%</span>
                   </div>
                 </div>
 
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#8b5cf6" }} />
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-[9px] w-[9px] shrink-0 rounded-full bg-violet-500" />
                     <span>Estimación</span>
                   </div>
-                  <div className="donut-legend-counts">
+                  <div className="flex items-center gap-2 font-semibold">
                     <span>{countStage2_Estimacion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctEst}%</span>
+                    <span className="font-medium text-text-secondary">{pctEst}%</span>
                   </div>
                 </div>
 
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#10b981" }} />
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-[9px] w-[9px] shrink-0 rounded-full bg-emerald-500" />
                     <span>Ejecución</span>
                   </div>
-                  <div className="donut-legend-counts">
+                  <div className="flex items-center gap-2 font-semibold">
                     <span>{countStage3_Ejecucion}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctEje}%</span>
+                    <span className="font-medium text-text-secondary">{pctEje}%</span>
                   </div>
                 </div>
 
-                <div className="donut-legend-item">
-                  <div className="donut-legend-left">
-                    <span className="donut-legend-dot" style={{ background: "#1e293b" }} />
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-[9px] w-[9px] shrink-0 rounded-full bg-slate-800" />
                     <span>Cierre</span>
                   </div>
-                  <div className="donut-legend-counts">
+                  <div className="flex items-center gap-2 font-semibold">
                     <span>{countStage4_Cierre}</span>
-                    <span style={{ color: "var(--color-text-secondary)", fontWeight: 500 }}>{pctCie}%</span>
+                    <span className="font-medium text-text-secondary">{pctCie}%</span>
                   </div>
                 </div>
               </div>
@@ -771,24 +853,35 @@ export default function PortfolioPage() {
           </section>
 
           {/* Widget 2: Pendientes clave (Imagen 2) */}
-          <section className="widget-card" id="aprobaciones">
-            <div className="widget-card__header">
-              <div className="widget-card__icon" style={{ background: "#fdf2f8", color: "#db2777" }}>
+          <section
+            className="rounded-[14px] border border-border-default bg-bg-card p-5 shadow-2xs"
+            id="aprobaciones"
+          >
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-pink-50 text-pink-600">
                 <Icon icon={Alert} size={18} />
               </div>
               <div>
-                <h3 className="widget-card__title">Pendientes clave</h3>
-                <div className="widget-card__subtitle">Temas que requieren tu atención</div>
+                <h3 className="m-0 text-sm font-bold text-text-heading">Pendientes clave</h3>
+                <div className="text-[11.5px] text-text-secondary">
+                  Temas que requieren tu atención
+                </div>
               </div>
-              <Link href="/iniciativas" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
+              <Link
+                href="/iniciativas"
+                className="ml-auto text-xs font-semibold text-brand-primary no-underline hover:underline"
+              >
                 Ver todas →
               </Link>
             </div>
 
-            <div className="pending-list">
-              <Link href="/iniciativas" className="pending-item">
-                <div className="pending-item__left">
-                  <div className="pending-item__icon" style={{ background: "#fef2f2", color: "#ef4444" }}>
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/iniciativas"
+                className="flex cursor-pointer items-center justify-between rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3 py-2.5 text-inherit no-underline transition-all duration-150 hover:translate-x-0.5 hover:border-[#e5d2e2] hover:bg-brand-primary-light"
+              >
+                <div className="flex items-center gap-2.5 text-[12.5px] font-semibold text-text-heading">
+                  <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
                     <Icon icon={Alert} size={14} />
                   </div>
                   <span>3 iniciativas por revisar</span>
@@ -796,9 +889,12 @@ export default function PortfolioPage() {
                 <Icon icon={NavigationChevronRight} size={14} />
               </Link>
 
-              <Link href="/iniciativas" className="pending-item">
-                <div className="pending-item__left">
-                  <div className="pending-item__icon" style={{ background: "#fffbeb", color: "#d97706" }}>
+              <Link
+                href="/iniciativas"
+                className="flex cursor-pointer items-center justify-between rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3 py-2.5 text-inherit no-underline transition-all duration-150 hover:translate-x-0.5 hover:border-[#e5d2e2] hover:bg-brand-primary-light"
+              >
+                <div className="flex items-center gap-2.5 text-[12.5px] font-semibold text-text-heading">
+                  <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-amber-50 text-warning-500">
                     <Icon icon={Time} size={14} />
                   </div>
                   <span>5 en espera de comité</span>
@@ -806,9 +902,12 @@ export default function PortfolioPage() {
                 <Icon icon={NavigationChevronRight} size={14} />
               </Link>
 
-              <Link href="/project/proj-01" className="pending-item">
-                <div className="pending-item__left">
-                  <div className="pending-item__icon" style={{ background: "#f5edf5", color: "#833177" }}>
+              <Link
+                href="/project/proj-01"
+                className="flex cursor-pointer items-center justify-between rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3 py-2.5 text-inherit no-underline transition-all duration-150 hover:translate-x-0.5 hover:border-[#e5d2e2] hover:bg-brand-primary-light"
+              >
+                <div className="flex items-center gap-2.5 text-[12.5px] font-semibold text-text-heading">
+                  <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-brand-primary-light text-brand-primary">
                     <Icon icon={FileIcon} size={14} />
                   </div>
                   <span>3 con documentos pendientes</span>
@@ -819,38 +918,56 @@ export default function PortfolioPage() {
           </section>
 
           {/* Widget 3: Próximos hitos (Imagen 2) */}
-          <section className="widget-card" id="hitos">
-            <div className="widget-card__header">
-              <div className="widget-card__icon" style={{ background: "#fdf2f8", color: "#db2777" }}>
+          <section
+            className="rounded-[14px] border border-border-default bg-bg-card p-5 shadow-2xs"
+            id="hitos"
+          >
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-pink-50 text-pink-600">
                 <Icon icon={Calendar} size={18} />
               </div>
               <div>
-                <h3 className="widget-card__title">Próximos hitos</h3>
-                <div className="widget-card__subtitle">Fechas importantes del portafolio</div>
+                <h3 className="m-0 text-sm font-bold text-text-heading">Próximos hitos</h3>
+                <div className="text-[11.5px] text-text-secondary">
+                  Fechas importantes del portafolio
+                </div>
               </div>
-              <Link href="/iniciativas" style={{ fontSize: 12, color: "#833177", fontWeight: 600, marginLeft: "auto", textDecoration: "none" }}>
+              <Link
+                href="/en-construccion?modulo=Calendario%20de%20Hitos"
+                className="ml-auto text-xs font-semibold text-brand-primary no-underline hover:underline"
+              >
                 Ver calendario →
               </Link>
             </div>
 
-            <div className="pending-list">
-              <div className="home-milestone-item">
-                <div className="home-milestone-date">29 Sep 2026</div>
-                <div className="home-milestone-body">
-                  <span className="home-milestone-dot" style={{ background: "#8b5cf6" }} />
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/en-construccion?modulo=Comité%20de%20Portafolio"
+                className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-[9px] text-gray-700 no-underline transition-colors duration-150 hover:bg-gray-50"
+              >
+                <div className="w-[95px] shrink-0 text-xs font-bold text-text-heading">
+                  29 Sep 2026
+                </div>
+                <div className="flex flex-1 items-center gap-2 text-xs text-gray-600">
+                  <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-violet-500" />
                   <span>Comité de portafolio</span>
                 </div>
                 <Icon icon={NavigationChevronRight} size={14} />
-              </div>
+              </Link>
 
-              <div className="home-milestone-item">
-                <div className="home-milestone-date">15 Oct 2026</div>
-                <div className="home-milestone-body">
-                  <span className="home-milestone-dot" style={{ background: "#64748b" }} />
+              <Link
+                href="/en-construccion?modulo=Cierre%20de%20Estimaciones%20Q4"
+                className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-[9px] text-gray-700 no-underline transition-colors duration-150 hover:bg-gray-50"
+              >
+                <div className="w-[95px] shrink-0 text-xs font-bold text-text-heading">
+                  15 Oct 2026
+                </div>
+                <div className="flex flex-1 items-center gap-2 text-xs text-gray-600">
+                  <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-slate-500" />
                   <span>Cierre de estimaciones Q4</span>
                 </div>
                 <Icon icon={NavigationChevronRight} size={14} />
-              </div>
+              </Link>
             </div>
           </section>
         </div>

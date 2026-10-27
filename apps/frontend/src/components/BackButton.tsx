@@ -25,7 +25,7 @@ export function BackButton({ label = "Atrás", fallbackHref = "/" }: BackButtonP
     <button
       type="button"
       onClick={handleBack}
-      className="app-back-btn"
+      className="inline-flex items-center gap-[5px] rounded-lg border border-border-default bg-bg-card px-3 py-1.5 text-[12.5px] font-bold text-brand-primary shadow-2xs cursor-pointer transition-all duration-150 hover:bg-brand-primary-light hover:border-brand-primary"
       title="Volver a la página anterior"
     >
       <Icon icon={NavigationChevronLeft} size={16} />

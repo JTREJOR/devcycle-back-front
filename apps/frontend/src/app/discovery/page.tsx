@@ -646,146 +646,198 @@ export default function DiscoveryPage() {
   return (
     <div>
       {/* 1. NAVEGACIÓN SUPERIOR */}
-      <div className="app-back-bar">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* 2. ENCABEZADO PRINCIPAL DE DISCOVERY */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0, color: "#1e2022" }}>
+          <div className="flex items-center gap-2.5">
+            <h1 className="m-0 text-2xl font-extrabold text-text-heading">
               DevCycle Discovery
             </h1>
-            <span className="badge-dataswat">DATASWAT MVP</span>
+            <span className="inline-flex items-center rounded-[20px] bg-brand-accent px-2.5 py-[3px] text-[11px] font-extrabold tracking-[0.5px] text-white">
+              DATASWAT MVP
+            </span>
           </div>
-          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: "4px 0 0 0" }}>
+          <p className="mt-1 mb-0 text-[13px] text-text-secondary">
             Etapa 0: Priorización · <strong>Paso 1: Solicitud de requerimiento y Descubrimiento Asistido</strong>
           </p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-text-secondary">
             Madurez de la iniciativa:
           </span>
-          <span
-            className="tag-pill tag-pill--green"
-            style={{ fontWeight: 700, fontSize: 12 }}
-          >
+          <span className="inline-flex items-center rounded-xl border border-status-green-border bg-status-green-bg px-2.5 py-[3px] text-xs font-bold tracking-[0.2px] whitespace-nowrap text-status-green-text">
             {readinessScore}% Refinada
           </span>
         </div>
       </div>
 
       {/* 3. STEPPER HORIZONTAL GUIADO (PEGA BLUE PRINT - IMÁGENES 2, 3, 4, 5) */}
-      <nav className="blueprint-stepper" aria-label="Pasos de descubrimiento">
+      <nav
+        className="mb-5 flex gap-2 overflow-x-auto rounded-xl border border-border-default bg-bg-card p-1.5"
+        aria-label="Pasos de descubrimiento"
+      >
         {/* Paso 1 */}
         <button
           type="button"
-          className={`blueprint-step-btn ${currentStep === 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}`}
+          className={`flex min-w-[150px] flex-1 cursor-pointer items-center gap-2.5 rounded-[9px] border-none px-3.5 py-2.5 text-left text-[12.5px] font-semibold transition-all duration-150 ${
+            currentStep === 1
+              ? "bg-brand-primary-light text-brand-primary shadow-2xs"
+              : "bg-transparent text-text-secondary hover:bg-brand-primary-light hover:text-brand-primary"
+          }`}
           onClick={() => setCurrentStep(1)}
         >
-          <span className="blueprint-step-num">
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11.5px] font-bold ${
+              currentStep === 1
+                ? "bg-brand-primary text-white"
+                : currentStep > 1
+                  ? "bg-[#00c875] text-white"
+                  : "bg-status-gray-bg text-text-secondary"
+            }`}
+          >
             {currentStep > 1 ? <Icon icon={Check} size={13} /> : "1"}
           </span>
           <div>
-            <div style={{ fontWeight: 700 }}>Necesidad - Negocio</div>
-            <div style={{ fontSize: 10.5, opacity: 0.75 }}>Descripción de Alcance</div>
+            <div className="font-bold">Necesidad - Negocio</div>
+            <div className="text-[10.5px] opacity-75">Descripción de Alcance</div>
           </div>
         </button>
 
         {/* Paso 2 */}
         <button
           type="button"
-          className={`blueprint-step-btn ${currentStep === 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""}`}
+          className={`flex min-w-[150px] flex-1 cursor-pointer items-center gap-2.5 rounded-[9px] border-none px-3.5 py-2.5 text-left text-[12.5px] font-semibold transition-all duration-150 ${
+            currentStep === 2
+              ? "bg-brand-primary-light text-brand-primary shadow-2xs"
+              : "bg-transparent text-text-secondary hover:bg-brand-primary-light hover:text-brand-primary"
+          }`}
           onClick={() => setCurrentStep(2)}
         >
-          <span className="blueprint-step-num">
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11.5px] font-bold ${
+              currentStep === 2
+                ? "bg-brand-primary text-white"
+                : currentStep > 2
+                  ? "bg-[#00c875] text-white"
+                  : "bg-status-gray-bg text-text-secondary"
+            }`}
+          >
             {currentStep > 2 ? <Icon icon={Check} size={13} /> : "2"}
           </span>
           <div>
-            <div style={{ fontWeight: 700 }}>KPIs de Éxito</div>
-            <div style={{ fontSize: 10.5, opacity: 0.75 }}>Capacidades, KPIs y ROI</div>
+            <div className="font-bold">KPIs de Éxito</div>
+            <div className="text-[10.5px] opacity-75">Capacidades, KPIs y ROI</div>
           </div>
         </button>
 
         {/* Paso 3 */}
         <button
           type="button"
-          className={`blueprint-step-btn ${currentStep === 3 ? "active" : ""} ${currentStep > 3 ? "completed" : ""}`}
+          className={`flex min-w-[150px] flex-1 cursor-pointer items-center gap-2.5 rounded-[9px] border-none px-3.5 py-2.5 text-left text-[12.5px] font-semibold transition-all duration-150 ${
+            currentStep === 3
+              ? "bg-brand-primary-light text-brand-primary shadow-2xs"
+              : "bg-transparent text-text-secondary hover:bg-brand-primary-light hover:text-brand-primary"
+          }`}
           onClick={() => setCurrentStep(3)}
         >
-          <span className="blueprint-step-num">
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11.5px] font-bold ${
+              currentStep === 3
+                ? "bg-brand-primary text-white"
+                : currentStep > 3
+                  ? "bg-[#00c875] text-white"
+                  : "bg-status-gray-bg text-text-secondary"
+            }`}
+          >
             {currentStep > 3 ? <Icon icon={Check} size={13} /> : "3"}
           </span>
           <div>
-            <div style={{ fontWeight: 700 }}>Impacto TI y Sistemas</div>
-            <div style={{ fontSize: 10.5, opacity: 0.75 }}>Sistemas y Dependencias</div>
+            <div className="font-bold">Impacto TI y Sistemas</div>
+            <div className="text-[10.5px] opacity-75">Sistemas y Dependencias</div>
           </div>
         </button>
 
         {/* Paso 4 */}
         <button
           type="button"
-          className={`blueprint-step-btn ${currentStep === 4 ? "active" : ""}`}
+          className={`flex min-w-[150px] flex-1 cursor-pointer items-center gap-2.5 rounded-[9px] border-none px-3.5 py-2.5 text-left text-[12.5px] font-semibold transition-all duration-150 ${
+            currentStep === 4
+              ? "bg-brand-primary-light text-brand-primary shadow-2xs"
+              : "bg-transparent text-text-secondary hover:bg-brand-primary-light hover:text-brand-primary"
+          }`}
           onClick={() => setCurrentStep(4)}
         >
-          <span className="blueprint-step-num">4</span>
+          <span
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11.5px] font-bold ${
+              currentStep === 4
+                ? "bg-brand-primary text-white"
+                : "bg-status-gray-bg text-text-secondary"
+            }`}
+          >
+            4
+          </span>
           <div>
-            <div style={{ fontWeight: 700 }}>Ficha Canvas</div>
-            <div style={{ fontSize: 10.5, opacity: 0.75 }}>Envío al Backlog</div>
+            <div className="font-bold">Ficha Canvas</div>
+            <div className="text-[10.5px] opacity-75">Envío al Backlog</div>
           </div>
         </button>
       </nav>
 
       {/* 4. LAYOUT A DOS COLUMNAS: FORMULARIO GUIADO (IZQUIERDA) + DATASWAT AI (DERECHA) */}
-      <div className="discovery-layout">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(320px,3fr)]">
         {/* COLUMNA IZQUIERDA: CONTENIDO DEL PASO ACTIVO */}
-        <div style={{ minWidth: 0 }}>
+        <div className="min-w-0">
           {/* ========================================================
               PASO 1: NECESIDAD - NEGOCIO (IMAGEN 2)
               ======================================================== */}
           {currentStep === 1 && (
             <div>
               {/* 1.1 IDENTIFICACIÓN DE LA INICIATIVA */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">1.1</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      1.1
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={FileIcon} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Identificación de la iniciativa</h3>
-                      <p className="disc-block-sub">Quién solicita y bajo qué gobierno se registra.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Identificación de la iniciativa
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Quién solicita y bajo qué gobierno se registra.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   {/* Nombre de la iniciativa */}
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>Nombre de la iniciativa</span>
-                      <span className="disc-required-star">*</span>
-                      <span className="disc-tooltip-icon" title="Nombre descriptivo de la iniciativa">?</span>
-                      <span className="disc-check-ok">✓</span>
+                      <span className="font-extrabold text-brand-accent">*</span>
+                      <span
+                        className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                        title="Nombre descriptivo de la iniciativa"
+                      >
+                        ?
+                      </span>
+                      <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
                     <input
                       type="text"
-                      className="config-card__input"
+                      className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                       value={form.title}
                       placeholder="Ej. Automatización de Conciliación y Liquidación Omnicanal"
                       onChange={(e) => setForm({ ...form, title: e.target.value })}
@@ -794,17 +846,19 @@ export default function DiscoveryPage() {
 
                   {/* Subsección Contacto Corporativo */}
                   <div>
-                    <div className="disc-subhead-label">SOLICITANTES Y CONTACTO CORPORATIVO</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 12 }}>
+                    <div className="mt-2.5 mb-1.5 text-[10.5px] font-extrabold tracking-[0.6px] text-gray-500 uppercase">
+                      SOLICITANTES Y CONTACTO CORPORATIVO
+                    </div>
+                    <div className="mb-3 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Nombre del Solicitante</span>
-                          <span className="disc-required-star">*</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="font-extrabold text-brand-accent">*</span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <input
                           type="text"
-                          className="config-card__input"
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.requester}
                           placeholder="Ej. Argos Eyra Martínez Zeferino"
                           onChange={(e) => setForm({ ...form, requester: e.target.value })}
@@ -812,14 +866,14 @@ export default function DiscoveryPage() {
                       </div>
 
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Correo Solicitante (@liverpool.com.mx)</span>
-                          <span className="disc-required-star">*</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="font-extrabold text-brand-accent">*</span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <input
                           type="email"
-                          className="config-card__input"
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.solicitanteEmail}
                           placeholder="solicitante@liverpool.com.mx"
                           onChange={(e) => setForm({ ...form, solicitanteEmail: e.target.value })}
@@ -827,15 +881,15 @@ export default function DiscoveryPage() {
                       </div>
                     </div>
 
-                    <div style={{ marginBottom: 12 }}>
-                      <label className="disc-field-label">
+                    <div className="mb-3">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Correo Sponsor Ejecutivo (@liverpool.com.mx)</span>
-                        <span className="disc-required-star">*</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="font-extrabold text-brand-accent">*</span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <input
                         type="email"
-                        className="config-card__input"
+                        className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.sponsorEmail}
                         placeholder="sponsor@liverpool.com.mx"
                         onChange={(e) => setForm({ ...form, sponsorEmail: e.target.value })}
@@ -843,39 +897,21 @@ export default function DiscoveryPage() {
                     </div>
 
                     {/* Notificaciones a Interesados Adicionales */}
-                    <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                      <label style={{ fontSize: 11.5, fontWeight: 700, color: "#334155", textTransform: "uppercase", display: "block", marginBottom: 6 }}>
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                      <label className="mb-1.5 block text-[11.5px] font-bold text-slate-700 uppercase">
                         Notificaciones Automáticas a Interesados (BRM, PMO, Operaciones)
                       </label>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                      <div className="mb-2 flex flex-wrap gap-1.5">
                         {form.interesadosEmails?.map((email) => (
                           <span
                             key={email}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 6,
-                              background: "#eff6ff",
-                              border: "1px solid #bfdbfe",
-                              color: "#1e40af",
-                              fontSize: 11.5,
-                              padding: "3px 8px",
-                              borderRadius: 14,
-                            }}
+                            className="inline-flex items-center gap-1.5 rounded-[14px] border border-blue-200 bg-blue-50 px-2 py-[3px] text-[11.5px] text-blue-800"
                           >
                             {email}
                             <button
                               type="button"
                               onClick={() => handleRemoveStakeholderEmail(email)}
-                              style={{
-                                background: "transparent",
-                                border: "none",
-                                cursor: "pointer",
-                                padding: 0,
-                                lineHeight: 1,
-                                color: "#93c5fd",
-                                fontWeight: "bold",
-                              }}
+                              className="cursor-pointer border-none bg-transparent p-0 leading-none font-bold text-blue-300 hover:text-blue-600"
                               title="Eliminar"
                             >
                               ✕
@@ -883,11 +919,10 @@ export default function DiscoveryPage() {
                           </span>
                         ))}
                       </div>
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div className="flex gap-2">
                         <input
                           type="email"
-                          className="config-card__input"
-                          style={{ fontSize: 12 }}
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-2 text-xs text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           placeholder="agregar_interesado@liverpool.com.mx"
                           value={newEmailInput}
                           onChange={(e) => setNewEmailInput(e.target.value)}
@@ -900,8 +935,7 @@ export default function DiscoveryPage() {
                         />
                         <button
                           type="button"
-                          className="btn-purple-outline"
-                          style={{ padding: "4px 12px", fontSize: 12, whiteSpace: "nowrap" }}
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3 py-1 text-xs font-semibold whitespace-nowrap text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                           onClick={handleAddStakeholderEmail}
                         >
                           + Agregar
@@ -912,16 +946,18 @@ export default function DiscoveryPage() {
 
                   {/* Subsección Gobierno */}
                   <div>
-                    <div className="disc-subhead-label">GOBIERNO</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                    <div className="mt-2.5 mb-1.5 text-[10.5px] font-extrabold tracking-[0.6px] text-gray-500 uppercase">
+                      GOBIERNO
+                    </div>
+                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Dirección de negocio</span>
-                          <span className="disc-required-star">*</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="font-extrabold text-brand-accent">*</span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <select
-                          className="config-card__input"
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.businessUnit}
                           onChange={(e) => setForm({ ...form, businessUnit: e.target.value })}
                         >
@@ -934,14 +970,19 @@ export default function DiscoveryPage() {
                       </div>
 
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>PMO responsable</span>
-                          <span className="disc-required-star">*</span>
-                          <span className="disc-tooltip-icon" title="Oficina de gestión asignada">?</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="font-extrabold text-brand-accent">*</span>
+                          <span
+                            className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                            title="Oficina de gestión asignada"
+                          >
+                            ?
+                          </span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <select
-                          className="config-card__input"
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.pmoResponsable}
                           onChange={(e) => setForm({ ...form, pmoResponsable: e.target.value })}
                         >
@@ -957,45 +998,51 @@ export default function DiscoveryPage() {
 
                   {/* Oficina / Área */}
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>Oficina / Área</span>
-                      <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                      <span className="disc-check-ok">✓</span>
+                      <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                      <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
                     <input
                       type="text"
-                      className="config-card__input"
+                      className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                       value={form.oficinaArea}
                       placeholder="Ej. TI Arquitectura & Datos"
                       onChange={(e) => setForm({ ...form, oficinaArea: e.target.value })}
                     />
-                    <div style={{ fontSize: 11, color: "var(--color-text-secondary)", marginTop: 4 }}>
+                    <div className="mt-1 text-[11px] text-text-secondary">
                       Tomada del directorio. Si no es correcta, puedes cambiarla.
                     </div>
                   </div>
 
                   {/* Asignación según matriz */}
-                  <div className="disc-matrix-card">
-                    <div className="disc-matrix-header">
-                      <div className="disc-matrix-title">
+                  <div className="flex flex-col gap-2.5 rounded-[10px] border border-[#f8d7eb] bg-[#fdf5fa] px-4.5 py-3.5">
+                    <div className="flex items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-1.5 text-[12.5px] font-bold text-brand-primary">
                         <Icon icon={Person} size={15} />
                         <span>Asignación según matriz</span>
                       </div>
-                      <span className="disc-matrix-badge">{form.dominioMatriz}</span>
+                      <span className="rounded-[10px] border border-status-purple-border bg-bg-card px-2 py-0.5 text-[10.5px] font-semibold text-gray-500">
+                        {form.dominioMatriz}
+                      </span>
                     </div>
 
-                    <div className="disc-matrix-grid">
+                    <div className="grid grid-cols-1 gap-3 text-[11.5px] sm:grid-cols-[140px_1fr]">
                       <div>
-                        <div className="disc-matrix-k">PMO</div>
-                        <div className="disc-matrix-v">{form.pmoResponsable}</div>
+                        <div className="text-[10.5px] font-semibold text-gray-500 uppercase">
+                          PMO
+                        </div>
+                        <div className="font-bold text-text-heading">{form.pmoResponsable}</div>
                       </div>
                       <div>
-                        <div className="disc-matrix-k">PORTAFOLIO MANAGER</div>
-                        <div className="disc-matrix-v">{form.portafolioManager}</div>
+                        <div className="text-[10.5px] font-semibold text-gray-500 uppercase">
+                          PORTAFOLIO MANAGER
+                        </div>
+                        <div className="font-bold text-text-heading">{form.portafolioManager}</div>
                       </div>
                     </div>
 
-                    <div className="disc-matrix-note">
+                    <div className="border-t border-[#f5e1f0] pt-2 text-[11px] leading-[1.4] text-gray-500">
                       Se guarda automáticamente al enviar la ficha. Gerente BP, Arquitecto de Dominio y Coordinador TI SE se asignan cuando el Portafolio Manager confirme que tiene impacto de Tecnología.
                     </div>
                   </div>
@@ -1003,36 +1050,46 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 1.2 ALCANCE INICIATIVA */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">1.2</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      1.2
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Info} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Alcance Iniciativa</h3>
-                      <p className="disc-block-sub">Describe la necesidad con evidencia, no la solución técnica.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Alcance Iniciativa
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Describe la necesidad con evidencia, no la solución técnica.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>¿Qué necesitamos resolver?</span>
-                        <span className="disc-required-star">*</span>
-                        <span className="disc-tooltip-icon" title="Problema de fondo o dolor operativo">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="font-extrabold text-brand-accent">*</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Problema de fondo o dolor operativo"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <textarea
                         rows={4}
-                        className="config-card__input"
-                        style={{ resize: "vertical" }}
+                        className="w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.needDescription}
                         placeholder="Describe el problema que se busca solucionar..."
                         onChange={(e) => setForm({ ...form, needDescription: e.target.value })}
@@ -1040,16 +1097,20 @@ export default function DiscoveryPage() {
                     </div>
 
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>¿Por qué ahora?</span>
-                        <span className="disc-required-star">*</span>
-                        <span className="disc-tooltip-icon" title="Urgencia y contexto temporal">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="font-extrabold text-brand-accent">*</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Urgencia y contexto temporal"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <textarea
                         rows={4}
-                        className="config-card__input"
-                        style={{ resize: "vertical" }}
+                        className="w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.whyNow}
                         placeholder="Describe la urgencia y el impacto de postergar..."
                         onChange={(e) => setForm({ ...form, whyNow: e.target.value })}
@@ -1059,19 +1120,27 @@ export default function DiscoveryPage() {
 
                   {/* Sustento */}
                   <div>
-                    <div className="disc-subhead-label">SUSTENTO</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                    <div className="mt-2.5 mb-1.5 text-[10.5px] font-extrabold tracking-[0.6px] text-gray-500 uppercase">
+                      SUSTENTO
+                    </div>
+                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Evidencia y estadísticas</span>
-                          <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                          <span className="disc-tooltip-icon" title="Datos numéricos o métricas de dolor">?</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="text-[10.5px] font-medium text-gray-500">
+                            (opcional)
+                          </span>
+                          <span
+                            className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                            title="Datos numéricos o métricas de dolor"
+                          >
+                            ?
+                          </span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <textarea
                           rows={4}
-                          className="config-card__input"
-                          style={{ resize: "vertical" }}
+                          className="w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.evidence}
                           placeholder="Datos duros que respalden la necesidad..."
                           onChange={(e) => setForm({ ...form, evidence: e.target.value })}
@@ -1079,20 +1148,28 @@ export default function DiscoveryPage() {
                       </div>
 
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>¿Qué seremos capaces de hacer al concluir?</span>
-                          <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                          <span className="disc-tooltip-icon" title="Capacidades nuevas adquiridas">?</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span className="text-[10.5px] font-medium text-gray-500">
+                            (opcional)
+                          </span>
+                          <span
+                            className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                            title="Capacidades nuevas adquiridas"
+                          >
+                            ?
+                          </span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
 
                         {form.capacidades.map((cap, idx) => (
-                          <div key={idx} className="disc-dynamic-row">
-                            <span className="disc-row-num">{idx + 1}</span>
+                          <div key={idx} className="mb-2 flex items-center gap-2">
+                            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pink-50 text-[11px] font-bold text-pink-600">
+                              {idx + 1}
+                            </span>
                             <input
                               type="text"
-                              className="config-card__input"
-                              style={{ flex: 1 }}
+                              className="w-full flex-1 rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                               value={cap}
                               placeholder="Describe la capacidad alcanzada..."
                               onChange={(e) => handleUpdateCapacidad(idx, e.target.value)}
@@ -1100,7 +1177,7 @@ export default function DiscoveryPage() {
                             {form.capacidades.length > 1 && (
                               <button
                                 type="button"
-                                className="disc-icon-btn-danger"
+                                className="cursor-pointer rounded-sm border-none bg-transparent p-1 text-gray-400 transition-all duration-150 hover:bg-red-100 hover:text-red-500"
                                 onClick={() => handleRemoveCapacidad(idx)}
                                 title="Eliminar capacidad"
                               >
@@ -1112,8 +1189,7 @@ export default function DiscoveryPage() {
 
                         <button
                           type="button"
-                          className="disc-btn-add"
-                          style={{ marginTop: 6 }}
+                          className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 self-start rounded-md border border-[#d0d4e4] bg-bg-card px-3.5 py-[7px] text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-pink-600 hover:bg-pink-50 hover:text-pink-600"
                           onClick={handleAddCapacidad}
                         >
                           <Icon icon={Add} size={14} />
@@ -1126,36 +1202,46 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 1.3 BENEFICIOS CUALITATIVOS */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">1.3</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      1.3
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Bolt} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Beneficios cualitativos</h3>
-                      <p className="disc-block-sub">Qué gana el cliente y qué gana el negocio.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Beneficios cualitativos
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Qué gana el cliente y qué gana el negocio.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Beneficio al cliente</span>
-                        <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                        <span className="disc-tooltip-icon" title="Impacto directo en la experiencia del cliente">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Impacto directo en la experiencia del cliente"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <textarea
                         rows={3}
-                        className="config-card__input"
-                        style={{ resize: "vertical" }}
+                        className="w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.beneficioCliente}
                         placeholder="Impacto directo en el cliente final o colaborador..."
                         onChange={(e) => setForm({ ...form, beneficioCliente: e.target.value })}
@@ -1163,16 +1249,20 @@ export default function DiscoveryPage() {
                     </div>
 
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Beneficio al negocio</span>
-                        <span className="disc-required-star">*</span>
-                        <span className="disc-tooltip-icon" title="Valor estratégico para la empresa">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="font-extrabold text-brand-accent">*</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Valor estratégico para la empresa"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <textarea
                         rows={3}
-                        className="config-card__input"
-                        style={{ resize: "vertical" }}
+                        className="w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.beneficioNegocio}
                         placeholder="Ahorros operativos, cumplimiento, incremento en ventas..."
                         onChange={(e) => setForm({ ...form, beneficioNegocio: e.target.value })}
@@ -1183,84 +1273,142 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 1.4 ALINEACIÓN ESTRATÉGICA */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">1.4</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      1.4
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Timeline} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Alineación estratégica</h3>
-                      <p className="disc-block-sub">Nivel de prioridad dentro del portafolio institucional.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Alineación estratégica
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Nivel de prioridad dentro del portafolio institucional.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>Nivel de alineación</span>
-                      <span className="disc-required-star">*</span>
-                      <span className="disc-check-ok">✓</span>
+                      <span className="font-extrabold text-brand-accent">*</span>
+                      <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
 
-                    <div className="disc-align-grid">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {/* N0 */}
                       <div
-                        className={`disc-align-card ${form.strategicAlignment === "(N0) Ninguna" ? "disc-align-card--active" : ""}`}
+                        className={`relative cursor-pointer rounded-lg border px-3.5 py-3 text-left transition-all duration-150 ${
+                          form.strategicAlignment === "(N0) Ninguna"
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => setForm({ ...form, strategicAlignment: "(N0) Ninguna" })}
                       >
-                        <div className="disc-align-card__title">
+                        <div
+                          className={`mb-0.5 flex items-center justify-between text-[12.5px] font-bold ${
+                            form.strategicAlignment === "(N0) Ninguna"
+                              ? "text-pink-600"
+                              : "text-text-heading"
+                          }`}
+                        >
                           <span>(N0) Ninguna</span>
-                          {form.strategicAlignment === "(N0) Ninguna" && <span style={{ color: "#db2777" }}>✓</span>}
+                          {form.strategicAlignment === "(N0) Ninguna" && (
+                            <span className="text-pink-600">✓</span>
+                          )}
                         </div>
-                        <div className="disc-align-card__desc">
+                        <div className="text-[11px] leading-[1.35] text-text-secondary">
                           Sin vínculo directo con la estrategia vigente.
                         </div>
                       </div>
 
                       {/* N1 */}
                       <div
-                        className={`disc-align-card ${form.strategicAlignment === "(N1) Prioritarios" ? "disc-align-card--active" : ""}`}
+                        className={`relative cursor-pointer rounded-lg border px-3.5 py-3 text-left transition-all duration-150 ${
+                          form.strategicAlignment === "(N1) Prioritarios"
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => setForm({ ...form, strategicAlignment: "(N1) Prioritarios" })}
                       >
-                        <div className="disc-align-card__title">
+                        <div
+                          className={`mb-0.5 flex items-center justify-between text-[12.5px] font-bold ${
+                            form.strategicAlignment === "(N1) Prioritarios"
+                              ? "text-pink-600"
+                              : "text-text-heading"
+                          }`}
+                        >
                           <span>(N1) Prioritarios</span>
-                          {form.strategicAlignment === "(N1) Prioritarios" && <span style={{ color: "#db2777" }}>✓</span>}
+                          {form.strategicAlignment === "(N1) Prioritarios" && (
+                            <span className="text-pink-600">✓</span>
+                          )}
                         </div>
-                        <div className="disc-align-card__desc">
+                        <div className="text-[11px] leading-[1.35] text-text-secondary">
                           Apalanca una prioridad explícita del plan.
                         </div>
                       </div>
 
                       {/* N2 */}
                       <div
-                        className={`disc-align-card ${form.strategicAlignment === "(N2) Habilitadores/Regulatorios" ? "disc-align-card--active" : ""}`}
-                        onClick={() => setForm({ ...form, strategicAlignment: "(N2) Habilitadores/Regulatorios" })}
+                        className={`relative cursor-pointer rounded-lg border px-3.5 py-3 text-left transition-all duration-150 ${
+                          form.strategicAlignment === "(N2) Habilitadores/Regulatorios"
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
+                        onClick={() =>
+                          setForm({ ...form, strategicAlignment: "(N2) Habilitadores/Regulatorios" })
+                        }
                       >
-                        <div className="disc-align-card__title">
+                        <div
+                          className={`mb-0.5 flex items-center justify-between text-[12.5px] font-bold ${
+                            form.strategicAlignment === "(N2) Habilitadores/Regulatorios"
+                              ? "text-pink-600"
+                              : "text-text-heading"
+                          }`}
+                        >
                           <span>(N2) Habilitadores/Regulatorios</span>
-                          {form.strategicAlignment === "(N2) Habilitadores/Regulatorios" && <span style={{ color: "#db2777" }}>✓</span>}
+                          {form.strategicAlignment === "(N2) Habilitadores/Regulatorios" && (
+                            <span className="text-pink-600">✓</span>
+                          )}
                         </div>
-                        <div className="disc-align-card__desc">
+                        <div className="text-[11px] leading-[1.35] text-text-secondary">
                           Habilita capacidades o cumple una norma.
                         </div>
                       </div>
 
                       {/* N3 */}
                       <div
-                        className={`disc-align-card ${form.strategicAlignment === "(N3) Mejora continua" ? "disc-align-card--active" : ""}`}
-                        onClick={() => setForm({ ...form, strategicAlignment: "(N3) Mejora continua" })}
+                        className={`relative cursor-pointer rounded-lg border px-3.5 py-3 text-left transition-all duration-150 ${
+                          form.strategicAlignment === "(N3) Mejora continua"
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
+                        onClick={() =>
+                          setForm({ ...form, strategicAlignment: "(N3) Mejora continua" })
+                        }
                       >
-                        <div className="disc-align-card__title">
+                        <div
+                          className={`mb-0.5 flex items-center justify-between text-[12.5px] font-bold ${
+                            form.strategicAlignment === "(N3) Mejora continua"
+                              ? "text-pink-600"
+                              : "text-text-heading"
+                          }`}
+                        >
                           <span>(N3) Mejora continua</span>
-                          {form.strategicAlignment === "(N3) Mejora continua" && <span style={{ color: "#db2777" }}>✓</span>}
+                          {form.strategicAlignment === "(N3) Mejora continua" && (
+                            <span className="text-pink-600">✓</span>
+                          )}
                         </div>
-                        <div className="disc-align-card__desc">
+                        <div className="text-[11px] leading-[1.35] text-text-secondary">
                           Optimización incremental de la operación.
                         </div>
                       </div>
@@ -1270,10 +1418,10 @@ export default function DiscoveryPage() {
               </div>
 
               {/* Botón de avance al Paso 2 */}
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+              <div className="mt-4 flex justify-end">
                 <button
                   type="button"
-                  className="btn-purple-solid"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                   onClick={() => setCurrentStep(2)}
                 >
                   <span>Continuar a KPIs de Éxito</span>
@@ -1289,32 +1437,43 @@ export default function DiscoveryPage() {
           {currentStep === 2 && (
             <div>
               {/* 2.1 CAPACIDADES Y KPIS (OKRS) */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">2.1</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      2.1
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Timeline} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Capacidades y KPIs (OKRs)</h3>
-                      <p className="disc-block-sub">Cómo mediremos que la iniciativa cumplió su promesa.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Capacidades y KPIs (OKRs)
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Cómo mediremos que la iniciativa cumplió su promesa.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   {form.okrs.map((okr, idx) => (
-                    <div key={okr.id} className="disc-okr-card">
-                      <div className="disc-okr-header">
-                        <span className="disc-okr-badge">OKR {idx + 1}</span>
+                    <div
+                      key={okr.id}
+                      className="mb-3 flex flex-col gap-3 rounded-lg border border-gray-200 bg-surface-soft p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="rounded-sm border border-pink-200 bg-pink-50 px-2 py-0.5 text-[10.5px] font-bold text-pink-600">
+                          OKR {idx + 1}
+                        </span>
                         {form.okrs.length > 1 && (
                           <button
                             type="button"
-                            className="disc-icon-btn-danger"
+                            className="cursor-pointer rounded-sm border-none bg-transparent p-1 text-gray-400 transition-all duration-150 hover:bg-red-100 hover:text-red-500"
                             onClick={() => handleRemoveOkr(idx)}
                             title="Eliminar OKR"
                           >
@@ -1325,14 +1484,19 @@ export default function DiscoveryPage() {
 
                       {/* Objetivo */}
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Objetivo</span>
-                          <span className="disc-tooltip-icon" title="Meta cualitativa que se desea lograr">?</span>
-                          <span className="disc-check-ok">✓</span>
+                          <span
+                            className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                            title="Meta cualitativa que se desea lograr"
+                          >
+                            ?
+                          </span>
+                          <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
                         <input
                           type="text"
-                          className="config-card__input"
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={okr.objetivo}
                           placeholder="Ej. Automatizar la conciliación de flujos de pago..."
                           onChange={(e) => handleUpdateOkr(idx, "objetivo", e.target.value)}
@@ -1340,16 +1504,21 @@ export default function DiscoveryPage() {
                       </div>
 
                       {/* Resultado Clave y KPI */}
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                         <div>
-                          <label className="disc-field-label">
+                          <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                             <span>Resultado clave</span>
-                            <span className="disc-tooltip-icon" title="Cómo se medirá el avance concreto">?</span>
-                            <span className="disc-check-ok">✓</span>
+                            <span
+                              className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                              title="Cómo se medirá el avance concreto"
+                            >
+                              ?
+                            </span>
+                            <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
                           <input
                             type="text"
-                            className="config-card__input"
+                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.resultadoClave}
                             placeholder="Ej. Conciliar el 99.5% de transacciones..."
                             onChange={(e) => handleUpdateOkr(idx, "resultadoClave", e.target.value)}
@@ -1357,14 +1526,19 @@ export default function DiscoveryPage() {
                         </div>
 
                         <div>
-                          <label className="disc-field-label">
+                          <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                             <span>KPI</span>
-                            <span className="disc-tooltip-icon" title="Métrica de medición periódica">?</span>
-                            <span className="disc-check-ok">✓</span>
+                            <span
+                              className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                              title="Métrica de medición periódica"
+                            >
+                              ?
+                            </span>
+                            <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
                           <input
                             type="text"
-                            className="config-card__input"
+                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.kpi}
                             placeholder="Ej. % conciliación automática"
                             onChange={(e) => handleUpdateOkr(idx, "kpi", e.target.value)}
@@ -1373,15 +1547,20 @@ export default function DiscoveryPage() {
                       </div>
 
                       {/* Clasificación y Concepto */}
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                         <div>
-                          <label className="disc-field-label">
+                          <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                             <span>Clasificación del KPI</span>
-                            <span className="disc-tooltip-icon" title="Dimensión de impacto del KPI">?</span>
-                            <span className="disc-check-ok">✓</span>
+                            <span
+                              className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                              title="Dimensión de impacto del KPI"
+                            >
+                              ?
+                            </span>
+                            <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
                           <select
-                            className="config-card__input"
+                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.clasificacion}
                             onChange={(e) => handleUpdateOkr(idx, "clasificacion", e.target.value)}
                           >
@@ -1394,13 +1573,18 @@ export default function DiscoveryPage() {
                         </div>
 
                         <div>
-                          <label className="disc-field-label">
+                          <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                             <span>Concepto</span>
-                            <span className="disc-tooltip-icon" title="Área de impacto contable/operativo">?</span>
-                            <span className="disc-check-ok">✓</span>
+                            <span
+                              className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                              title="Área de impacto contable/operativo"
+                            >
+                              ?
+                            </span>
+                            <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
                           <select
-                            className="config-card__input"
+                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.concepto}
                             onChange={(e) => handleUpdateOkr(idx, "concepto", e.target.value)}
                           >
@@ -1417,7 +1601,7 @@ export default function DiscoveryPage() {
 
                   <button
                     type="button"
-                    className="disc-btn-add"
+                    className="inline-flex cursor-pointer items-center gap-1.5 self-start rounded-md border border-[#d0d4e4] bg-bg-card px-3.5 py-[7px] text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-pink-600 hover:bg-pink-50 hover:text-pink-600"
                     onClick={handleAddOkr}
                   >
                     <Icon icon={Add} size={14} />
@@ -1427,39 +1611,49 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 2.2 ROI */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">2.2</span>
-                    <span className="disc-block-icon-wrap">
-                      <span style={{ fontWeight: 800, fontSize: 13 }}>$</span>
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      2.2
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
+                      <span className="text-[13px] font-extrabold">$</span>
                     </span>
                     <div>
-                      <h3 className="disc-block-title">ROI</h3>
-                      <p className="disc-block-sub">Cifras anuales estimadas en pesos. El ROI se calcula solo.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">ROI</h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Cifras anuales estimadas en pesos. El ROI se calcula solo.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     {/* Ingreso incremental */}
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Ingreso incremental anual</span>
-                        <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                        <span className="disc-tooltip-icon" title="Nuevas ventas generadas anualmente">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Nuevas ventas generadas anualmente"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <span style={{ position: "absolute", left: 12, top: 9, color: "#6b7280", fontWeight: 600 }}>$</span>
+                      <div className="relative">
+                        <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
+                          $
+                        </span>
                         <input
                           type="number"
-                          className="config-card__input"
-                          style={{ paddingLeft: 26 }}
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.ingresoIncremental}
                           placeholder="0"
                           onChange={(e) => setForm({ ...form, ingresoIncremental: e.target.value })}
@@ -1469,18 +1663,24 @@ export default function DiscoveryPage() {
 
                     {/* Ahorro en costos anual */}
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Ahorro en costos anual</span>
-                        <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                        <span className="disc-tooltip-icon" title="Reducción de costos o tiempos anuales">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Reducción de costos o tiempos anuales"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <span style={{ position: "absolute", left: 12, top: 9, color: "#6b7280", fontWeight: 600 }}>$</span>
+                      <div className="relative">
+                        <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
+                          $
+                        </span>
                         <input
                           type="number"
-                          className="config-card__input"
-                          style={{ paddingLeft: 26 }}
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.ahorroCostos}
                           placeholder="0"
                           onChange={(e) => setForm({ ...form, ahorroCostos: e.target.value })}
@@ -1489,21 +1689,27 @@ export default function DiscoveryPage() {
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     {/* Inversión estimada */}
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Inversión estimada</span>
-                        <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                        <span className="disc-tooltip-icon" title="Costo inicial estimado del proyecto">?</span>
-                        <span className="disc-check-ok">✓</span>
+                        <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Costo inicial estimado del proyecto"
+                        >
+                          ?
+                        </span>
+                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <span style={{ position: "absolute", left: 12, top: 9, color: "#6b7280", fontWeight: 600 }}>$</span>
+                      <div className="relative">
+                        <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
+                          $
+                        </span>
                         <input
                           type="number"
-                          className="config-card__input"
-                          style={{ paddingLeft: 26 }}
+                          className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.inversionEstimada}
                           placeholder="0"
                           onChange={(e) => setForm({ ...form, inversionEstimada: e.target.value })}
@@ -1513,14 +1719,19 @@ export default function DiscoveryPage() {
 
                     {/* Horizonte de evaluación */}
                     <div>
-                      <label className="disc-field-label">
+                      <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                         <span>Horizonte de evaluación</span>
-                        <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                        <span className="disc-tooltip-icon" title="Plazo proyectado del caso">?</span>
+                        <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                        <span
+                          className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                          title="Plazo proyectado del caso"
+                        >
+                          ?
+                        </span>
                       </label>
                       <input
                         type="text"
-                        className="config-card__input"
+                        className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                         value={form.horizonte}
                         placeholder="Ej. 3 años"
                         onChange={(e) => setForm({ ...form, horizonte: e.target.value })}
@@ -1530,35 +1741,43 @@ export default function DiscoveryPage() {
 
                   {/* RESULTADO (Caja punteada estilo Imagen 3) */}
                   <div>
-                    <div className="disc-subhead-label">RESULTADO</div>
+                    <div className="mt-2.5 mb-1.5 text-[10.5px] font-extrabold tracking-[0.6px] text-gray-500 uppercase">
+                      RESULTADO
+                    </div>
                     {hasRoiData ? (
-                      <div className="disc-roi-result-box disc-roi-result-box--filled">
-                        <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", justifyContent: "center" }}>
+                      <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-[1.5px] border-dashed border-green-300 bg-green-50 px-5 py-4.5 text-center">
+                        <div className="flex flex-wrap items-center justify-center gap-4.5">
                           <div>
-                            <div style={{ fontSize: 11, color: "#166534", fontWeight: 600 }}>RETORNO ANUAL ESTIMADO</div>
-                            <div style={{ fontSize: 20, fontWeight: 800, color: "#15803d" }}>
+                            <div className="text-[11px] font-semibold text-green-800">
+                              RETORNO ANUAL ESTIMADO
+                            </div>
+                            <div className="text-xl font-extrabold text-green-700">
                               ${retornoTotalAnual.toLocaleString()} MXN
                             </div>
                           </div>
-                          <div style={{ width: 1, height: 32, background: "#86efac" }} />
+                          <div className="h-8 w-px bg-green-300" />
                           <div>
-                            <div style={{ fontSize: 11, color: "#166534", fontWeight: 600 }}>ROI ESTIMADO</div>
-                            <div style={{ fontSize: 20, fontWeight: 800, color: "#15803d" }}>
+                            <div className="text-[11px] font-semibold text-green-800">
+                              ROI ESTIMADO
+                            </div>
+                            <div className="text-xl font-extrabold text-green-700">
                               +{roiCalculado}%
                             </div>
                           </div>
-                          <div style={{ width: 1, height: 32, background: "#86efac" }} />
+                          <div className="h-8 w-px bg-green-300" />
                           <div>
-                            <div style={{ fontSize: 11, color: "#166534", fontWeight: 600 }}>PUNTO DE RECUPERACIÓN</div>
-                            <div style={{ fontSize: 18, fontWeight: 800, color: "#15803d" }}>
+                            <div className="text-[11px] font-semibold text-green-800">
+                              PUNTO DE RECUPERACIÓN
+                            </div>
+                            <div className="text-lg font-extrabold text-green-700">
                               ~{paybackMeses} meses
                             </div>
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="disc-roi-result-box">
-                        <span style={{ fontSize: 12.5, color: "#64748b" }}>
+                      <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-[1.5px] border-dashed border-slate-300 bg-bg-card px-5 py-4.5 text-center">
+                        <span className="text-[12.5px] text-slate-500">
                           Captura inversión y retorno para ver el ROI y el punto de recuperación.
                         </span>
                       </div>
@@ -1568,10 +1787,10 @@ export default function DiscoveryPage() {
               </div>
 
               {/* Botones de navegación */}
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
+              <div className="mt-4 flex justify-between">
                 <button
                   type="button"
-                  className="btn-purple-outline"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                   onClick={() => setCurrentStep(1)}
                 >
                   <Icon icon={NavigationChevronLeft} size={15} />
@@ -1579,7 +1798,7 @@ export default function DiscoveryPage() {
                 </button>
                 <button
                   type="button"
-                  className="btn-purple-solid"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                   onClick={() => setCurrentStep(3)}
                 >
                   <span>Continuar a Impacto TI</span>
@@ -1595,47 +1814,76 @@ export default function DiscoveryPage() {
           {currentStep === 3 && (
             <div>
               {/* 3.1 DIMENSIONES DE IMPACTO */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">3.1</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      3.1
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Settings} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Dimensiones de impacto</h3>
-                      <p className="disc-block-sub">Selecciona todo lo que el cambio va a mover.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Dimensiones de impacto
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Selecciona todo lo que el cambio va a mover.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--progress">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-blue-200 bg-blue-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-blue-600">
                     {form.dimensionesImpacto.length} de 4
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>Análisis de impacto</span>
-                      <span className="disc-required-star">*</span>
-                      <span className="disc-tooltip-icon" title="Áreas institucionales impactadas">?</span>
-                      <span className="disc-check-ok">✓</span>
+                      <span className="font-extrabold text-brand-accent">*</span>
+                      <span
+                        className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                        title="Áreas institucionales impactadas"
+                      >
+                        ?
+                      </span>
+                      <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
 
-                    <div className="disc-impact-grid">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {/* Estructura */}
                       <div
-                        className={`disc-impact-card ${form.dimensionesImpacto.includes("Estructura") ? "disc-impact-card--active" : ""}`}
+                        className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-all duration-150 ${
+                          form.dimensionesImpacto.includes("Estructura")
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => toggleDimension("Estructura")}
                       >
-                        <div className="disc-impact-card__icon">
+                        <div
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                            form.dimensionesImpacto.includes("Estructura")
+                              ? "bg-pink-100 text-pink-600"
+                              : "bg-slate-50 text-slate-500"
+                          }`}
+                        >
                           <Icon icon={Settings} size={16} />
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <div className="disc-impact-card__title">
+                        <div className="flex-1">
+                          <div
+                            className={`flex items-center justify-between text-[13px] font-bold ${
+                              form.dimensionesImpacto.includes("Estructura")
+                                ? "text-pink-600"
+                                : "text-text-heading"
+                            }`}
+                          >
                             <span>Estructura</span>
-                            {form.dimensionesImpacto.includes("Estructura") && <span style={{ color: "#db2777" }}>✓</span>}
+                            {form.dimensionesImpacto.includes("Estructura") && (
+                              <span className="text-pink-600">✓</span>
+                            )}
                           </div>
-                          <div className="disc-impact-card__desc">
+                          <div className="mt-0.5 text-[11.5px] leading-[1.35] text-text-secondary">
                             Cambian áreas, roles o plantilla.
                           </div>
                         </div>
@@ -1643,18 +1891,36 @@ export default function DiscoveryPage() {
 
                       {/* Procesos */}
                       <div
-                        className={`disc-impact-card ${form.dimensionesImpacto.includes("Procesos") ? "disc-impact-card--active" : ""}`}
+                        className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-all duration-150 ${
+                          form.dimensionesImpacto.includes("Procesos")
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => toggleDimension("Procesos")}
                       >
-                        <div className="disc-impact-card__icon">
+                        <div
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                            form.dimensionesImpacto.includes("Procesos")
+                              ? "bg-pink-100 text-pink-600"
+                              : "bg-slate-50 text-slate-500"
+                          }`}
+                        >
                           <Icon icon={Timeline} size={16} />
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <div className="disc-impact-card__title">
+                        <div className="flex-1">
+                          <div
+                            className={`flex items-center justify-between text-[13px] font-bold ${
+                              form.dimensionesImpacto.includes("Procesos")
+                                ? "text-pink-600"
+                                : "text-text-heading"
+                            }`}
+                          >
                             <span>Procesos</span>
-                            {form.dimensionesImpacto.includes("Procesos") && <span style={{ color: "#db2777" }}>✓</span>}
+                            {form.dimensionesImpacto.includes("Procesos") && (
+                              <span className="text-pink-600">✓</span>
+                            )}
                           </div>
-                          <div className="disc-impact-card__desc">
+                          <div className="mt-0.5 text-[11.5px] leading-[1.35] text-text-secondary">
                             Se rediseña la forma de operar.
                           </div>
                         </div>
@@ -1662,18 +1928,36 @@ export default function DiscoveryPage() {
 
                       {/* Tecnología */}
                       <div
-                        className={`disc-impact-card ${form.dimensionesImpacto.includes("Tecnología") ? "disc-impact-card--active" : ""}`}
+                        className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-all duration-150 ${
+                          form.dimensionesImpacto.includes("Tecnología")
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => toggleDimension("Tecnología")}
                       >
-                        <div className="disc-impact-card__icon">
+                        <div
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                            form.dimensionesImpacto.includes("Tecnología")
+                              ? "bg-pink-100 text-pink-600"
+                              : "bg-slate-50 text-slate-500"
+                          }`}
+                        >
                           <Icon icon={Bolt} size={16} />
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <div className="disc-impact-card__title">
+                        <div className="flex-1">
+                          <div
+                            className={`flex items-center justify-between text-[13px] font-bold ${
+                              form.dimensionesImpacto.includes("Tecnología")
+                                ? "text-pink-600"
+                                : "text-text-heading"
+                            }`}
+                          >
                             <span>Tecnología</span>
-                            {form.dimensionesImpacto.includes("Tecnología") && <span style={{ color: "#db2777" }}>✓</span>}
+                            {form.dimensionesImpacto.includes("Tecnología") && (
+                              <span className="text-pink-600">✓</span>
+                            )}
                           </div>
-                          <div className="disc-impact-card__desc">
+                          <div className="mt-0.5 text-[11.5px] leading-[1.35] text-text-secondary">
                             Requiere sistemas, datos o integraciones.
                           </div>
                         </div>
@@ -1681,18 +1965,36 @@ export default function DiscoveryPage() {
 
                       {/* Gente */}
                       <div
-                        className={`disc-impact-card ${form.dimensionesImpacto.includes("Gente") ? "disc-impact-card--active" : ""}`}
+                        className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-all duration-150 ${
+                          form.dimensionesImpacto.includes("Gente")
+                            ? "border-pink-600 bg-pink-50 ring-1 ring-pink-600"
+                            : "border-gray-200 bg-bg-card hover:border-pink-400 hover:bg-pink-50"
+                        }`}
                         onClick={() => toggleDimension("Gente")}
                       >
-                        <div className="disc-impact-card__icon">
+                        <div
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                            form.dimensionesImpacto.includes("Gente")
+                              ? "bg-pink-100 text-pink-600"
+                              : "bg-slate-50 text-slate-500"
+                          }`}
+                        >
                           <Icon icon={Person} size={16} />
                         </div>
-                        <div style={{ flex: 1 }}>
-                          <div className="disc-impact-card__title">
+                        <div className="flex-1">
+                          <div
+                            className={`flex items-center justify-between text-[13px] font-bold ${
+                              form.dimensionesImpacto.includes("Gente")
+                                ? "text-pink-600"
+                                : "text-text-heading"
+                            }`}
+                          >
                             <span>Gente</span>
-                            {form.dimensionesImpacto.includes("Gente") && <span style={{ color: "#db2777" }}>✓</span>}
+                            {form.dimensionesImpacto.includes("Gente") && (
+                              <span className="text-pink-600">✓</span>
+                            )}
                           </div>
-                          <div className="disc-impact-card__desc">
+                          <div className="mt-0.5 text-[11.5px] leading-[1.35] text-text-secondary">
                             Implica capacitación o gestión del cambio.
                           </div>
                         </div>
@@ -1703,74 +2005,87 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 3.2 SISTEMAS Y PLATAFORMAS */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">3.2</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      3.2
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Settings} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Sistemas y plataformas</h3>
-                      <p className="disc-block-sub">Define si TI participa y qué se ve involucrado.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Sistemas y plataformas
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Define si TI participa y qué se ve involucrado.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--progress">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-blue-200 bg-blue-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-blue-600">
                     {form.requiereTecnologia === "Sí" ? "1 de 2" : "✓ Completo"}
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   {/* Selector Sí / No / Aún no sé */}
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>¿Requiere intervención de Tecnología?</span>
-                      <span className="disc-required-star">*</span>
-                      <span className="disc-tooltip-icon" title="Indica si habrá desarrollo de software o infraestructura">?</span>
-                      <span className="disc-check-ok">✓</span>
+                      <span className="font-extrabold text-brand-accent">*</span>
+                      <span
+                        className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                        title="Indica si habrá desarrollo de software o infraestructura"
+                      >
+                        ?
+                      </span>
+                      <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
 
-                    <div className="disc-segment-group">
-                      <button
-                        type="button"
-                        className={`disc-segment-btn ${form.requiereTecnologia === "Sí" ? "disc-segment-btn--active" : ""}`}
-                        onClick={() => setForm({ ...form, requiereTecnologia: "Sí" })}
-                      >
-                        Sí
-                      </button>
-                      <button
-                        type="button"
-                        className={`disc-segment-btn ${form.requiereTecnologia === "No" ? "disc-segment-btn--active" : ""}`}
-                        onClick={() => setForm({ ...form, requiereTecnologia: "No" })}
-                      >
-                        No
-                      </button>
-                      <button
-                        type="button"
-                        className={`disc-segment-btn ${form.requiereTecnologia === "Aún no sé" ? "disc-segment-btn--active" : ""}`}
-                        onClick={() => setForm({ ...form, requiereTecnologia: "Aún no sé" })}
-                      >
-                        Aún no sé
-                      </button>
+                    <div className="flex gap-2">
+                      {(["Sí", "No", "Aún no sé"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          className={`cursor-pointer rounded-md border px-4.5 py-2 text-[12.5px] transition-all duration-150 ${
+                            form.requiereTecnologia === opt
+                              ? "border-pink-600 bg-pink-600 font-bold text-white"
+                              : "border-[#d0d4e4] bg-bg-card font-semibold text-gray-600 hover:border-pink-400 hover:bg-pink-50"
+                          }`}
+                          onClick={() => setForm({ ...form, requiereTecnologia: opt })}
+                        >
+                          {opt}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
                   {/* Detalle Técnico */}
                   {form.requiereTecnologia !== "No" && (
                     <div>
-                      <div className="disc-subhead-label">DETALLE TÉCNICO</div>
+                      <div className="mt-2.5 mb-1.5 text-[10.5px] font-extrabold tracking-[0.6px] text-gray-500 uppercase">
+                        DETALLE TÉCNICO
+                      </div>
                       <div>
-                        <label className="disc-field-label">
+                        <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                           <span>Sistemas y plataformas afectadas</span>
-                          <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                          <span className="disc-tooltip-icon" title="Selecciona o añade los sistemas involucrados">?</span>
+                          <span className="text-[10.5px] font-medium text-gray-500">
+                            (opcional)
+                          </span>
+                          <span
+                            className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                            title="Selecciona o añade los sistemas involucrados"
+                          >
+                            ?
+                          </span>
                         </label>
 
                         {/* Cuadro de texto para agregar nuevo sistema con botón ADD */}
-                        <div style={{ display: "flex", gap: 8, marginBottom: 12, maxWidth: 520 }}>
+                        <div className="mb-3 flex max-w-[520px] gap-2">
                           <input
                             type="text"
-                            className="config-card__input"
+                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             placeholder="Escribe el nombre de otro sistema o plataforma..."
                             value={newSystemInput}
                             onChange={(e) => setNewSystemInput(e.target.value)}
@@ -1783,8 +2098,7 @@ export default function DiscoveryPage() {
                           />
                           <button
                             type="button"
-                            className="btn-purple-solid"
-                            style={{ padding: "0 18px", height: 38, fontSize: 12, fontWeight: 700, flexShrink: 0 }}
+                            className="inline-flex h-[38px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4.5 text-xs font-bold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                             onClick={handleAddCustomSystem}
                           >
                             <Icon icon={Add} size={14} />
@@ -1793,28 +2107,18 @@ export default function DiscoveryPage() {
                         </div>
 
                         {/* Chips seleccionables de sistemas */}
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <div className="flex flex-wrap gap-2">
                           {availableSystems.map((sys) => {
                             const isSelected = form.selectedSystems.includes(sys.id);
                             return (
                               <button
                                 key={sys.id}
                                 type="button"
-                                className={`tag-pill ${isSelected ? "tag-pill--purple" : ""}`}
-                                style={{
-                                  cursor: "pointer",
-                                  fontSize: 12,
-                                  padding: "6px 14px",
-                                  borderRadius: 20,
-                                  background: isSelected ? "var(--brand-primary)" : "#f1f3f5",
-                                  color: isSelected ? "#ffffff" : "#4b5563",
-                                  border: isSelected ? "1px solid var(--brand-primary)" : "1px solid #d0d4e4",
-                                  fontWeight: isSelected ? 700 : 500,
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 5,
-                                  transition: "all 0.15s ease",
-                                }}
+                                className={`inline-flex cursor-pointer items-center gap-[5px] rounded-[20px] border px-3.5 py-1.5 text-xs transition-all duration-150 ${
+                                  isSelected
+                                    ? "border-brand-primary bg-brand-primary font-bold text-white"
+                                    : "border-[#d0d4e4] bg-status-gray-bg font-medium text-gray-600 hover:border-brand-primary hover:bg-brand-primary-light hover:text-brand-primary"
+                                }`}
                                 onClick={() => toggleSystemChip(sys.id)}
                               >
                                 <span>{isSelected ? "✓" : "+"}</span>
@@ -1830,46 +2134,55 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 3.3 DEPENDENCIAS EN CASCADA */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">3.3</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      3.3
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Timeline} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Dependencias en cascada</h3>
-                      <p className="disc-block-sub">Proyectos que deben existir antes o avanzar en paralelo.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Dependencias en cascada
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Proyectos que deben existir antes o avanzar en paralelo.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
                   <div>
-                    <label className="disc-field-label">
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
                       <span>Portafolio y proyecto del que depende</span>
-                      <span style={{ fontSize: 10.5, color: "#6b7280", fontWeight: 500 }}>(opcional)</span>
-                      <span className="disc-tooltip-icon" title="Dependencias cruzadas entre iniciativas">?</span>
+                      <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
+                      <span
+                        className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
+                        title="Dependencias cruzadas entre iniciativas"
+                      >
+                        ?
+                      </span>
                     </label>
 
                     {form.dependencias.map((dep, idx) => (
-                      <div key={dep.id} className="disc-dynamic-row">
+                      <div key={dep.id} className="mb-2 flex items-center gap-2">
                         <input
                           type="text"
-                          className="config-card__input"
-                          style={{ flex: 1 }}
+                          className="w-full flex-1 rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={dep.origen}
                           placeholder="Portafolio / Proyecto origen..."
                           onChange={(e) => handleUpdateDependencia(idx, "origen", e.target.value)}
                         />
-                        <span style={{ color: "#9ca3af", fontWeight: 700 }}>→</span>
+                        <span className="font-bold text-gray-400">→</span>
                         <input
                           type="text"
-                          className="config-card__input"
-                          style={{ flex: 1 }}
+                          className="w-full flex-1 rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={dep.destino}
                           placeholder="Iniciativa / Dependencia destino..."
                           onChange={(e) => handleUpdateDependencia(idx, "destino", e.target.value)}
@@ -1877,7 +2190,7 @@ export default function DiscoveryPage() {
                         {form.dependencias.length > 1 && (
                           <button
                             type="button"
-                            className="disc-icon-btn-danger"
+                            className="cursor-pointer rounded-sm border-none bg-transparent p-1 text-gray-400 transition-all duration-150 hover:bg-red-100 hover:text-red-500"
                             onClick={() => handleRemoveDependencia(idx)}
                             title="Eliminar dependencia"
                           >
@@ -1889,8 +2202,7 @@ export default function DiscoveryPage() {
 
                     <button
                       type="button"
-                      className="disc-btn-add"
-                      style={{ marginTop: 6 }}
+                      className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 self-start rounded-md border border-[#d0d4e4] bg-bg-card px-3.5 py-[7px] text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-pink-600 hover:bg-pink-50 hover:text-pink-600"
                       onClick={handleAddDependencia}
                     >
                       <Icon icon={Add} size={14} />
@@ -1901,10 +2213,10 @@ export default function DiscoveryPage() {
               </div>
 
               {/* Botones de navegación */}
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
+              <div className="mt-4 flex justify-between">
                 <button
                   type="button"
-                  className="btn-purple-outline"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                   onClick={() => setCurrentStep(2)}
                 >
                   <Icon icon={NavigationChevronLeft} size={15} />
@@ -1912,7 +2224,7 @@ export default function DiscoveryPage() {
                 </button>
                 <button
                   type="button"
-                  className="btn-purple-solid"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                   onClick={() => setCurrentStep(4)}
                 >
                   <span>Continuar a Ficha Canvas</span>
@@ -1928,42 +2240,46 @@ export default function DiscoveryPage() {
           {currentStep === 4 && (
             <div>
               {/* LA GRAN FICHA CANVAS INSTITUCIONAL DE LIVERPOOL */}
-              <div className="disc-canvas-card">
+              <div className="mb-6 overflow-hidden rounded-xl border border-[#d0d4e4] bg-bg-card shadow-md">
                 {/* Banner superior */}
-                <div className="disc-canvas-banner">
-                  <div className="disc-canvas-banner__title">
+                <div className="flex items-center justify-between gap-4 bg-linear-to-r from-[#b01777] to-pink-600 px-5.5 py-3.5 text-white">
+                  <div className="m-0 text-[13.5px] font-extrabold tracking-[0.8px] uppercase">
                     FICHA CANVAS DE INICIATIVA
                   </div>
-                  <div className="disc-canvas-banner__sub">
+                  <div className="text-[11.5px] font-medium opacity-90">
                     Una división de: El Puerto de Liverpool
                   </div>
                 </div>
 
-                <div className="disc-canvas-body">
+                <div className="flex flex-col gap-4.5 bg-bg-card p-5.5">
                   {/* Nombre del proyecto */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={FileIcon} size={13} />
                       <span>Nombre del proyecto</span>
                     </div>
-                    <div className="disc-canvas-box__val" style={{ fontWeight: 700, fontSize: 14 }}>
+                    <div className="text-sm leading-[1.45] font-bold text-text-heading">
                       {form.title}
                     </div>
                   </div>
 
                   {/* A qué alineación estratégica pertenece */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={Timeline} size={13} />
                       <span>A qué alineación estratégica pertenece (Pirámide)</span>
                     </div>
-                    <div className="disc-canvas-chk-row">
+                    <div className="flex flex-wrap gap-2">
                       {["(N0) Ninguna", "(N1) Prioritarios", "(N2) Habilitadores/Regulatorios", "(N3) Mejora continua"].map((opt) => {
                         const isMatch = form.strategicAlignment === opt;
                         return (
                           <div
                             key={opt}
-                            className={`disc-canvas-chk-item ${isMatch ? "disc-canvas-chk-item--selected" : ""}`}
+                            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11.5px] ${
+                              isMatch
+                                ? "border-pink-600 bg-pink-50 font-bold text-pink-600"
+                                : "border-slate-200 bg-bg-card text-slate-600"
+                            }`}
                           >
                             <span>{isMatch ? "☑" : "☐"}</span>
                             <span>{opt}</span>
@@ -1974,55 +2290,51 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* 2 Columnas: Descripción del alcance vs Beneficios */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                     {/* Columna Izquierda: Alcance */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      <div className="disc-canvas-box">
-                        <div className="disc-canvas-box__label">
+                    <div className="flex flex-col gap-2.5">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                        <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                           <Icon icon={Info} size={13} />
                           <span>Descripción del alcance</span>
                         </div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#db2777", marginBottom: 2 }}>
-                          ¿Qué?
-                        </div>
-                        <div className="disc-canvas-box__val" style={{ marginBottom: 8 }}>
+                        <div className="mb-0.5 text-[11px] font-bold text-pink-600">¿Qué?</div>
+                        <div className="mb-2 text-[12.5px] leading-[1.45] text-text-heading">
                           {form.needDescription}
                         </div>
 
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#db2777", marginBottom: 2 }}>
-                          ¿Por qué?
-                        </div>
-                        <div className="disc-canvas-box__val" style={{ marginBottom: 8 }}>
+                        <div className="mb-0.5 text-[11px] font-bold text-pink-600">¿Por qué?</div>
+                        <div className="mb-2 text-[12.5px] leading-[1.45] text-text-heading">
                           {form.whyNow}
                         </div>
 
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#db2777", marginBottom: 2 }}>
+                        <div className="mb-0.5 text-[11px] font-bold text-pink-600">
                           Estadísticas / justificación
                         </div>
-                        <div className="disc-canvas-box__val">
+                        <div className="text-[12.5px] leading-[1.45] text-text-heading">
                           {form.evidence || "Sin estadísticas adicionales."}
                         </div>
                       </div>
                     </div>
 
                     {/* Columna Derecha: Beneficios */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      <div className="disc-canvas-box">
-                        <div className="disc-canvas-box__label">
+                    <div className="flex flex-col gap-2.5">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                        <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                           <Icon icon={Bolt} size={13} />
                           <span>Beneficios</span>
                         </div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#db2777", marginBottom: 2 }}>
+                        <div className="mb-0.5 text-[11px] font-bold text-pink-600">
                           Beneficios al cliente
                         </div>
-                        <div className="disc-canvas-box__val" style={{ marginBottom: 8 }}>
+                        <div className="mb-2 text-[12.5px] leading-[1.45] text-text-heading">
                           {form.beneficioCliente || "Sin beneficio directo especificado."}
                         </div>
 
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "#db2777", marginBottom: 2 }}>
+                        <div className="mb-0.5 text-[11px] font-bold text-pink-600">
                           Beneficios al negocio
                         </div>
-                        <div className="disc-canvas-box__val">
+                        <div className="text-[12.5px] leading-[1.45] text-text-heading">
                           {form.beneficioNegocio}
                         </div>
                       </div>
@@ -2030,18 +2342,22 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* Impacto en Tecnología */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={Settings} size={13} />
                       <span>Es un proyecto con impacto en Tecnología</span>
                     </div>
-                    <div className="disc-canvas-chk-row">
+                    <div className="flex flex-wrap gap-2">
                       {["Sí", "No", "Aún no sé"].map((opt) => {
                         const isMatch = form.requiereTecnologia === opt;
                         return (
                           <div
                             key={opt}
-                            className={`disc-canvas-chk-item ${isMatch ? "disc-canvas-chk-item--selected" : ""}`}
+                            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11.5px] ${
+                              isMatch
+                                ? "border-pink-600 bg-pink-50 font-bold text-pink-600"
+                                : "border-slate-200 bg-bg-card text-slate-600"
+                            }`}
                           >
                             <span>{isMatch ? "☑" : "☐"}</span>
                             <span>{opt}</span>
@@ -2052,18 +2368,22 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* Dimensiones de impacto */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={Settings} size={13} />
                       <span>Dimensiones de impacto</span>
                     </div>
-                    <div className="disc-canvas-chk-row">
+                    <div className="flex flex-wrap gap-2">
                       {["Estructura", "Procesos", "Tecnología", "Gente"].map((opt) => {
                         const isMatch = form.dimensionesImpacto.includes(opt);
                         return (
                           <div
                             key={opt}
-                            className={`disc-canvas-chk-item ${isMatch ? "disc-canvas-chk-item--selected" : ""}`}
+                            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11.5px] ${
+                              isMatch
+                                ? "border-pink-600 bg-pink-50 font-bold text-pink-600"
+                                : "border-slate-200 bg-bg-card text-slate-600"
+                            }`}
                           >
                             <span>{isMatch ? "☑" : "☐"}</span>
                             <span>{opt}</span>
@@ -2074,25 +2394,37 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* Dependencias */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={Timeline} size={13} />
                       <span>Existe dependencia con algún otro proyecto</span>
                     </div>
-                    <div className="disc-canvas-chk-row" style={{ marginBottom: 6 }}>
-                      <div className={`disc-canvas-chk-item ${form.dependencias.length > 0 ? "disc-canvas-chk-item--selected" : ""}`}>
+                    <div className="mb-1.5 flex flex-wrap gap-2">
+                      <div
+                        className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11.5px] ${
+                          form.dependencias.length > 0
+                            ? "border-pink-600 bg-pink-50 font-bold text-pink-600"
+                            : "border-slate-200 bg-bg-card text-slate-600"
+                        }`}
+                      >
                         <span>{form.dependencias.length > 0 ? "☑" : "☐"}</span>
                         <span>Sí</span>
                       </div>
-                      <div className={`disc-canvas-chk-item ${form.dependencias.length === 0 ? "disc-canvas-chk-item--selected" : ""}`}>
+                      <div
+                        className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[11.5px] ${
+                          form.dependencias.length === 0
+                            ? "border-pink-600 bg-pink-50 font-bold text-pink-600"
+                            : "border-slate-200 bg-bg-card text-slate-600"
+                        }`}
+                      >
                         <span>{form.dependencias.length === 0 ? "☑" : "☐"}</span>
                         <span>No</span>
                       </div>
                     </div>
                     {form.dependencias.length > 0 && (
-                      <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
+                      <div className="mt-1.5 flex flex-col gap-[3px]">
                         {form.dependencias.map((d, i) => (
-                          <div key={i} style={{ fontSize: 12, color: "#334155" }}>
+                          <div key={i} className="text-xs text-slate-700">
                             • <strong>{d.origen || "Portafolio origen"}</strong> → {d.destino || "Iniciativa destino"}
                           </div>
                         ))}
@@ -2101,37 +2433,37 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* Sistemas afectados */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                       <Icon icon={Settings} size={13} />
                       <span>Sistemas afectados</span>
                     </div>
-                    <div className="disc-canvas-box__val">
+                    <div className="text-[12.5px] leading-[1.45] text-text-heading">
                       {form.sistemasAfectados || "Sin sistemas declarados."}
                     </div>
                   </div>
 
                   {/* Grid 2 Columnas: Capacidades vs KPIs */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-                    <div className="disc-canvas-box">
-                      <div className="disc-canvas-box__label">
+                  <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                      <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                         <Icon icon={Bolt} size={13} />
                         <span>Capacidades específicas del proyecto</span>
                       </div>
                       {form.capacidades.map((cap, i) => (
-                        <div key={i} style={{ fontSize: 12, color: "#334155", marginBottom: 3 }}>
+                        <div key={i} className="mb-[3px] text-xs text-slate-700">
                           • {cap}
                         </div>
                       ))}
                     </div>
 
-                    <div className="disc-canvas-box">
-                      <div className="disc-canvas-box__label">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                      <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
                         <Icon icon={Timeline} size={13} />
                         <span>KPIs de éxito del proyecto</span>
                       </div>
                       {form.okrs.map((okr, i) => (
-                        <div key={i} style={{ fontSize: 12, color: "#334155", marginBottom: 3 }}>
+                        <div key={i} className="mb-[3px] text-xs text-slate-700">
                           • <strong>{okr.objetivo}</strong> → {okr.resultadoClave} ({okr.kpi})
                         </div>
                       ))}
@@ -2139,17 +2471,17 @@ export default function DiscoveryPage() {
                   </div>
 
                   {/* Caso monetario */}
-                  <div className="disc-canvas-box">
-                    <div className="disc-canvas-box__label">
-                      <span style={{ fontWeight: 800 }}>$</span>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
+                    <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase">
+                      <span className="font-extrabold">$</span>
                       <span>Caso monetario</span>
                     </div>
                     {hasRoiData ? (
-                      <div style={{ fontSize: 12.5, color: "#15803d", fontWeight: 600 }}>
+                      <div className="text-[12.5px] font-semibold text-green-700">
                         Inversión: ${numInversion.toLocaleString()} MXN | Ahorro anual: ${numAhorro.toLocaleString()} MXN | Ingreso anual: ${numIngreso.toLocaleString()} MXN | ROI: +{roiCalculado}% | Horizonte: {form.horizonte}
                       </div>
                     ) : (
-                      <div className="disc-canvas-box__val">
+                      <div className="text-[12.5px] leading-[1.45] text-text-heading">
                         Sin cuantificación monetaria
                       </div>
                     )}
@@ -2157,61 +2489,83 @@ export default function DiscoveryPage() {
                 </div>
 
                 {/* Footer de Metadatos de la Ficha */}
-                <div className="disc-canvas-meta-bar">
-                  <div className="disc-canvas-meta-item">
+                <div className="grid grid-cols-1 gap-4 border-t border-slate-200 bg-slate-50 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="flex items-start gap-2">
                     <Icon icon={Person} size={15} />
                     <div>
-                      <div className="disc-canvas-meta-k">LÍDER</div>
-                      <div className="disc-canvas-meta-v">ARGOS EYRA MARTINEZ ZEFERINO</div>
+                      <div className="text-[9.5px] font-extrabold tracking-[0.5px] text-slate-500 uppercase">
+                        LÍDER
+                      </div>
+                      <div className="mt-[1px] text-[11.5px] font-bold text-text-heading">
+                        ARGOS EYRA MARTINEZ ZEFERINO
+                      </div>
                     </div>
                   </div>
 
-                  <div className="disc-canvas-meta-item">
+                  <div className="flex items-start gap-2">
                     <Icon icon={Settings} size={15} />
                     <div>
-                      <div className="disc-canvas-meta-k">DIRECCIÓN / OFICINA</div>
-                      <div className="disc-canvas-meta-v">{form.businessUnit} · {form.oficinaArea}</div>
+                      <div className="text-[9.5px] font-extrabold tracking-[0.5px] text-slate-500 uppercase">
+                        DIRECCIÓN / OFICINA
+                      </div>
+                      <div className="mt-[1px] text-[11.5px] font-bold text-text-heading">
+                        {form.businessUnit} · {form.oficinaArea}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="disc-canvas-meta-item">
+                  <div className="flex items-start gap-2">
                     <Icon icon={FileIcon} size={15} />
                     <div>
-                      <div className="disc-canvas-meta-k">PMO</div>
-                      <div className="disc-canvas-meta-v">{form.pmoResponsable}</div>
+                      <div className="text-[9.5px] font-extrabold tracking-[0.5px] text-slate-500 uppercase">
+                        PMO
+                      </div>
+                      <div className="mt-[1px] text-[11.5px] font-bold text-text-heading">
+                        {form.pmoResponsable}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="disc-canvas-meta-item">
+                  <div className="flex items-start gap-2">
                     <Icon icon={Timeline} size={15} />
                     <div>
-                      <div className="disc-canvas-meta-k">FECHA DE REGISTRO</div>
-                      <div className="disc-canvas-meta-v">{new Date().toLocaleDateString("es-MX")}</div>
+                      <div className="text-[9.5px] font-extrabold tracking-[0.5px] text-slate-500 uppercase">
+                        FECHA DE REGISTRO
+                      </div>
+                      <div className="mt-[1px] text-[11.5px] font-bold text-text-heading">
+                        {new Date().toLocaleDateString("es-MX")}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* 4.2 VERIFICACIÓN PREVIA */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">4.2</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      4.2
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Check} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Verificación previa</h3>
-                      <p className="disc-block-sub">Todo lo obligatorio debe estar completo para enviar al backlog.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Verificación previa
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        Todo lo obligatorio debe estar completo para enviar al backlog.
+                      </p>
                     </div>
                   </div>
-                  <span className="disc-status-pill disc-status-pill--complete">
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
                     ✓ Completo
                   </span>
                 </div>
 
-                <div className="disc-block-body">
-                  <div className="disc-verify-box">
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
+                  <div className="flex items-center gap-3 rounded-lg border border-status-green-border bg-emerald-50 px-4.5 py-3.5 text-[12.5px] font-semibold text-green-700">
                     <Icon icon={Check} size={18} />
                     <span>La ficha está completa. Puedes enviarla al backlog de iniciativas.</span>
                   </div>
@@ -2219,29 +2573,35 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 4.3 ENVÍO AL BACKLOG */}
-              <div className="disc-block-card">
-                <div className="disc-block-header">
-                  <div className="disc-block-header__left">
-                    <span className="disc-block-badge">4.3</span>
-                    <span className="disc-block-icon-wrap">
+              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
+                      4.3
+                    </span>
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-pink-200 bg-bg-card text-pink-600">
                       <Icon icon={Send} size={15} />
                     </span>
                     <div>
-                      <h3 className="disc-block-title">Envío al backlog</h3>
-                      <p className="disc-block-sub">La iniciativa se registra con estado &quot;Registrada&quot; y la fecha de hoy.</p>
+                      <h3 className="m-0 text-[14.5px] font-bold text-text-heading">
+                        Envío al backlog
+                      </h3>
+                      <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
+                        La iniciativa se registra con estado &quot;Registrada&quot; y la fecha de hoy.
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="disc-block-body">
-                  <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: "0 0 16px 0", lineHeight: 1.45 }}>
+                <div className="flex flex-col gap-4.5 px-5.5 py-5">
+                  <p className="m-0 mb-4 text-[13px] leading-[1.45] text-text-secondary">
                     Al enviar, la ficha queda disponible para el comité de priorización. Podrás seguir su avance desde el tablero de iniciativas; los cambios posteriores se gestionan ahí.
                   </p>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div className="flex items-center justify-between">
                     <button
                       type="button"
-                      className="btn-purple-outline"
+                      className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                       onClick={() => setCurrentStep(3)}
                     >
                       <Icon icon={NavigationChevronLeft} size={15} />
@@ -2250,8 +2610,7 @@ export default function DiscoveryPage() {
 
                     <button
                       type="button"
-                      className="btn-purple-solid"
-                      style={{ background: "var(--brand-accent)", borderColor: "var(--brand-accent)" }}
+                      className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-accent bg-brand-accent px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-accent-dark hover:bg-brand-accent-dark disabled:cursor-not-allowed disabled:opacity-60"
                       onClick={handleSubmitToBacklog}
                       disabled={isSubmitting}
                     >
@@ -2272,28 +2631,17 @@ export default function DiscoveryPage() {
         </div>
 
         {/* COLUMNA DERECHA: ASISTENTE INTELIGENTE DATASWAT AI */}
-        <aside className="dataswat-card">
-          <div className="dataswat-header">
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 6,
-                  background: "var(--brand-primary-light)",
-                  color: "var(--brand-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+        <aside className="sticky top-4 flex h-[640px] max-h-[calc(100vh-180px)] flex-col rounded-[14px] border border-border-default bg-bg-card shadow-xs">
+          <div className="flex items-center justify-between border-b border-border-default px-5 py-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-primary-light text-brand-primary">
                 <Icon icon={Bolt} size={16} />
               </div>
               <div>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1e2022" }}>
+                <div className="text-[13.5px] font-bold text-text-heading">
                   Discovery Inteligente
                 </div>
-                <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>
+                <div className="text-[11px] text-text-secondary">
                   DataSwat Copilot · Refinamiento activo
                 </div>
               </div>
@@ -2301,8 +2649,7 @@ export default function DiscoveryPage() {
 
             <button
               type="button"
-              className="btn-purple-outline"
-              style={{ padding: "4px 8px", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-2 py-1 text-[11px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
               onClick={handleAttachMockFile}
               title="Simular subir documento"
             >
@@ -2312,27 +2659,31 @@ export default function DiscoveryPage() {
           </div>
 
           {/* Lista de mensajes */}
-          <div className="dataswat-messages">
+          <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
             {chatMessages.map((msg) => (
               <div
                 key={msg.id}
-                className={msg.sender === "bot" ? "dataswat-bubble-bot" : "dataswat-bubble-user"}
+                className={
+                  msg.sender === "bot"
+                    ? "max-w-[90%] rounded-xl border border-border-default bg-surface-soft px-4 py-3.5"
+                    : "max-w-[85%] self-end rounded-xl rounded-br-[2px] bg-brand-primary px-4 py-2.5 text-[13px] leading-[1.4] text-white"
+                }
               >
                 {msg.sender === "bot" && (
-                  <div className="dataswat-bubble-bot__header">
+                  <div className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-brand-primary">
                     <Icon icon={Bolt} size={13} />
                     <span>DataSwat AI</span>
                   </div>
                 )}
-                <div style={{ whiteSpace: "pre-line", fontSize: 12.5, lineHeight: 1.45 }}>
+                <div className="text-[12.5px] leading-[1.45] whitespace-pre-line">
                   {msg.text}
                 </div>
 
                 {msg.actionLabel && msg.actionPayload && (
-                  <div style={{ marginTop: 10 }}>
+                  <div className="mt-2.5">
                     <button
                       type="button"
-                      className="btn-ai-assist"
+                      className="inline-flex cursor-pointer items-center gap-1.5 rounded-[20px] border border-[#f2d8ec] bg-brand-primary-soft px-3 py-[5px] text-xs font-semibold text-brand-primary transition-all duration-150 hover:-translate-y-[1px] hover:border-brand-primary hover:bg-[#f5e1f0]"
                       onClick={() => applyPayloadToForm(msg.actionPayload)}
                     >
                       <Icon icon={Check} size={12} />
@@ -2342,12 +2693,11 @@ export default function DiscoveryPage() {
                 )}
 
                 <div
-                  style={{
-                    fontSize: 10,
-                    marginTop: 4,
-                    textAlign: msg.sender === "user" ? "right" : "left",
-                    color: msg.sender === "user" ? "rgba(255,255,255,0.7)" : "var(--color-text-muted)",
-                  }}
+                  className={`mt-1 text-[10px] ${
+                    msg.sender === "user"
+                      ? "text-right text-white/70"
+                      : "text-left text-text-muted"
+                  }`}
                 >
                   {msg.timestamp}
                 </div>
@@ -2355,9 +2705,9 @@ export default function DiscoveryPage() {
             ))}
 
             {isAiTyping && (
-              <div className="dataswat-bubble-bot" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div className="flex max-w-[90%] items-center gap-2 rounded-xl border border-border-default bg-surface-soft px-4 py-3.5">
                 <Loader size={14} />
-                <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+                <span className="text-xs text-text-secondary">
                   DataSwat AI está analizando tu iniciativa…
                 </span>
               </div>
@@ -2365,52 +2715,38 @@ export default function DiscoveryPage() {
           </div>
 
           {/* Sugerencias Rápidas */}
-          <div
-            style={{
-              padding: "8px 16px",
-              borderTop: "1px solid var(--color-border-subtle)",
-              display: "flex",
-              gap: 6,
-              overflowX: "auto",
-              background: "#fafbfc",
-            }}
-          >
+          <div className="flex gap-1.5 overflow-x-auto border-t border-border-subtle bg-[#fafbfc] px-4 py-2">
             <button
               type="button"
-              className="tag-pill tag-pill--purple"
-              style={{ cursor: "pointer", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
               onClick={() => handleSendMessage("¿Cómo cuantifico el ROI y ahorro anual?")}
             >
               💡 Cuantificar ROI
             </button>
             <button
               type="button"
-              className="tag-pill tag-pill--purple"
-              style={{ cursor: "pointer", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
               onClick={() => handleSendMessage("¿Qué sistemas TI y dependencias arquitectónicas sugieres?")}
             >
               💻 Sistemas TI
             </button>
             <button
               type="button"
-              className="tag-pill tag-pill--purple"
-              style={{ cursor: "pointer", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
               onClick={() => handleSendMessage("¿Qué OKRs y KPIs de éxito recomiendas?")}
             >
               🎯 Sugerir OKRs
             </button>
             <button
               type="button"
-              className="tag-pill tag-pill--purple"
-              style={{ cursor: "pointer", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
               onClick={() => handleSendMessage("¿A qué nivel de alineación estratégica corresponde?")}
             >
               🧭 Alineación
             </button>
             <button
               type="button"
-              className="tag-pill tag-pill--purple"
-              style={{ cursor: "pointer", fontSize: 11 }}
+              className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
               onClick={handleAttachMockFile}
             >
               📄 Analizar PDF
@@ -2418,11 +2754,11 @@ export default function DiscoveryPage() {
           </div>
 
           {/* Input inferior con botón de adjuntar y enviar */}
-          <div className="dataswat-footer">
-            <div className="dataswat-input-box">
+          <div className="rounded-b-[14px] border-t border-border-default bg-bg-card px-4.5 py-3.5">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="dataswat-btn-attach"
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-[#dcdfe4] bg-slate-50 text-text-secondary transition-all duration-150 hover:border-brand-primary hover:bg-brand-primary-light hover:text-brand-primary"
                 onClick={handleAttachMockFile}
                 title="Adjuntar documento de descubrimiento"
               >
@@ -2430,7 +2766,7 @@ export default function DiscoveryPage() {
               </button>
               <input
                 type="text"
-                className="dataswat-input-box__text"
+                className="flex-1 rounded-lg border border-[#dcdfe4] px-3.5 py-2.5 text-[13px] text-text-main outline-none focus:border-brand-primary"
                 placeholder="Describe tu idea o haz preguntas..."
                 value={chatDraft}
                 onChange={(e) => setChatDraft(e.target.value)}
@@ -2438,7 +2774,7 @@ export default function DiscoveryPage() {
               />
               <button
                 type="button"
-                className="dataswat-btn-send"
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border-none bg-brand-accent text-white transition-all duration-150 hover:bg-brand-accent-dark"
                 onClick={() => handleSendMessage()}
                 title="Enviar"
               >
@@ -2451,76 +2787,30 @@ export default function DiscoveryPage() {
 
       {/* 5. MODAL DE ÉXITO AL REGISTRAR Y ENVIAR AL BACKLOG */}
       {isSuccessModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 100,
-            padding: 20,
-          }}
-        >
-          <div
-            className="board-card"
-            style={{
-              maxWidth: 500,
-              width: "100%",
-              padding: 28,
-              textAlign: "center",
-              boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
-            }}
-          >
-            <div
-              style={{
-                width: 54,
-                height: 54,
-                borderRadius: "50%",
-                background: "var(--status-green-bg)",
-                color: "var(--status-green-text)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 16px",
-              }}
-            >
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-5">
+          <div className="w-full max-w-[500px] rounded-xl border border-border-default bg-bg-card p-7 text-center shadow-[0_12px_32px_rgba(0,0,0,0.18)]">
+            <div className="mx-auto mb-4 flex h-[54px] w-[54px] items-center justify-center rounded-full bg-status-green-bg text-status-green-text">
               <Icon icon={Check} size={28} />
             </div>
 
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 8px 0", color: "#1e2022" }}>
+            <h3 className="m-0 mb-2 text-xl font-bold text-text-heading">
               ¡Iniciativa Registrada con Éxito!
             </h3>
 
-            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.5, margin: "0 0 20px 0" }}>
+            <p className="m-0 mb-5 text-[13px] leading-[1.5] text-text-secondary">
               La iniciativa <strong>&quot;{form.title}&quot;</strong> ha completado la Ficha Canvas de Discovery y se ha transferido exitosamente a la cartera de <strong>{form.businessUnit}</strong>.
             </p>
 
-            <div
-              style={{
-                background: "#f0fdf4",
-                border: "1px solid #bbf7d0",
-                borderRadius: 8,
-                padding: 12,
-                fontSize: 12.5,
-                color: "#166534",
-                marginBottom: 24,
-                textAlign: "left",
-              }}
-            >
+            <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-3 text-left text-[12.5px] text-green-800">
               <strong>Siguiente paso en el flujo:</strong>
               <br />
               ➔ <strong>Revisión y Priorización de Iniciativas</strong>: el Portfolio Manager revisará y evaluará tu solicitud dentro del portafolio.
             </div>
 
-            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <div className="flex justify-center gap-3">
               <button
                 type="button"
-                className="btn-purple-solid"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                 onClick={() => router.push("/iniciativas")}
               >
                 Ir a Iniciativas

@@ -124,26 +124,30 @@ export default function TeamPage() {
 
   return (
     <div>
-      <div className="app-back-bar">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* Título de la vista */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 6px 0", color: "#1e2022" }}>
+      <div className="mb-5">
+        <h1 className="m-0 mb-1.5 text-2xl font-bold text-text-heading">
           Configuración y Perfiles de Usuario
         </h1>
-        <p style={{ fontSize: 13.5, color: "var(--color-text-secondary)", margin: 0 }}>
+        <p className="m-0 text-[13.5px] text-text-secondary">
           Administración de parámetros visuales del sistema (tokens de diseño) y catálogo de roles para gobernanza.
         </p>
       </div>
 
       {/* Segmented Control / Tabs inspirado en Imagen 4 */}
-      <div style={{ marginBottom: 20 }}>
-        <div className="segmented-control">
+      <div className="mb-5">
+        <div className="inline-flex flex-wrap gap-1 rounded-[10px] bg-status-gray-bg p-1">
           <button
             type="button"
-            className={`segmented-btn ${activeTab === "users" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border-none px-4 py-1.5 text-[13px] transition-all duration-150 ${
+              activeTab === "users"
+                ? "bg-brand-primary-light font-bold text-brand-primary shadow-2xs"
+                : "bg-transparent font-medium text-text-secondary hover:text-brand-primary"
+            }`}
             onClick={() => setActiveTab("users")}
           >
             <Icon icon={Person} size={15} />
@@ -151,7 +155,11 @@ export default function TeamPage() {
           </button>
           <button
             type="button"
-            className={`segmented-btn ${activeTab === "config" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border-none px-4 py-1.5 text-[13px] transition-all duration-150 ${
+              activeTab === "config"
+                ? "bg-brand-primary-light font-bold text-brand-primary shadow-2xs"
+                : "bg-transparent font-medium text-text-secondary hover:text-brand-primary"
+            }`}
             onClick={() => setActiveTab("config")}
           >
             <Icon icon={Settings} size={15} />
@@ -163,32 +171,43 @@ export default function TeamPage() {
       {activeTab === "config" ? (
         <div id="config">
           {/* Banner informativo */}
-          <div className="notice-banner">
-            <div className="notice-banner__icon">
+          <div className="mb-5 flex items-center gap-3 rounded-[10px] border border-status-green-border bg-status-green-bg px-4 py-3">
+            <div className="shrink-0 text-status-green-text">
               <Icon icon={Check} size={18} />
             </div>
             <div>
-              <div className="notice-banner__title">Parámetros de Estilos y Configuración</div>
-              <div className="notice-banner__text">
+              <div className="text-[13px] font-bold text-status-green-text">
+                Parámetros de Estilos y Configuración
+              </div>
+              <div className="mt-0.5 text-xs text-status-green-text">
                 Los tokens visuales de color y comportamiento se sincronizan con el entorno embebido de Monday.com.
               </div>
             </div>
           </div>
 
           {/* Grid de Form Cards inspirado en Imagen 3 */}
-          <div className="config-grid">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,minmax(360px,1fr))]">
             {configFields.map((field) => (
-              <div key={field.id} className="config-card">
+              <div
+                key={field.id}
+                className="flex flex-col justify-between gap-3.5 rounded-[10px] border border-border-default bg-bg-card px-5 py-4 shadow-2xs"
+              >
                 <div>
-                  <div className="config-card__top">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="config-card__label">{field.label}</div>
-                      <div className="config-card__help">{field.help}</div>
+                      <div className="text-xs font-bold tracking-[0.5px] text-text-heading uppercase">
+                        {field.label}
+                      </div>
+                      <div className="mt-[3px] text-[11.5px] text-text-secondary">
+                        {field.help}
+                      </div>
                     </div>
                     <div>
                       <span
-                        className={`tag-pill ${
-                          field.type === "editable" ? "tag-pill--purple" : "tag-pill--gray"
+                        className={`inline-flex items-center rounded-xl border px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap ${
+                          field.type === "editable"
+                            ? "border-status-purple-border bg-status-purple-bg text-status-purple-text"
+                            : "border-status-gray-border bg-status-gray-bg text-status-gray-text"
                         }`}
                       >
                         {field.type === "editable" ? "Editable" : "Sistema"}
@@ -196,10 +215,10 @@ export default function TeamPage() {
                     </div>
                   </div>
 
-                  <div style={{ marginTop: 12 }}>
+                  <div className="mt-3">
                     <input
                       type="text"
-                      className="config-card__input"
+                      className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-text-secondary"
                       value={field.value}
                       disabled={field.type === "sistema"}
                       onChange={(e) => handleFieldChange(field.id, e.target.value)}
@@ -207,24 +226,24 @@ export default function TeamPage() {
                   </div>
                 </div>
 
-                <div className="config-card__bottom">
+                <div className="flex items-center justify-end">
                   {field.type === "editable" ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div className="flex items-center gap-2">
                       {savedFieldId === field.id && (
-                        <span style={{ fontSize: 12, color: "var(--status-green-text)", fontWeight: 600 }}>
+                        <span className="text-xs font-semibold text-status-green-text">
                           ✓ Guardado
                         </span>
                       )}
                       <button
                         type="button"
-                        className="btn-purple-outline"
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                         onClick={() => handleSaveField(field.id)}
                       >
                         Guardar
                       </button>
                     </div>
                   ) : (
-                    <span style={{ fontSize: 11.5, color: "var(--color-text-muted)" }}>
+                    <span className="text-[11.5px] text-text-muted">
                       Se actualiza durante publicación/activación.
                     </span>
                   )}
@@ -236,44 +255,35 @@ export default function TeamPage() {
       ) : (
         <div>
           {/* Catálogo de Roles */}
-          <div className="board-card" id="roles" style={{ marginBottom: 20 }}>
-            <div style={{ marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 4px 0", color: "#1e2022" }}>
+          <div
+            className="mb-5 rounded-xl border border-border-default bg-bg-card px-6 py-5 shadow-2xs"
+            id="roles"
+          >
+            <div className="mb-4">
+              <h2 className="m-0 mb-1 text-[17px] font-bold text-text-heading">
                 Gobernanza y Aprobadores por Rol
               </h2>
-              <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>
+              <p className="m-0 text-[13px] text-text-secondary">
                 Roles extraídos de los flujos homologados de la organización.
               </p>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: 12,
-              }}
-            >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
               {roles?.map((role) => (
                 <div
                   key={role.id}
-                  style={{
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 10,
-                    padding: 14,
-                    background: "#ffffff",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-                  }}
+                  className="rounded-[10px] border border-border-default bg-bg-card p-3.5 shadow-2xs"
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div className="flex items-center justify-between">
                     <RoleTag roleId={role.id} roleName={role.name} />
-                    <span style={{ fontSize: 11, color: "var(--color-text-muted)", fontWeight: 500 }}>
+                    <span className="text-[11px] font-medium text-text-muted">
                       {role.id}
                     </span>
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 8, fontWeight: 600 }}>
+                  <div className="mt-2 text-xs font-semibold text-text-secondary">
                     Área: {role.area}
                   </div>
-                  <div style={{ fontSize: 12, color: "var(--color-text-main)", marginTop: 4, lineHeight: 1.4 }}>
+                  <div className="mt-1 text-xs leading-[1.4] text-text-main">
                     {role.description}
                   </div>
                 </div>
@@ -282,12 +292,15 @@ export default function TeamPage() {
           </div>
 
           {/* Directorio de Usuarios */}
-          <div className="board-card" id="usuarios">
-            <div style={{ marginBottom: 16 }}>
-              <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 4px 0", color: "#1e2022" }}>
+          <div
+            className="rounded-xl border border-border-default bg-bg-card px-6 py-5 shadow-2xs"
+            id="usuarios"
+          >
+            <div className="mb-4">
+              <h2 className="m-0 mb-1 text-[17px] font-bold text-text-heading">
                 Directorio de Integrantes
               </h2>
-              <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>
+              <p className="m-0 text-[13px] text-text-secondary">
                 Usa el selector &quot;Probar como&quot; en el encabezado para simular las decisiones de cada integrante.
               </p>
             </div>
@@ -308,12 +321,12 @@ export default function TeamPage() {
                   return (
                     <TableRow key={user.id}>
                       <TableCell>
-                        <span className="tag-pill tag-pill--gray" style={{ fontFamily: "monospace", fontSize: 11 }}>
+                        <span className="inline-flex items-center rounded-xl border border-status-gray-border bg-status-gray-bg px-2.5 py-[3px] font-mono text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-gray-text">
                           USR-{user.id}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span style={{ fontWeight: 600, color: "#1e2022" }}>{user.name}</span>
+                        <span className="font-semibold text-text-heading">{user.name}</span>
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{role && <RoleTag roleId={role.id} roleName={role.name} />}</TableCell>

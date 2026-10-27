@@ -36,9 +36,16 @@ export function FileDropzone({ project }: { project: Project }) {
 
   return (
     <div>
-      <div ref={zoneRef} className={`file-dropzone ${isActive ? "file-dropzone--active" : ""}`}>
+      <div
+        ref={zoneRef}
+        className={`rounded-xl border-2 border-dashed px-4 py-7 text-center transition-all duration-150 ${
+          isActive
+            ? "border-brand-primary bg-brand-primary-light"
+            : "border-[#c5c7d0] bg-surface-soft"
+        }`}
+      >
         <Icon icon={Upload} size={28} />
-        <div style={{ marginTop: 8 }}>
+        <div className="mt-2">
           <Text type="text2" weight="bold">
             Arrastra tus documentos de descubrimiento aquí
           </Text>
@@ -49,11 +56,14 @@ export function FileDropzone({ project }: { project: Project }) {
       </div>
 
       {project.documents.length > 0 && (
-        <div style={{ marginTop: 12 }}>
+        <div className="mt-3">
           {project.documents.map((doc) => (
-            <div key={doc.id} className="document-row">
+            <div
+              key={doc.id}
+              className="flex items-start gap-2.5 border-b border-border-default py-2.5"
+            >
               <Icon icon={FileIcon} size={20} />
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <Text type="text2" weight="bold">
                   {doc.name}
                 </Text>
