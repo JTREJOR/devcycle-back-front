@@ -150,14 +150,14 @@ export function MainMenuOverlay() {
     <>
       {/* Backdrop transparente para cerrar al hacer clic afuera */}
       <div
-        className="fixed inset-0 top-header z-25 bg-gray-900/28 backdrop-blur-[2px] animate-menu-fade-in"
+        className="fixed inset-0 top-header z-25 bg-gray-900/28 backdrop-blur-[2px] transition-opacity duration-150"
         onClick={handleClose}
         aria-hidden="true"
       />
 
       {/* Panel del Mega Menú inspirado en Imagen 2 */}
       <div
-        className="fixed top-header right-0 left-0 z-26 border-b border-border-default bg-bg-card shadow-[0_16px_36px_-4px_rgba(131,49,119,0.08),0_8px_16px_-4px_rgba(0,0,0,0.06)] animate-menu-slide-down"
+        className="fixed top-header right-0 left-0 z-26 border-b border-border-default bg-bg-card shadow-[0_16px_36px_-4px_rgba(131,49,119,0.08),0_8px_16px_-4px_rgba(0,0,0,0.06)] transition-all duration-150"
         role="dialog"
         aria-modal="true"
         aria-label="Menú de opciones"

@@ -40,9 +40,11 @@ const STAGES_CONFIG: {
   step: number;
   title: string;
   subtitle: string;
-  accentColor: string;
-  bgColor: string;
-  borderColor: string;
+  activeCardClass: string;
+  activeBadgeIconClass: string;
+  inactiveBadgeIconClass: string;
+  stepPillClass: string;
+  activeTitleClass: string;
   icon: typeof Clipboard;
 }[] = [
   {
@@ -50,9 +52,11 @@ const STAGES_CONFIG: {
     step: 1,
     title: "Priorización",
     subtitle: "Evaluación y score",
-    accentColor: "#b52670",
-    bgColor: "#fdf5f9",
-    borderColor: "#f3c5de",
+    activeCardClass: "border-[#b52670] bg-[#fdf5f9] shadow-[0_6px_18px_rgba(181,38,112,0.13)]",
+    activeBadgeIconClass: "border-[#f3c5de] bg-[#b52670] text-white",
+    inactiveBadgeIconClass: "border-[#f3c5de] bg-[#fdf5f9] text-[#b52670]",
+    stepPillClass: "border-[#f3c5de] bg-bg-card text-[#b52670]",
+    activeTitleClass: "text-[#b52670]",
     icon: Clipboard,
   },
   {
@@ -60,9 +64,11 @@ const STAGES_CONFIG: {
     step: 2,
     title: "Estimación",
     subtitle: "Sizing y VoBo TI",
-    accentColor: "#7c3aed",
-    bgColor: "#f5f3ff",
-    borderColor: "#ddd6fe",
+    activeCardClass: "border-violet-600 bg-violet-50 shadow-[0_6px_18px_rgba(124,58,237,0.13)]",
+    activeBadgeIconClass: "border-violet-200 bg-violet-600 text-white",
+    inactiveBadgeIconClass: "border-violet-200 bg-violet-50 text-violet-600",
+    stepPillClass: "border-violet-200 bg-bg-card text-violet-600",
+    activeTitleClass: "text-violet-600",
     icon: Timeline,
   },
   {
@@ -70,9 +76,11 @@ const STAGES_CONFIG: {
     step: 3,
     title: "Autorización",
     subtitle: "Dictamen y presupuesto",
-    accentColor: "#d97706",
-    bgColor: "#fffbeb",
-    borderColor: "#fde68a",
+    activeCardClass: "border-warning-500 bg-amber-50 shadow-[0_6px_18px_rgba(217,119,6,0.13)]",
+    activeBadgeIconClass: "border-amber-200 bg-warning-500 text-white",
+    inactiveBadgeIconClass: "border-amber-200 bg-amber-50 text-warning-500",
+    stepPillClass: "border-amber-200 bg-bg-card text-warning-500",
+    activeTitleClass: "text-warning-500",
     icon: Security,
   },
   {
@@ -80,9 +88,11 @@ const STAGES_CONFIG: {
     step: 4,
     title: "Formalización",
     subtitle: "Contratos y planeación",
-    accentColor: "#0284c7",
-    bgColor: "#f0f9ff",
-    borderColor: "#bae6fd",
+    activeCardClass: "border-info-500 bg-sky-50 shadow-[0_6px_18px_rgba(2,132,199,0.13)]",
+    activeBadgeIconClass: "border-sky-200 bg-info-500 text-white",
+    inactiveBadgeIconClass: "border-sky-200 bg-sky-50 text-info-500",
+    stepPillClass: "border-sky-200 bg-bg-card text-info-500",
+    activeTitleClass: "text-info-500",
     icon: FileIcon,
   },
   {
@@ -90,9 +100,11 @@ const STAGES_CONFIG: {
     step: 5,
     title: "Ejecución",
     subtitle: "Desarrollo y entrega",
-    accentColor: "#059669",
-    bgColor: "#ecfdf5",
-    borderColor: "#a7f3d0",
+    activeCardClass: "border-success-500 bg-emerald-50 shadow-[0_6px_18px_rgba(5,150,105,0.13)]",
+    activeBadgeIconClass: "border-status-green-border bg-success-500 text-white",
+    inactiveBadgeIconClass: "border-status-green-border bg-emerald-50 text-success-500",
+    stepPillClass: "border-status-green-border bg-bg-card text-success-500",
+    activeTitleClass: "text-success-500",
     icon: Play,
   },
   {
@@ -100,12 +112,110 @@ const STAGES_CONFIG: {
     step: 6,
     title: "Cierre",
     subtitle: "Valor capturado",
-    accentColor: "#1e293b",
-    bgColor: "#f1f5f9",
-    borderColor: "#cbd5e1",
+    activeCardClass: "border-slate-800 bg-slate-100 shadow-[0_6px_18px_rgba(30,41,59,0.13)]",
+    activeBadgeIconClass: "border-slate-300 bg-slate-800 text-white",
+    inactiveBadgeIconClass: "border-slate-300 bg-slate-100 text-slate-800",
+    stepPillClass: "border-slate-300 bg-bg-card text-slate-800",
+    activeTitleClass: "text-slate-800",
     icon: Check,
   },
 ];
+
+const PROGRESS_WIDTH_CLASSES: Record<number, string> = {
+  0: "w-0",
+  5: "w-[5%]",
+  10: "w-[10%]",
+  15: "w-[15%]",
+  20: "w-[20%]",
+  25: "w-[25%]",
+  30: "w-[30%]",
+  35: "w-[35%]",
+  40: "w-[40%]",
+  45: "w-[45%]",
+  50: "w-[50%]",
+  55: "w-[55%]",
+  60: "w-[60%]",
+  65: "w-[65%]",
+  70: "w-[70%]",
+  75: "w-[75%]",
+  80: "w-[80%]",
+  85: "w-[85%]",
+  90: "w-[90%]",
+  95: "w-[95%]",
+  100: "w-full",
+};
+
+function getProgressWidthClass(value: number): string {
+  const clamped = Math.max(0, Math.min(100, Math.round(value / 5) * 5));
+  return PROGRESS_WIDTH_CLASSES[clamped] || "w-1/2";
+}
+
+const MATRIX_LEFT_CLASSES: Record<number, string> = {
+  10: "left-[10%]",
+  15: "left-[15%]",
+  20: "left-[20%]",
+  25: "left-[25%]",
+  30: "left-[30%]",
+  35: "left-[35%]",
+  40: "left-[40%]",
+  45: "left-[45%]",
+  50: "left-[50%]",
+  55: "left-[55%]",
+  60: "left-[60%]",
+  65: "left-[65%]",
+  70: "left-[70%]",
+  75: "left-[75%]",
+  80: "left-[80%]",
+  85: "left-[85%]",
+  90: "left-[90%]",
+};
+
+const MATRIX_BOTTOM_CLASSES: Record<number, string> = {
+  10: "bottom-[10%]",
+  15: "bottom-[15%]",
+  20: "bottom-[20%]",
+  25: "bottom-[25%]",
+  30: "bottom-[30%]",
+  35: "bottom-[35%]",
+  40: "bottom-[40%]",
+  45: "bottom-[45%]",
+  50: "bottom-[50%]",
+  55: "bottom-[55%]",
+  60: "bottom-[60%]",
+  65: "bottom-[65%]",
+  70: "bottom-[70%]",
+  75: "bottom-[75%]",
+  80: "bottom-[80%]",
+  85: "bottom-[85%]",
+  90: "bottom-[90%]",
+};
+
+function getMatrixPointPositionClasses(esfuerzo: number, impacto: number): string {
+  const leftVal = Math.max(10, Math.min(90, Math.round((10 + (esfuerzo / 100) * 78) / 5) * 5));
+  const bottomVal = Math.max(10, Math.min(90, Math.round((10 + (impacto / 100) * 78) / 5) * 5));
+  return `${MATRIX_LEFT_CLASSES[leftVal] || "left-[50%]"} ${MATRIX_BOTTOM_CLASSES[bottomVal] || "bottom-[50%]"}`;
+}
+
+function getMatrixPointBgClass(color?: string): string {
+  const map: Record<string, string> = {
+    "#e6007e": "bg-brand-accent",
+    "#833177": "bg-brand-primary",
+    "#8b5cf6": "bg-violet-500",
+    "#7c3aed": "bg-violet-600",
+    "#f59e0b": "bg-amber-500",
+    "#d97706": "bg-warning-500",
+    "#ea580c": "bg-orange-600",
+    "#ec4899": "bg-pink-500",
+    "#db2777": "bg-pink-600",
+    "#e11d48": "bg-rose-600",
+    "#10b981": "bg-emerald-500",
+    "#059669": "bg-success-500",
+    "#3b82f6": "bg-blue-500",
+    "#2563eb": "bg-blue-600",
+    "#0284c7": "bg-info-500",
+  };
+  return map[color || ""] || "bg-brand-primary";
+}
 
 function getNormalizedStage(etapa?: InitiativeItem["etapaCiclo"]): StageFilter {
   if (!etapa || etapa === "Definición" || etapa === "Priorización") return "Priorización";
@@ -282,98 +392,143 @@ function IniciativasContent() {
   const getStatusBadge = (status: InitiativeItem["status"]) => {
     switch (status) {
       case "Nueva":
-        return <span className="prio-status-pill prio-status-pill--pink">Nueva</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-pink-200 bg-pink-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-pink-600">
+            Nueva
+          </span>
+        );
       case "En revisión":
-        return <span className="prio-status-pill prio-status-pill--amber">En revisión</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-warning-500">
+            En revisión
+          </span>
+        );
       case "Lista":
-        return <span className="prio-status-pill prio-status-pill--cyan">Lista</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-blue-600">
+            Lista
+          </span>
+        );
       case "Con comentarios":
-        return <span className="prio-status-pill prio-status-pill--purple">Con comentarios</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-brand-primary">
+            Con comentarios
+          </span>
+        );
       case "En priorización":
-        return <span className="prio-status-pill prio-status-pill--blue">En priorización</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-sky-200 bg-sky-50 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-info-500">
+            En priorización
+          </span>
+        );
       case "Descartada":
-        return <span className="prio-status-pill prio-status-pill--gray">Descartada</span>;
+        return (
+          <span className="inline-flex items-center rounded-xl border border-gray-200 bg-gray-100 px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-gray-500">
+            Descartada
+          </span>
+        );
     }
   };
 
   const getPriorityBadge = (priority: InitiativeItem["priority"]) => {
-    if (!priority) return <span style={{ color: "#9ca3af" }}>-</span>;
+    if (!priority) return <span className="text-gray-400">-</span>;
     if (priority === "Alta") {
-      return <span className="prio-priority-pill prio-priority-pill--high">Alta</span>;
+      return (
+        <span className="inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-500">
+          Alta
+        </span>
+      );
     }
-    return <span className="prio-priority-pill prio-priority-pill--med">Media</span>;
+    return (
+      <span className="inline-flex items-center rounded-xl border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-warning-500">
+        Media
+      </span>
+    );
   };
 
   const getScoreBadge = (score: number | null) => {
-    if (score === null) return <span style={{ color: "#9ca3af" }}>-</span>;
-    if (score >= 80) return <span className="prio-score-badge prio-score-badge--green">{score}</span>;
-    if (score >= 70) return <span className="prio-score-badge prio-score-badge--teal">{score}</span>;
-    return <span className="prio-score-badge prio-score-badge--amber">{score}</span>;
+    if (score === null) return <span className="text-gray-400">-</span>;
+    if (score >= 80) {
+      return (
+        <span className="inline-flex min-w-[28px] items-center justify-center rounded-md border border-status-green-border bg-emerald-50 px-1.5 py-0.5 text-[11.5px] font-bold text-success-500">
+          {score}
+        </span>
+      );
+    }
+    if (score >= 70) {
+      return (
+        <span className="inline-flex min-w-[28px] items-center justify-center rounded-md border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[11.5px] font-bold text-teal-600">
+          {score}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex min-w-[28px] items-center justify-center rounded-md border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[11.5px] font-bold text-warning-500">
+        {score}
+      </span>
+    );
   };
 
   return (
-    <div className="prio-page-container">
-      <div className="app-back-bar">
+    <div className="px-1 pb-10">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* Toast Notification */}
       {notification && (
-        <div className="prio-toast">
+        <div className="fixed top-[calc(var(--app-header-height)+16px)] right-6 z-100 flex items-center gap-2.5 rounded-lg bg-text-heading px-4.5 py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-opacity duration-150">
           <Icon icon={Check} size={16} />
           <span>{notification}</span>
         </div>
       )}
 
       {/* 1. ENCABEZADO DE VISTA (Sin Breadcrumb y sin botones de Formalizar/Exportar) */}
-      <div className="prio-header">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="prio-header__title">Iniciativas del Portafolio</h1>
-          <p className="prio-header__subtitle">
+          <h1 className="m-0 mb-1.5 text-2xl font-extrabold tracking-[-0.3px] text-text-heading">
+            Iniciativas del Portafolio
+          </h1>
+          <p className="m-0 text-[13.5px] text-text-secondary">
             Visualiza y da seguimiento a todas las iniciativas del portafolio a través de sus 6 etapas.
           </p>
         </div>
       </div>
 
       {/* Selector de Cartera de Negocio Independiente */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "#ffffff",
-          padding: "10px 16px",
-          borderRadius: 8,
-          border: "1px solid var(--color-border)",
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#475569", textTransform: "uppercase" }}>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border-default bg-bg-card px-4 py-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold text-slate-600 uppercase">
             Cartera de Negocio:
           </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            {CARTERAS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                className={`tag-pill ${selectedCartera === c ? "tag-pill--purple" : "tag-pill--gray"}`}
-                style={{ cursor: "pointer", fontWeight: selectedCartera === c ? 700 : 500 }}
-                onClick={() => setSelectedCartera(c)}
-              >
-                {c}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-1.5">
+            {CARTERAS.map((c) => {
+              const isSelected = selectedCartera === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  className={`inline-flex cursor-pointer items-center rounded-xl border px-2.5 py-[3px] text-[11.5px] tracking-[0.2px] whitespace-nowrap transition-colors ${
+                    isSelected
+                      ? "border-status-purple-border bg-status-purple-bg font-bold text-status-purple-text"
+                      : "border-status-gray-border bg-status-gray-bg font-medium text-status-gray-text hover:bg-brand-primary-light hover:text-brand-primary"
+                  }`}
+                  onClick={() => setSelectedCartera(c)}
+                >
+                  {c}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div style={{ fontSize: 11.5, color: "#64748b" }}>
+        <div className="text-[11.5px] text-slate-500">
           Mostrando <strong>{filteredInitiatives.length}</strong> iniciativas en etapa{" "}
           <strong>{selectedStage}</strong> ({selectedCartera})
         </div>
       </div>
 
       {/* 2. FILTROS POR LOS 6 STAGES DE UNA INICIATIVA */}
-      <div className="prio-stage-grid">
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
         {STAGES_CONFIG.map((stage) => {
           const isActive = selectedStage === stage.id;
           const count = stageCounts[stage.id] ?? 0;
@@ -381,64 +536,43 @@ function IniciativasContent() {
             <button
               key={stage.id}
               type="button"
-              className={`prio-kpi-card ${isActive ? "prio-kpi-card--stage-active" : ""}`}
-              style={
+              className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 text-left transition-all duration-200 hover:-translate-y-0.5 ${
                 isActive
-                  ? {
-                      borderColor: stage.accentColor,
-                      backgroundColor: stage.bgColor,
-                      boxShadow: `0 6px 18px ${stage.accentColor}22`,
-                      textAlign: "left",
-                    }
-                  : { textAlign: "left" }
-              }
+                  ? stage.activeCardClass
+                  : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
+              }`}
               onClick={() => setSelectedStage(stage.id)}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
+              <div className="flex w-full items-center justify-between">
                 <div
-                  className="prio-kpi-card__badge-icon"
-                  style={{
-                    background: isActive ? stage.accentColor : stage.bgColor,
-                    color: isActive ? "#ffffff" : stage.accentColor,
-                    border: `1px solid ${stage.borderColor}`,
-                  }}
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
+                    isActive ? stage.activeBadgeIconClass : stage.inactiveBadgeIconClass
+                  }`}
                 >
                   <Icon icon={stage.icon} size={16} />
                 </div>
                 <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: stage.accentColor,
-                    background: "#ffffff",
-                    border: `1px solid ${stage.borderColor}`,
-                    borderRadius: 999,
-                    padding: "2px 8px",
-                  }}
+                  className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${stage.stepPillClass}`}
                 >
                   Etapa {stage.step}
                 </span>
               </div>
 
-              <div className="prio-kpi-card__big-value" style={{ marginTop: 10, fontSize: 30 }}>
+              <div className="mt-2.5 text-[30px] leading-none font-extrabold text-text-heading">
                 {count}
               </div>
 
               <div>
                 <div
-                  className="prio-kpi-card__title-normal"
-                  style={{ color: isActive ? stage.accentColor : "#1e293b" }}
+                  className={`mt-1 text-[14.5px] font-bold ${
+                    isActive ? stage.activeTitleClass : "text-slate-800"
+                  }`}
                 >
                   {stage.title}
                 </div>
-                <div className="prio-kpi-card__sub-normal">{stage.subtitle}</div>
+                <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
+                  {stage.subtitle}
+                </div>
               </div>
             </button>
           );
@@ -446,44 +580,33 @@ function IniciativasContent() {
       </div>
 
       {/* 3. BANDEJA CENTRAL (Tabla izquierda + Detalle derecho) */}
-      <div className="prio-main-split">
-        {/* COLUMNA IZQUIERDA: TABLA DE INICIATIVAS (Sin columna orden, sin reordenamiento, sin tabs ni buscador) */}
-        <div className="prio-table-panel">
-          <div className="prio-table-wrapper">
-            <table className="prio-table">
+      <div className="mb-6 grid grid-cols-1 items-stretch gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(360px,1fr)]">
+        {/* COLUMNA IZQUIERDA: TABLA DE INICIATIVAS */}
+        <div className="flex flex-col overflow-hidden rounded-[14px] border border-border-default bg-bg-card shadow-2xs">
+          <div className="flex-1 overflow-x-auto">
+            <table className="w-full border-collapse text-[12.5px]">
               <thead>
-                <tr>
-                  <th style={{ width: "34%" }}>Iniciativa</th>
-                  <th style={{ width: "20%" }}>Área</th>
-                  <th style={{ width: "14%" }}>Estado</th>
-                  <th style={{ width: "9%" }}>Score</th>
-                  <th style={{ width: "10%" }}>Prioridad</th>
-                  <th style={{ width: "13%", textAlign: "center" }}>Acción</th>
+                <tr className="border-b border-border-default bg-[#fafbfc] text-left text-[11.5px] font-semibold whitespace-nowrap text-text-secondary">
+                  <th className="w-[34%] px-3 py-2.5">Iniciativa</th>
+                  <th className="w-[20%] px-3 py-2.5">Área</th>
+                  <th className="w-[14%] px-3 py-2.5">Estado</th>
+                  <th className="w-[9%] px-3 py-2.5">Score</th>
+                  <th className="w-[10%] px-3 py-2.5">Prioridad</th>
+                  <th className="w-[13%] px-3 py-2.5 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInitiatives.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: "center", padding: "48px 20px" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-                        <div
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: "50%",
-                            background: "#f1f5f9",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "#64748b",
-                          }}
-                        >
+                    <td colSpan={6} className="px-5 py-12 text-center">
+                      <div className="flex flex-col items-center gap-2.5">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-500">
                           <Icon icon={FileIcon} size={22} />
                         </div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>
+                        <div className="text-[15px] font-bold text-slate-800">
                           No hay iniciativas en la etapa {selectedStage}
                         </div>
-                        <p style={{ fontSize: 13, color: "#64748b", margin: 0, maxWidth: 360, lineHeight: 1.4 }}>
+                        <p className="m-0 max-w-[360px] text-[13px] leading-[1.4] text-slate-500">
                           No se encontraron solicitudes registradas en esta etapa para la cartera seleccionada.
                         </p>
                       </div>
@@ -495,30 +618,43 @@ function IniciativasContent() {
                     return (
                       <tr
                         key={item.id}
-                        className={`prio-row ${isSelected ? "prio-row--selected" : ""}`}
+                        className={`cursor-pointer border-b border-[#f1f3f7] transition-colors ${
+                          isSelected ? "bg-[#fdf5fa]" : "hover:bg-[#fafbfe]"
+                        }`}
                         onClick={() => setSelectedId(item.id)}
                       >
-                        <td>
-                          <div className="prio-initiative-name">{item.name}</div>
+                        <td
+                          className={`border-l-[3px] p-3 align-middle transition-colors ${
+                            isSelected ? "border-l-brand-primary" : "border-l-transparent"
+                          }`}
+                        >
+                          <div className="text-[13px] leading-[1.3] font-bold text-text-heading">
+                            {item.name}
+                          </div>
                         </td>
-                        <td>
-                          <div className="prio-initiative-area">{item.cartera || item.area}</div>
+                        <td className="p-3 align-middle">
+                          <div className="text-xs text-text-secondary">
+                            {item.cartera || item.area}
+                          </div>
                         </td>
-                        <td>{getStatusBadge(item.status)}</td>
-                        <td>{getScoreBadge(item.score)}</td>
-                        <td>{getPriorityBadge(item.priority)}</td>
-                        <td style={{ textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <td className="p-3 align-middle">{getStatusBadge(item.status)}</td>
+                        <td className="p-3 align-middle">{getScoreBadge(item.score)}</td>
+                        <td className="p-3 align-middle">{getPriorityBadge(item.priority)}</td>
+                        <td
+                          className="p-3 text-center align-middle"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="inline-flex items-center gap-1">
                             <button
                               type="button"
-                              className="prio-btn-ver"
+                              className="cursor-pointer rounded-md border border-[#d0d4e4] bg-bg-card px-2.5 py-[3px] text-[11.5px] font-semibold whitespace-nowrap text-text-heading transition-all duration-150 hover:border-brand-primary hover:bg-brand-primary-light hover:text-brand-primary"
                               onClick={() => setSelectedId(item.id)}
                             >
                               Previsualizar
                             </button>
                             <Link
                               href={`/iniciativas/evaluacion?id=${item.id}`}
-                              className="prio-btn-dots"
+                              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-sm border-none bg-transparent text-gray-500 transition-colors hover:bg-gray-100 hover:text-text-heading"
                               aria-label="Evaluar iniciativa"
                               title="Evaluar iniciativa"
                             >
@@ -536,28 +672,19 @@ function IniciativasContent() {
         </div>
 
         {/* COLUMNA DERECHA: CARD CONTEXTUAL SEGÚN LA ETAPA SELECCIONADA */}
-        <div className="prio-detail-panel">
+        <div className="flex flex-col rounded-[14px] border border-border-default bg-bg-card px-5 py-4.5 shadow-2xs">
           {/* Header del detalle con paginador */}
-          <div className="prio-detail-header">
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="mb-2.5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
               {getStatusBadge(selectedInitiative.status)}
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  padding: "2px 9px",
-                  borderRadius: 999,
-                  background: "#f5edf5",
-                  color: "var(--brand-primary)",
-                }}
-              >
+              <span className="rounded-full bg-brand-primary-light px-[9px] py-0.5 text-[11px] font-bold text-brand-primary">
                 Etapa: {selectedStage}
               </span>
             </div>
-            <div className="prio-detail-nav">
+            <div className="flex gap-1">
               <button
                 type="button"
-                className="prio-detail-nav-btn"
+                className="flex h-[26px] w-[26px] cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-bg-card text-gray-600 transition-all duration-150 hover:enabled:border-brand-primary hover:enabled:text-brand-primary disabled:cursor-not-allowed disabled:opacity-35"
                 disabled={selectedIndex <= 0}
                 onClick={handlePrev}
                 aria-label="Iniciativa anterior"
@@ -566,7 +693,7 @@ function IniciativasContent() {
               </button>
               <button
                 type="button"
-                className="prio-detail-nav-btn"
+                className="flex h-[26px] w-[26px] cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-bg-card text-gray-600 transition-all duration-150 hover:enabled:border-brand-primary hover:enabled:text-brand-primary disabled:cursor-not-allowed disabled:opacity-35"
                 disabled={selectedIndex === -1 || selectedIndex >= filteredInitiatives.length - 1}
                 onClick={handleNext}
                 aria-label="Siguiente iniciativa"
@@ -576,8 +703,10 @@ function IniciativasContent() {
             </div>
           </div>
 
-          <h2 className="prio-detail-title">{selectedInitiative.name}</h2>
-          <div className="prio-detail-area">
+          <h2 className="m-0 mb-1.5 text-[17px] leading-[1.3] font-extrabold text-text-heading">
+            {selectedInitiative.name}
+          </h2>
+          <div className="mb-3.5 flex items-center gap-1.5 text-[12.5px] text-text-secondary">
             <Icon icon={Person} size={14} />
             <span>{selectedInitiative.area}</span>
           </div>
@@ -586,107 +715,133 @@ function IniciativasContent() {
           {selectedStage === "Priorización" && (
             <>
               {/* Tabs del detalle de Priorización */}
-              <div className="prio-detail-tabs">
+              <div className="mb-3.5 flex gap-4 border-b border-border-default">
                 <button
                   type="button"
-                  className={`prio-detail-tab ${activeDetailTab === "resumen" ? "prio-detail-tab--active" : ""}`}
+                  className={`relative cursor-pointer border-none bg-transparent pt-1.5 pb-2 text-[13px] transition-colors duration-150 ${
+                    activeDetailTab === "resumen"
+                      ? "font-bold text-brand-accent after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-0.5 after:bg-brand-accent"
+                      : "font-semibold text-text-secondary hover:text-brand-primary"
+                  }`}
                   onClick={() => setActiveDetailTab("resumen")}
                 >
                   Resumen
                 </button>
                 <button
                   type="button"
-                  className={`prio-detail-tab ${activeDetailTab === "discovery" ? "prio-detail-tab--active" : ""}`}
+                  className={`relative cursor-pointer border-none bg-transparent pt-1.5 pb-2 text-[13px] transition-colors duration-150 ${
+                    activeDetailTab === "discovery"
+                      ? "font-bold text-brand-accent after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-0.5 after:bg-brand-accent"
+                      : "font-semibold text-text-secondary hover:text-brand-primary"
+                  }`}
                   onClick={() => setActiveDetailTab("discovery")}
                 >
                   Discovery
                 </button>
                 <button
                   type="button"
-                  className={`prio-detail-tab ${activeDetailTab === "evaluacion" ? "prio-detail-tab--active" : ""}`}
+                  className={`relative cursor-pointer border-none bg-transparent pt-1.5 pb-2 text-[13px] transition-colors duration-150 ${
+                    activeDetailTab === "evaluacion"
+                      ? "font-bold text-brand-accent after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-0.5 after:bg-brand-accent"
+                      : "font-semibold text-text-secondary hover:text-brand-primary"
+                  }`}
                   onClick={() => setActiveDetailTab("evaluacion")}
                 >
                   Evaluación
                 </button>
                 <button
                   type="button"
-                  className={`prio-detail-tab ${activeDetailTab === "comentarios" ? "prio-detail-tab--active" : ""}`}
+                  className={`relative cursor-pointer border-none bg-transparent pt-1.5 pb-2 text-[13px] transition-colors duration-150 ${
+                    activeDetailTab === "comentarios"
+                      ? "font-bold text-brand-accent after:absolute after:right-0 after:bottom-[-1px] after:left-0 after:h-0.5 after:bg-brand-accent"
+                      : "font-semibold text-text-secondary hover:text-brand-primary"
+                  }`}
                   onClick={() => setActiveDetailTab("comentarios")}
                 >
                   Comentarios
                 </button>
               </div>
 
-              <div className="prio-detail-body">
+              <div className="flex flex-1 flex-col">
                 {activeDetailTab === "resumen" && (
                   <>
-                    <div className="prio-section-label">Descripción</div>
-                    <p className="prio-detail-desc">{selectedInitiative.description}</p>
+                    <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                      Descripción
+                    </div>
+                    <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                      {selectedInitiative.description}
+                    </p>
 
-                    <div className="prio-meta-grid">
-                      <div className="prio-meta-item">
-                        <div className="prio-meta-label">
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                           <Icon icon={Person} size={14} />
                           <span>Solicitante</span>
                         </div>
-                        <div className="prio-meta-val">{selectedInitiative.solicitante}</div>
+                        <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                          {selectedInitiative.solicitante}
+                        </div>
                       </div>
 
-                      <div className="prio-meta-item">
-                        <div className="prio-meta-label">
+                      <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                           <Icon icon={Timeline} size={14} />
                           <span>Fecha de creación</span>
                         </div>
-                        <div className="prio-meta-val">{selectedInitiative.creationDate}</div>
+                        <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                          {selectedInitiative.creationDate}
+                        </div>
                       </div>
 
-                      <div className="prio-meta-item">
-                        <div className="prio-meta-label">
+                      <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                           <Icon icon={Settings} size={14} />
                           <span>Impacto TI</span>
                         </div>
-                        <div className="prio-meta-val">{selectedInitiative.impactoTI}</div>
+                        <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                          {selectedInitiative.impactoTI}
+                        </div>
                       </div>
 
-                      <div className="prio-meta-item">
-                        <div className="prio-meta-label">
-                          <span style={{ fontWeight: 800 }}>$</span>
+                      <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
+                          <span className="font-extrabold">$</span>
                           <span>Beneficio estimado</span>
                         </div>
-                        <div className="prio-meta-val prio-meta-val--highlight">
+                        <div className="text-[12.5px] font-bold break-words text-success-500">
                           {selectedInitiative.beneficioEstimado}
                         </div>
                       </div>
                     </div>
 
-                    <div className="prio-meta-grid" style={{ marginTop: 14 }}>
+                    <div className="mt-3.5 grid grid-cols-2 gap-2.5">
                       <div>
-                        <div className="prio-meta-label">Estado actual</div>
-                        <div style={{ marginTop: 4 }}>{getStatusBadge(selectedInitiative.status)}</div>
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
+                          Estado actual
+                        </div>
+                        <div className="mt-1">{getStatusBadge(selectedInitiative.status)}</div>
                       </div>
 
                       <div>
-                        <div className="prio-meta-label">
+                        <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                           <span>Madurez</span>
-                          <span style={{ marginLeft: "auto", fontWeight: 700, color: "#1e2022" }}>
+                          <span className="ml-auto font-bold text-text-heading">
                             {selectedInitiative.madurez}%
                           </span>
                         </div>
-                        <div className="prio-progress-track">
+                        <div className="mt-1.5 h-1.5 overflow-hidden rounded-[3px] bg-gray-200">
                           <div
-                            className="prio-progress-fill"
-                            style={{ width: `${selectedInitiative.madurez}%` }}
+                            className={`h-full rounded-[3px] bg-brand-accent transition-all duration-300 ${getProgressWidthClass(selectedInitiative.madurez)}`}
                           />
                         </div>
                       </div>
                     </div>
 
                     {/* Botón CTA: Evaluar iniciativa */}
-                    <div style={{ marginTop: 20 }}>
+                    <div className="mt-5">
                       <Link
                         href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
-                        className="prio-btn-eval-cta"
-                        style={{ textDecoration: "none" }}
+                        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                       >
                         <span>Evaluar iniciativa</span>
                         <Icon icon={NavigationChevronRight} size={16} />
@@ -696,83 +851,88 @@ function IniciativasContent() {
                 )}
 
                 {activeDetailTab === "discovery" && (
-                  <div className="prio-discovery-tab">
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                      <div className="prio-section-label" style={{ margin: 0 }}>Ficha Canvas de Discovery</div>
-                      <span className="disc-status-pill disc-status-pill--complete" style={{ fontSize: 10.5 }}>
+                  <div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="m-0 text-[11.5px] font-bold text-text-heading">
+                        Ficha Canvas de Discovery
+                      </div>
+                      <span className="inline-flex items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[10.5px] font-semibold text-green-700">
                         ✓ Discovery completo
                       </span>
                     </div>
 
-                    <div className="prio-discovery-card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Gobierno / Dirección:</span>
-                        <span className="prio-discovery-val">
+                    <div className="flex flex-col gap-2.5 rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3.5 py-3">
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Gobierno / Dirección:</span>
+                        <span className="font-semibold text-text-heading">
                           {selectedInitiative.direccionNegocio || selectedInitiative.area} ·{" "}
                           {selectedInitiative.oficinaArea || "Oficina Central"}
                         </span>
                       </div>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">PMO / Portfolio Mgr:</span>
-                        <span className="prio-discovery-val">
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">PMO / Portfolio Mgr:</span>
+                        <span className="font-semibold text-text-heading">
                           {selectedInitiative.pmoResponsable || "EPL"} ·{" "}
                           {selectedInitiative.portafolioManager ||
                             selectedInitiative.sponsor ||
                             "AL UBAMARI MALINALLI MORENO MERAZ"}
                         </span>
                       </div>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Alineación piramidal:</span>
-                        <span className="prio-discovery-val" style={{ color: "#db2777", fontWeight: 700 }}>
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Alineación piramidal:</span>
+                        <span className="font-bold text-pink-600">
                           {selectedInitiative.alineacionEstrategicaNivel || "(N2) Habilitadores/Regulatorios"}
                         </span>
                       </div>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Impacto Tecnología:</span>
-                        <span className="prio-discovery-val">{selectedInitiative.impactoTI}</span>
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Impacto Tecnología:</span>
+                        <span className="font-semibold text-text-heading">
+                          {selectedInitiative.impactoTI}
+                        </span>
                       </div>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Dimensiones:</span>
-                        <span className="prio-discovery-val">
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Dimensiones:</span>
+                        <span className="font-semibold text-text-heading">
                           {selectedInitiative.dimensionesImpacto?.length
                             ? selectedInitiative.dimensionesImpacto.join(", ")
                             : "Tecnología, Procesos"}
                         </span>
                       </div>
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Sistemas involucrados:</span>
-                        <span className="prio-discovery-val">
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Sistemas involucrados:</span>
+                        <span className="font-semibold text-text-heading">
                           {selectedInitiative.sistemasInvolucrados?.join(", ") || "SAP ERP, BigQuery"}
                         </span>
                       </div>
                       {selectedInitiative.okrs && selectedInitiative.okrs.length > 0 && (
-                        <div className="prio-discovery-row" style={{ alignItems: "flex-start" }}>
-                          <span className="prio-discovery-key">OKRs Clave:</span>
-                          <span className="prio-discovery-val" style={{ fontSize: 11.5 }}>
+                        <div className="flex items-start justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                          <span className="font-medium text-gray-500">OKRs Clave:</span>
+                          <span className="text-[11.5px] font-semibold text-text-heading">
                             {selectedInitiative.okrs[0].objetivo} → {selectedInitiative.okrs[0].resultadoClave}
                           </span>
                         </div>
                       )}
                       {selectedInitiative.roiData && (
-                        <div className="prio-discovery-row">
-                          <span className="prio-discovery-key">ROI Estimado:</span>
-                          <span className="prio-discovery-val" style={{ color: "#15803d", fontWeight: 700 }}>
+                        <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                          <span className="font-medium text-gray-500">ROI Estimado:</span>
+                          <span className="font-bold text-green-700">
                             +{selectedInitiative.roiData.roiPorcentaje || 210}% (Payback ~
                             {selectedInitiative.roiData.paybackMeses || 3.8} meses)
                           </span>
                         </div>
                       )}
-                      <div className="prio-discovery-row">
-                        <span className="prio-discovery-key">Asistente IA:</span>
-                        <span className="prio-discovery-val">DataSwat Copilot (Fase 1 Discovery Completada)</span>
+                      <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                        <span className="font-medium text-gray-500">Asistente IA:</span>
+                        <span className="font-semibold text-text-heading">
+                          DataSwat Copilot (Fase 1 Discovery Completada)
+                        </span>
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+                    <div className="mt-3.5 flex gap-2.5">
                       <Link
                         href="/discovery"
-                        className="prio-btn-link"
-                        style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                        className="inline-flex cursor-pointer items-center gap-1 border-none bg-transparent text-xs font-semibold text-brand-primary no-underline hover:underline"
                       >
                         <span>Abrir nuevo Discovery asistido por IA →</span>
                       </Link>
@@ -781,68 +941,69 @@ function IniciativasContent() {
                 )}
 
                 {activeDetailTab === "evaluacion" && (
-                  <div className="prio-eval-tab">
+                  <div>
                     {selectedInitiative.score ? (
                       <div>
-                        <div className="prio-score-summary-box">
+                        <div className="flex items-center justify-between rounded-xl border border-[#f2d8ec] bg-[#fdf5fa] px-4.5 py-3.5">
                           <div>
-                            <div style={{ fontSize: 12, color: "#6b7280" }}>Score obtenido</div>
-                            <div style={{ fontSize: 32, fontWeight: 800, color: "var(--brand-primary)" }}>
+                            <div className="text-xs text-gray-500">Score obtenido</div>
+                            <div className="text-[32px] font-extrabold text-brand-primary">
                               {selectedInitiative.score}
-                              <span style={{ fontSize: 16, color: "#9ca3af", fontWeight: 500 }}>/100</span>
+                              <span className="text-base font-medium text-gray-400">/100</span>
                             </div>
                           </div>
                           <div>
-                            <div style={{ fontSize: 12, color: "#6b7280" }}>Prioridad preliminar</div>
-                            <div style={{ marginTop: 4 }}>
+                            <div className="text-xs text-gray-500">Prioridad preliminar</div>
+                            <div className="mt-1">
                               {getPriorityBadge(selectedInitiative.priority)}
                             </div>
                           </div>
                         </div>
 
-                        <div style={{ marginTop: 16 }}>
-                          <div className="prio-section-label">Desglose de calificaciones (100 pts)</div>
-                          <div className="prio-breakdown-list">
-                            <div className="prio-breakdown-row">
+                        <div className="mt-4">
+                          <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                            Desglose de calificaciones (100 pts)
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>🔺 Pirámide ({selectedInitiative.evaluacion?.piramideNivel || "N2 Habilitadores/Regulatorios"})</span>
-                              <b style={{ color: "var(--brand-accent)" }}>
+                              <b className="text-brand-accent">
                                 {selectedInitiative.evaluacion?.piramidePuntos ?? 20}/30 pts
                               </b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>🍕 OKR&apos;s Pizza (Comercio Unificado)</span>
-                              <b style={{ color: "var(--brand-accent)" }}>
+                              <b className="text-brand-accent">
                                 {selectedInitiative.evaluacion?.pizzaPuntos ?? 30}/30 pts
                               </b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>1. Impacto al negocio (12%)</span>
                               <b>{selectedInitiative.evaluacion?.impactoNegocio ?? 4}/5</b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>2. Alineación estratégica (10%)</span>
                               <b>{selectedInitiative.evaluacion?.alineacionEstrategica ?? 5}/5</b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>3. Urgencia / oportunidad (6%)</span>
                               <b>{selectedInitiative.evaluacion?.urgencia ?? 4}/5</b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>4. Complejidad preliminar (6%)</span>
                               <b>{selectedInitiative.evaluacion?.complejidad ?? 3}/5</b>
                             </div>
-                            <div className="prio-breakdown-row">
+                            <div className="flex justify-between border-b border-gray-100 py-[5px] text-xs text-gray-600">
                               <span>5. Riesgos y dependencias (6%)</span>
                               <b>{selectedInitiative.evaluacion?.riesgos ?? 3}/5</b>
                             </div>
                           </div>
                         </div>
 
-                        <div style={{ marginTop: 18 }}>
+                        <div className="mt-4.5">
                           <Link
                             href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
-                            className="prio-btn-eval-cta"
-                            style={{ textDecoration: "none" }}
+                            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                           >
                             <span>Evaluar iniciativa</span>
                             <Icon icon={NavigationChevronRight} size={16} />
@@ -850,20 +1011,19 @@ function IniciativasContent() {
                         </div>
                       </div>
                     ) : (
-                      <div style={{ textAlign: "center", padding: "30px 10px" }}>
-                        <div style={{ color: "#9ca3af", marginBottom: 10 }}>
+                      <div className="px-2.5 py-[30px] text-center">
+                        <div className="mb-2.5 text-gray-400">
                           <Icon icon={CheckList} size={36} />
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#374151" }}>
+                        <div className="text-sm font-semibold text-gray-700">
                           Esta iniciativa aún no ha sido evaluada
                         </div>
-                        <p style={{ fontSize: 12.5, color: "#6b7280", margin: "6px 0 16px 0" }}>
+                        <p className="mt-1.5 mb-4 text-[12.5px] text-gray-500">
                           Evalúa los criterios de impacto, alineación y complejidad para asignarle score y prioridad.
                         </p>
                         <Link
                           href={`/iniciativas/evaluacion?id=${selectedInitiative.id}`}
-                          className="prio-btn-eval-cta"
-                          style={{ textDecoration: "none" }}
+                          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                         >
                           <span>Evaluar iniciativa</span>
                           <Icon icon={NavigationChevronRight} size={16} />
@@ -874,25 +1034,24 @@ function IniciativasContent() {
                 )}
 
                 {activeDetailTab === "comentarios" && (
-                  <div className="prio-comments-tab">
-                    <div className="prio-comment-box">
-                      <div className="prio-comment-author">
+                  <div>
+                    <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                      <div className="mb-1 text-[11.5px] text-gray-500">
                         <b>Mariana Solís</b> (Portfolio Manager) · Hace 2 días
                       </div>
-                      <div className="prio-comment-text">
+                      <div className="text-[12.5px] leading-[1.4] text-text-heading">
                         Iniciativa registrada con caso de negocio inicial. Falta afinar la estimación de licencias de pasarelas de pago.
                       </div>
                     </div>
-                    <div style={{ marginTop: 14 }}>
+                    <div className="mt-3.5">
                       <textarea
-                        className="prio-comment-input"
+                        className="w-full resize-y rounded-lg border border-[#d0d4e4] px-3 py-2 text-xs outline-none focus:border-brand-primary"
                         placeholder="Escribe un comentario o solicitud de ajuste..."
                         rows={3}
                       />
                       <button
                         type="button"
-                        className="prio-btn-export"
-                        style={{ marginTop: 8 }}
+                        className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#d0d4e4] bg-bg-card px-3.5 py-1.5 text-[12.5px] font-semibold text-brand-primary transition-all duration-150 hover:border-brand-primary hover:bg-brand-primary-light"
                         onClick={() => showNotification("Comentario registrado")}
                       >
                         <Icon icon={Comment} size={14} />
@@ -906,58 +1065,62 @@ function IniciativasContent() {
           )}
 
           {selectedStage === "Estimación" && (
-            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
-              <div className="prio-section-label">Resumen de Estimación Técnica y Sizing IA</div>
-              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+            <div className="flex flex-1 flex-col pt-3.5">
+              <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                Resumen de Estimación Técnica y Sizing IA
+              </div>
+              <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                {selectedInitiative.description}
+              </p>
 
-              <div className="prio-meta-grid">
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Settings} size={14} />
                     <span>Arquitectura propuesta</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.estimacionTecnica?.tipoArquitectura ||
                       "Microservicios en Google Cloud Platform"}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Timeline} size={14} />
                     <span>Esfuerzo de desarrollo</span>
                   </div>
-                  <div className="prio-meta-val prio-meta-val--highlight">
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
                     {selectedInitiative.estimacionTecnica?.horasDesarrolloEstimadas ?? 480} hrs estimadas
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
-                    <span style={{ fontWeight: 800 }}>$</span>
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
+                    <span className="font-extrabold">$</span>
                     <span>Costo Cloud (FinOps)</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.estimacionTecnica?.costoNubeMensualEstimado || "$3,200 USD/mes"}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Person} size={14} />
                     <span>Volumen / Concurrencia</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.estimacionTecnica?.tps ?? 350} TPS ·{" "}
                     {selectedInitiative.estimacionTecnica?.usuariosMensuales || "2.4M"} usuarios/mes
                   </div>
                 </div>
               </div>
 
-              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Servicios Nube (GCP):</span>
-                  <span className="prio-discovery-val">
+              <div className="mt-3.5 flex flex-col gap-2 rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3.5 py-3">
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Servicios Nube (GCP):</span>
+                  <span className="font-semibold text-text-heading">
                     {(selectedInitiative.estimacionTecnica?.serviciosNube || [
                       "Cloud Run",
                       "Cloud SQL",
@@ -966,34 +1129,28 @@ function IniciativasContent() {
                     ]).join(", ")}
                   </span>
                 </div>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">VoBo Líder Técnico:</span>
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">VoBo Líder Técnico:</span>
                   <span
-                    className="prio-discovery-val"
-                    style={{
-                      fontWeight: 700,
-                      color:
-                        selectedInitiative.estimacionTecnica?.voboLiderTecnico === "aprobado"
-                          ? "#059669"
-                          : "#d97706",
-                    }}
+                    className={`font-bold ${
+                      selectedInitiative.estimacionTecnica?.voboLiderTecnico === "aprobado"
+                        ? "text-success-500"
+                        : "text-warning-500"
+                    }`}
                   >
                     {selectedInitiative.estimacionTecnica?.voboLiderTecnico === "aprobado"
                       ? "✓ Aprobado"
                       : "⏳ Pendiente de revisión"}
                   </span>
                 </div>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">VoBo Arquitectura:</span>
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">VoBo Arquitectura:</span>
                   <span
-                    className="prio-discovery-val"
-                    style={{
-                      fontWeight: 700,
-                      color:
-                        selectedInitiative.estimacionTecnica?.voboLiderArquitectura === "aprobado"
-                          ? "#059669"
-                          : "#d97706",
-                    }}
+                    className={`font-bold ${
+                      selectedInitiative.estimacionTecnica?.voboLiderArquitectura === "aprobado"
+                        ? "text-success-500"
+                        : "text-warning-500"
+                    }`}
                   >
                     {selectedInitiative.estimacionTecnica?.voboLiderArquitectura === "aprobado"
                       ? "✓ Aprobado"
@@ -1002,12 +1159,11 @@ function IniciativasContent() {
                 </div>
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div className="mt-5">
                 <Link
                   href={`/estimacion?id=${selectedInitiative.id}`}
                   onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="prio-btn-eval-cta"
-                  style={{ textDecoration: "none" }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                 >
                   <span>Ir a estimación</span>
                   <Icon icon={NavigationChevronRight} size={16} />
@@ -1017,70 +1173,77 @@ function IniciativasContent() {
           )}
 
           {selectedStage === "Autorización" && (
-            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
-              <div className="prio-section-label">Dictamen Financiero y Comité de Autorización</div>
-              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+            <div className="flex flex-1 flex-col pt-3.5">
+              <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                Dictamen Financiero y Comité de Autorización
+              </div>
+              <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                {selectedInitiative.description}
+              </p>
 
-              <div className="prio-meta-grid">
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Person} size={14} />
                     <span>Sponsor Ejecutivo</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.sponsor || "Carlos Méndez"} ({selectedInitiative.sponsorRole || "CFO"})
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
-                    <span style={{ fontWeight: 800 }}>$</span>
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
+                    <span className="font-extrabold">$</span>
                     <span>Beneficio anual esperado</span>
                   </div>
-                  <div className="prio-meta-val prio-meta-val--highlight">
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
                     {selectedInitiative.beneficioEstimado}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Timeline} size={14} />
                     <span>ROI / Payback estimado</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     +{selectedInitiative.roiData?.roiPorcentaje ?? 210}% (~
                     {selectedInitiative.roiData?.paybackMeses ?? 3.8} meses)
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Security} size={14} />
                     <span>Presupuesto CapEx / OpEx</span>
                   </div>
-                  <div className="prio-meta-val">$4.2M MXN (70% CapEx / 30% OpEx)</div>
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                    $4.2M MXN (70% CapEx / 30% OpEx)
+                  </div>
                 </div>
               </div>
 
-              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Folio de Comité:</span>
-                  <span className="prio-discovery-val">COM-2026-{selectedInitiative.id.toUpperCase()}</span>
+              <div className="mt-3.5 flex flex-col gap-2 rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3.5 py-3">
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Folio de Comité:</span>
+                  <span className="font-semibold text-text-heading">
+                    COM-2026-{selectedInitiative.id.toUpperCase()}
+                  </span>
                 </div>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Estatus de Firmas:</span>
-                  <span className="prio-discovery-val" style={{ color: "#d97706", fontWeight: 700 }}>
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Estatus de Firmas:</span>
+                  <span className="font-bold text-warning-500">
                     En validación por Comité de Inversiones y Finanzas
                   </span>
                 </div>
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div className="mt-5">
                 <Link
                   href={`/en-construccion?modulo=${encodeURIComponent("Autorización")}&id=${selectedInitiative.id}`}
                   onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="prio-btn-eval-cta"
-                  style={{ textDecoration: "none" }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                 >
                   <span>Ir a autorización</span>
                   <Icon icon={NavigationChevronRight} size={16} />
@@ -1090,67 +1253,76 @@ function IniciativasContent() {
           )}
 
           {selectedStage === "Formalización" && (
-            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
-              <div className="prio-section-label">Formalización Contractual y Alta en Monday</div>
-              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+            <div className="flex flex-1 flex-col pt-3.5">
+              <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                Formalización Contractual y Alta en Monday
+              </div>
+              <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                {selectedInitiative.description}
+              </p>
 
-              <div className="prio-meta-grid">
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Person} size={14} />
                     <span>PMO Responsable</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.pmoResponsable || "PMO Corporativa · Alexis Labrada"}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Clipboard} size={14} />
                     <span>Tablero Monday</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     Tablero Maestro · {selectedInitiative.cartera || selectedInitiative.area}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={FileIcon} size={14} />
                     <span>Anexos y Contratos</span>
                   </div>
-                  <div className="prio-meta-val">Validados por Jurídico y Compras TI</div>
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                    Validados por Jurídico y Compras TI
+                  </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Timeline} size={14} />
                     <span>Ventana de Arranque</span>
                   </div>
-                  <div className="prio-meta-val prio-meta-val--highlight">Q4 2026 · Célula Asignada</div>
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
+                    Q4 2026 · Célula Asignada
+                  </div>
                 </div>
               </div>
 
-              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Sincronización Monday:</span>
-                  <span className="prio-discovery-val" style={{ color: "#0284c7", fontWeight: 700 }}>
+              <div className="mt-3.5 flex flex-col gap-2 rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3.5 py-3">
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Sincronización Monday:</span>
+                  <span className="font-bold text-info-500">
                     ✓ Workspace y cronograma base generados
                   </span>
                 </div>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Orden de Compra:</span>
-                  <span className="prio-discovery-val">OC-88412 liberada en SAP FI</span>
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Orden de Compra:</span>
+                  <span className="font-semibold text-text-heading">
+                    OC-88412 liberada en SAP FI
+                  </span>
                 </div>
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div className="mt-5">
                 <Link
                   href={`/en-construccion?modulo=${encodeURIComponent("Formalización")}&id=${selectedInitiative.id}`}
                   onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="prio-btn-eval-cta"
-                  style={{ textDecoration: "none" }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                 >
                   <span>Ir a formalización</span>
                   <Icon icon={NavigationChevronRight} size={16} />
@@ -1160,69 +1332,75 @@ function IniciativasContent() {
           )}
 
           {selectedStage === "Ejecución" && (
-            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
-              <div className="prio-section-label">Seguimiento Operativo de Ejecución</div>
-              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+            <div className="flex flex-1 flex-col pt-3.5">
+              <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                Seguimiento Operativo de Ejecución
+              </div>
+              <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                {selectedInitiative.description}
+              </p>
 
-              <div className="prio-meta-grid">
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Play} size={14} />
                     <span>Sprint Actual</span>
                   </div>
-                  <div className="prio-meta-val">Sprint 6 de 8 · En tiempo (On Track)</div>
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                    Sprint 6 de 8 · En tiempo (On Track)
+                  </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Check} size={14} />
                     <span>Semáforo PMO</span>
                   </div>
-                  <div className="prio-meta-val" style={{ color: "#059669", fontWeight: 700 }}>
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
                     ● Verde (Sin bloqueos críticos)
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Settings} size={14} />
                     <span>Sistemas en intervención</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {(selectedInitiative.sistemasInvolucrados || ["SAP ERP", "Cloud Run"]).join(", ")}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Timeline} size={14} />
                     <span>Próximo Hito</span>
                   </div>
-                  <div className="prio-meta-val">Pruebas integrales UAT y salida a producción</div>
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
+                    Pruebas integrales UAT y salida a producción
+                  </div>
                 </div>
               </div>
 
-              <div style={{ marginTop: 14 }}>
-                <div className="prio-meta-label">
+              <div className="mt-3.5">
+                <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                   <span>Avance físico de ejecución</span>
-                  <span style={{ marginLeft: "auto", fontWeight: 700, color: "#1e2022" }}>
+                  <span className="ml-auto font-bold text-text-heading">
                     {selectedInitiative.madurez || 85}%
                   </span>
                 </div>
-                <div className="prio-progress-track">
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-[3px] bg-gray-200">
                   <div
-                    className="prio-progress-fill"
-                    style={{ width: `${selectedInitiative.madurez || 85}%` }}
+                    className={`h-full rounded-[3px] bg-brand-accent transition-all duration-300 ${getProgressWidthClass(selectedInitiative.madurez || 85)}`}
                   />
                 </div>
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div className="mt-5">
                 <Link
                   href={`/en-construccion?modulo=${encodeURIComponent("Ejecución")}&id=${selectedInitiative.id}`}
                   onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="prio-btn-eval-cta"
-                  style={{ textDecoration: "none" }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                 >
                   <span>Ir a ejecución</span>
                   <Icon icon={NavigationChevronRight} size={16} />
@@ -1232,69 +1410,76 @@ function IniciativasContent() {
           )}
 
           {selectedStage === "Cierre" && (
-            <div className="prio-detail-body" style={{ paddingTop: 14 }}>
-              <div className="prio-section-label">Acta de Cierre y Captura de Valor</div>
-              <p className="prio-detail-desc">{selectedInitiative.description}</p>
+            <div className="flex flex-1 flex-col pt-3.5">
+              <div className="mb-1.5 text-[11.5px] font-bold text-text-heading">
+                Acta de Cierre y Captura de Valor
+              </div>
+              <p className="m-0 mb-3.5 text-[12.5px] leading-[1.45] text-gray-600">
+                {selectedInitiative.description}
+              </p>
 
-              <div className="prio-meta-grid">
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Check} size={14} />
                     <span>Estado de Entrega</span>
                   </div>
-                  <div className="prio-meta-val" style={{ color: "#059669", fontWeight: 700 }}>
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
                     100% Finalizado en Producción
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
-                    <span style={{ fontWeight: 800 }}>$</span>
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
+                    <span className="font-extrabold">$</span>
                     <span>Beneficio Capturado</span>
                   </div>
-                  <div className="prio-meta-val prio-meta-val--highlight">
+                  <div className="text-[12.5px] font-bold break-words text-success-500">
                     {selectedInitiative.beneficioEstimado}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={Timeline} size={14} />
                     <span>KPI Alcanzado</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     {selectedInitiative.kpiEsperado || "100% de meta operativa cumplida"}
                   </div>
                 </div>
 
-                <div className="prio-meta-item">
-                  <div className="prio-meta-label">
+                <div className="rounded-lg border border-[#f1f3f7] bg-[#fafbfc] px-3 py-2.5">
+                  <div className="mb-[3px] flex items-center gap-[5px] text-[11px] text-gray-500">
                     <Icon icon={FileIcon} size={14} />
                     <span>Acta de Cierre</span>
                   </div>
-                  <div className="prio-meta-val">
+                  <div className="text-[12.5px] font-semibold break-words text-text-heading">
                     Firmada por {selectedInitiative.sponsor || "Sponsor"} y PMO
                   </div>
                 </div>
               </div>
 
-              <div className="prio-discovery-card" style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Transición a Soporte:</span>
-                  <span className="prio-discovery-val">Handover completado con Operaciones TI</span>
+              <div className="mt-3.5 flex flex-col gap-2 rounded-[10px] border border-border-subtle bg-[#fafbfc] px-3.5 py-3">
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Transición a Soporte:</span>
+                  <span className="font-semibold text-text-heading">
+                    Handover completado con Operaciones TI
+                  </span>
                 </div>
-                <div className="prio-discovery-row">
-                  <span className="prio-discovery-key">Lecciones aprendidas:</span>
-                  <span className="prio-discovery-val">Documentadas en repositorio de gobernanza</span>
+                <div className="flex justify-between border-b border-[#f1f3f7] py-1.5 text-xs last:border-b-0">
+                  <span className="font-medium text-gray-500">Lecciones aprendidas:</span>
+                  <span className="font-semibold text-text-heading">
+                    Documentadas en repositorio de gobernanza
+                  </span>
                 </div>
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div className="mt-5">
                 <Link
                   href={`/en-construccion?modulo=${encodeURIComponent("Cierre")}&id=${selectedInitiative.id}`}
                   onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="prio-btn-eval-cta"
-                  style={{ textDecoration: "none" }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
                 >
                   <span>Ir a cierre</span>
                   <Icon icon={NavigationChevronRight} size={16} />
@@ -1306,49 +1491,51 @@ function IniciativasContent() {
       </div>
 
       {/* 4. SECCIÓN INFERIOR: TOMA DE DECISIONES DEL PORTAFOLIO */}
-      <div className="prio-bottom-grid">
+      <div className="grid grid-cols-1 items-stretch gap-5 xl:grid-cols-[1.25fr_1fr_1.15fr]">
         {/* BLOQUE 1: MATRIZ DE PRIORIDAD (2x2 Cuadrantes) */}
-        <div className="prio-bottom-card">
-          <div className="prio-bottom-card__header">
-            <div className="prio-bottom-card__title">
+        <div className="flex flex-col rounded-[14px] border border-border-default bg-bg-card px-5 py-4.5 shadow-2xs">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-bold text-text-heading">
               <Icon icon={CheckList} size={17} />
               <span>Matriz de Prioridad</span>
             </div>
-            <span style={{ fontSize: 11.5, color: "#6b7280" }}>
+            <span className="text-[11.5px] text-gray-500">
               Haz clic en cualquier punto para seleccionarla
             </span>
           </div>
 
-          <div className="prio-matrix-wrapper">
+          <div className="flex flex-1 items-center gap-2">
             {/* Eje Y Label */}
-            <div className="prio-matrix-y-label">
+            <div className="flex h-[180px] flex-col justify-between text-right text-[10px] text-gray-400">
               <span>Alto</span>
-              <span className="prio-matrix-y-axis-title">Impacto a negocio</span>
+              <span className="m-auto rotate-180 text-[10.5px] font-semibold text-gray-500 [writing-mode:vertical-lr]">
+                Impacto a negocio
+              </span>
               <span>Bajo</span>
             </div>
 
-            <div className="prio-matrix-grid-container">
+            <div className="relative grid h-[180px] flex-1 grid-cols-2 grid-rows-2 gap-1 rounded-md border border-gray-300 bg-bg-card p-1">
               {/* 4 Cuadrantes */}
-              <div className="prio-matrix-quadrant prio-matrix-quadrant--quickwins">
-                <div className="prio-quadrant-tag">
+              <div className="relative rounded-sm border border-dashed border-status-green-border bg-emerald-50 p-1.5">
+                <div className="text-[10.5px] leading-[1.2] text-gray-700">
                   <b>Quick wins</b> (Hacer ahora)
                 </div>
               </div>
 
-              <div className="prio-matrix-quadrant prio-matrix-quadrant--strategic">
-                <div className="prio-quadrant-tag">
+              <div className="relative rounded-sm border border-dashed border-pink-200 bg-pink-50 p-1.5">
+                <div className="text-[10.5px] leading-[1.2] text-gray-700">
                   <b>Estratégicas</b> (Planear)
                 </div>
               </div>
 
-              <div className="prio-matrix-quadrant prio-matrix-quadrant--lowval">
-                <div className="prio-quadrant-tag">
+              <div className="relative rounded-sm border border-dashed border-slate-200 bg-slate-50 p-1.5">
+                <div className="text-[10.5px] leading-[1.2] text-gray-700">
                   <b>Bajo valor</b> (Evaluar)
                 </div>
               </div>
 
-              <div className="prio-matrix-quadrant prio-matrix-quadrant--tactical">
-                <div className="prio-quadrant-tag">
+              <div className="relative rounded-sm border border-dashed border-status-orange-border bg-status-orange-bg p-1.5">
+                <div className="text-[10.5px] leading-[1.2] text-gray-700">
                   <b>Tácticas</b> (Revisar)
                 </div>
               </div>
@@ -1356,19 +1543,13 @@ function IniciativasContent() {
               {/* Puntos de iniciativas sobre la matriz */}
               {initiatives.map((item) => {
                 const isSelected = item.id === selectedId;
-                const leftPos = 10 + (item.esfuerzo / 100) * 78;
-                const bottomPos = 10 + (item.impacto / 100) * 78;
-
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    className={`prio-matrix-point ${isSelected ? "prio-matrix-point--selected" : ""}`}
-                    style={{
-                      left: `${leftPos}%`,
-                      bottom: `${bottomPos}%`,
-                      backgroundColor: item.color,
-                    }}
+                    className={`absolute h-3.5 w-3.5 -translate-x-1/2 translate-y-1/2 cursor-pointer rounded-full border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:z-10 hover:scale-140 ${getMatrixPointPositionClasses(item.esfuerzo, item.impacto)} ${getMatrixPointBgClass(item.color)} ${
+                      isSelected ? "z-9 scale-130 ring-3 ring-brand-accent" : ""
+                    }`}
                     onClick={() => setSelectedId(item.id)}
                     title={`${item.name} (${item.area}) - Score: ${item.score ?? "Sin evaluar"}`}
                   />
@@ -1378,86 +1559,108 @@ function IniciativasContent() {
           </div>
 
           {/* Eje X Label */}
-          <div className="prio-matrix-x-label">
+          <div className="mt-2 flex items-center justify-between pr-1 pl-6 text-[11px] text-gray-400">
             <span>Bajo</span>
-            <span className="prio-matrix-x-axis-title">Esfuerzo estimado</span>
+            <span className="text-center text-[11.5px] font-semibold text-gray-500">
+              Esfuerzo estimado
+            </span>
             <span>Alto</span>
           </div>
         </div>
 
         {/* BLOQUE 2: CRITERIOS DE EVALUACIÓN (PESOS) */}
-        <div className="prio-bottom-card">
-          <div className="prio-bottom-card__header">
-            <div className="prio-bottom-card__title">
+        <div className="flex flex-col rounded-[14px] border border-border-default bg-bg-card px-5 py-4.5 shadow-2xs">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-bold text-text-heading">
               <Icon icon={Settings} size={17} />
               <span>Metodología y Criterios (100 pts)</span>
             </div>
             <button
               type="button"
-              className="prio-btn-link"
+              className="cursor-pointer border-none bg-transparent text-xs font-semibold text-brand-primary hover:underline"
               onClick={() => showNotification("Metodología: Pirámide (30%) + Pizza OKR's (30%) + 5 Criterios (40%) = 100 pts")}
             >
               Ver metodología →
             </button>
           </div>
 
-          <div className="prio-criteria-list">
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">P1</span>
-              <span className="prio-criteria-name">Alineación Estratégica (&quot;Pirámide&quot; N1-N3)</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "30%" }} />
+          <div className="mt-1 flex flex-col gap-2.5">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10.5px] font-bold text-gray-600">
+                P1
+              </span>
+              <span className="w-[150px] text-xs font-medium text-gray-700">
+                Alineación Estratégica (&quot;Pirámide&quot; N1-N3)
+              </span>
+              <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#f1f3f5]">
+                <div className="h-full w-[30%] rounded-sm bg-brand-accent" />
               </div>
-              <span className="prio-criteria-pct">30%</span>
+              <span className="w-8 text-right text-[11.5px] font-bold text-gray-500">30%</span>
             </div>
 
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">P2</span>
-              <span className="prio-criteria-name">OKR&apos;s Comercio Unificado (&quot;Pizza&quot;)</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "30%" }} />
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10.5px] font-bold text-gray-600">
+                P2
+              </span>
+              <span className="w-[150px] text-xs font-medium text-gray-700">
+                OKR&apos;s Comercio Unificado (&quot;Pizza&quot;)
+              </span>
+              <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#f1f3f5]">
+                <div className="h-full w-[30%] rounded-sm bg-brand-accent" />
               </div>
-              <span className="prio-criteria-pct">30%</span>
+              <span className="w-8 text-right text-[11.5px] font-bold text-gray-500">30%</span>
             </div>
 
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">1</span>
-              <span className="prio-criteria-name">Impacto al negocio</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "12%" }} />
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10.5px] font-bold text-gray-600">
+                1
+              </span>
+              <span className="w-[150px] text-xs font-medium text-gray-700">
+                Impacto al negocio
+              </span>
+              <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#f1f3f5]">
+                <div className="h-full w-[12%] rounded-sm bg-brand-accent" />
               </div>
-              <span className="prio-criteria-pct">12%</span>
+              <span className="w-8 text-right text-[11.5px] font-bold text-gray-500">12%</span>
             </div>
 
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">2</span>
-              <span className="prio-criteria-name">Alineación estratégica</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "10%" }} />
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10.5px] font-bold text-gray-600">
+                2
+              </span>
+              <span className="w-[150px] text-xs font-medium text-gray-700">
+                Alineación estratégica
+              </span>
+              <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#f1f3f5]">
+                <div className="h-full w-[10%] rounded-sm bg-brand-accent" />
               </div>
-              <span className="prio-criteria-pct">10%</span>
+              <span className="w-8 text-right text-[11.5px] font-bold text-gray-500">10%</span>
             </div>
 
-            <div className="prio-criteria-item">
-              <span className="prio-criteria-num">3</span>
-              <span className="prio-criteria-name">Urgencia, Complejidad y Riesgos (6% c/u)</span>
-              <div className="prio-criteria-bar-track">
-                <div className="prio-criteria-bar-fill" style={{ width: "18%" }} />
+            <div className="flex items-center gap-2 text-xs">
+              <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-gray-100 text-[10.5px] font-bold text-gray-600">
+                3
+              </span>
+              <span className="w-[150px] text-xs font-medium text-gray-700">
+                Urgencia, Complejidad y Riesgos (6% c/u)
+              </span>
+              <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#f1f3f5]">
+                <div className="h-full w-[18%] rounded-sm bg-brand-accent" />
               </div>
-              <span className="prio-criteria-pct">18%</span>
+              <span className="w-8 text-right text-[11.5px] font-bold text-gray-500">18%</span>
             </div>
           </div>
         </div>
 
         {/* BLOQUE 3: ACCIONES RÁPIDAS Y BANNER LIVERPOOL */}
-        <div className="prio-bottom-card prio-bottom-card--actions">
-          <div className="prio-quick-actions-col">
-            <div className="prio-bottom-card__title" style={{ marginBottom: 10 }}>
+        <div className="flex flex-col gap-4 rounded-[14px] border border-border-default bg-bg-card p-4 shadow-2xs sm:flex-row">
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-[140px]">
+            <div className="mb-2.5 flex items-center gap-2 text-sm font-bold text-text-heading">
               Acciones rápidas
             </div>
             <button
               type="button"
-              className="prio-quick-btn prio-quick-btn--primary"
+              className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#f2d8ec] bg-bg-card px-2.5 py-[7px] text-xs font-semibold text-brand-primary transition-all duration-150 hover:border-brand-primary hover:bg-brand-primary-light"
               onClick={handleSendToCommittee}
             >
               <Icon icon={Send} size={15} />
@@ -1465,7 +1668,7 @@ function IniciativasContent() {
             </button>
             <button
               type="button"
-              className="prio-quick-btn"
+              className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#d0d4e4] bg-bg-card px-2.5 py-[7px] text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-brand-primary hover:bg-brand-primary-light hover:text-brand-primary"
               onClick={handleRequestAdjustments}
             >
               <Icon icon={Comment} size={15} />
@@ -1473,7 +1676,7 @@ function IniciativasContent() {
             </button>
             <button
               type="button"
-              className="prio-quick-btn prio-quick-btn--danger"
+              className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-red-100 bg-bg-card px-2.5 py-[7px] text-xs font-semibold text-danger-500 transition-all duration-150 hover:border-red-300 hover:bg-red-50 hover:text-red-700"
               onClick={handleDiscard}
             >
               <Icon icon={Delete} size={15} />
@@ -1481,27 +1684,27 @@ function IniciativasContent() {
             </button>
           </div>
 
-          <div className="prio-liverpool-banner">
-            <div className="prio-liverpool-tip">
-              <span className="prio-liverpool-bulb">💡</span>
+          <div className="flex flex-1 flex-col justify-between gap-2 rounded-[10px] border border-[#f2d8ec] bg-[#faf5f9] px-3.5 py-3">
+            <div className="flex gap-1.5 text-[11px] leading-[1.35] text-gray-600">
+              <span className="shrink-0 text-[13px]">💡</span>
               <span>
                 Evalúa la información disponible y asigna un score para incluir la iniciativa en la priorización.
               </span>
             </div>
 
-            <div className="prio-liverpool-quote">
+            <div className="text-[11.5px] font-medium text-brand-primary italic">
               &quot;Priorizar ideas hoy, para los resultados de mañana.&quot;
             </div>
 
-            <div className="prio-liverpool-brand">
+            <div className="mt-0.5 flex items-center justify-end gap-1.5">
               <img
                 src="/icon.png"
                 alt="Liverpool"
                 width={26}
                 height={26}
-                style={{ borderRadius: 4, display: "inline-block" }}
+                className="inline-block rounded-sm"
               />
-              <span style={{ fontSize: 18, fontWeight: 800, color: "#e6007e", letterSpacing: -0.5 }}>
+              <span className="text-lg font-extrabold tracking-[-0.5px] text-brand-accent">
                 Liverpool
               </span>
             </div>
@@ -1511,20 +1714,24 @@ function IniciativasContent() {
 
       {/* 5. MODAL INTERACTIVO DE EVALUACIÓN MULTICRITERIO */}
       {isEvalModalOpen && (
-        <div className="prio-modal-overlay">
-          <div className="prio-modal-card" role="dialog" aria-modal="true">
-            <div className="prio-modal-header">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/45 p-4 backdrop-blur-[3px] transition-opacity duration-150">
+          <div
+            className="flex max-h-[90vh] w-full max-w-[580px] flex-col overflow-y-auto rounded-2xl border border-border-default bg-bg-card shadow-2xl transition-all duration-150"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-start justify-between border-b border-[#f1f3f5] px-6 pt-5 pb-3.5">
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--brand-primary)", textTransform: "uppercase" }}>
+                <div className="text-xs font-semibold text-brand-primary uppercase">
                   Evaluación de Portfolio Manager
                 </div>
-                <h3 style={{ margin: "2px 0 0 0", fontSize: 18, fontWeight: 700, color: "#1e2022" }}>
+                <h3 className="m-0 mt-0.5 text-lg font-bold text-text-heading">
                   {selectedInitiative.name}
                 </h3>
               </div>
               <button
                 type="button"
-                className="main-menu-panel__close-btn"
+                className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-text-secondary transition-all duration-150 hover:border-[#f2d8ec] hover:bg-brand-primary-light hover:text-brand-primary"
                 onClick={() => setIsEvalModalOpen(false)}
                 aria-label="Cerrar modal"
               >
@@ -1532,15 +1739,15 @@ function IniciativasContent() {
               </button>
             </div>
 
-            <div className="prio-modal-body">
-              <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 16px 0" }}>
+            <div className="flex-1 px-6 py-5">
+              <p className="m-0 mb-4 text-[13px] text-gray-500">
                 Califica cada uno de los 5 criterios de la metodología en una escala de 1 a 10. El score ponderado y la prioridad preliminar se calcularán en tiempo real.
               </p>
 
               {/* Sliders de evaluación */}
-              <div className="prio-slider-group">
-                <div className="prio-slider-row">
-                  <div className="prio-slider-label">
+              <div className="flex flex-col gap-3.5">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[12.5px] font-semibold text-gray-700">
                     <span>1. Impacto al negocio (Peso 30%)</span>
                     <b>{evalC1}/10</b>
                   </div>
@@ -1550,12 +1757,12 @@ function IniciativasContent() {
                     max="10"
                     value={evalC1}
                     onChange={(e) => setEvalC1(Number(e.target.value))}
-                    className="prio-range"
+                    className="w-full cursor-pointer accent-brand-accent"
                   />
                 </div>
 
-                <div className="prio-slider-row">
-                  <div className="prio-slider-label">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[12.5px] font-semibold text-gray-700">
                     <span>2. Alineación estratégica (Peso 25%)</span>
                     <b>{evalC2}/10</b>
                   </div>
@@ -1565,12 +1772,12 @@ function IniciativasContent() {
                     max="10"
                     value={evalC2}
                     onChange={(e) => setEvalC2(Number(e.target.value))}
-                    className="prio-range"
+                    className="w-full cursor-pointer accent-brand-accent"
                   />
                 </div>
 
-                <div className="prio-slider-row">
-                  <div className="prio-slider-label">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[12.5px] font-semibold text-gray-700">
                     <span>3. Urgencia / oportunidad (Peso 15%)</span>
                     <b>{evalC3}/10</b>
                   </div>
@@ -1580,12 +1787,12 @@ function IniciativasContent() {
                     max="10"
                     value={evalC3}
                     onChange={(e) => setEvalC3(Number(e.target.value))}
-                    className="prio-range"
+                    className="w-full cursor-pointer accent-brand-accent"
                   />
                 </div>
 
-                <div className="prio-slider-row">
-                  <div className="prio-slider-label">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[12.5px] font-semibold text-gray-700">
                     <span>4. Esfuerzo estimado / Factibilidad (Peso 15%)</span>
                     <b>{evalC4}/10</b>
                   </div>
@@ -1595,12 +1802,12 @@ function IniciativasContent() {
                     max="10"
                     value={evalC4}
                     onChange={(e) => setEvalC4(Number(e.target.value))}
-                    className="prio-range"
+                    className="w-full cursor-pointer accent-brand-accent"
                   />
                 </div>
 
-                <div className="prio-slider-row">
-                  <div className="prio-slider-label">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-[12.5px] font-semibold text-gray-700">
                     <span>5. Riesgos y dependencias (Peso 15%)</span>
                     <b>{evalC5}/10</b>
                   </div>
@@ -1610,28 +1817,28 @@ function IniciativasContent() {
                     max="10"
                     value={evalC5}
                     onChange={(e) => setEvalC5(Number(e.target.value))}
-                    className="prio-range"
+                    className="w-full cursor-pointer accent-brand-accent"
                   />
                 </div>
               </div>
 
               {/* Preview de Score y Prioridad Calculada */}
-              <div className="prio-live-score-card">
+              <div className="mt-4.5 flex items-center justify-between rounded-xl border border-[#f2d8ec] bg-[#fdf5fa] px-4.5 py-3.5">
                 <div>
-                  <div style={{ fontSize: 12, color: "#6b7280" }}>Score Ponderado Calculado</div>
-                  <div style={{ fontSize: 36, fontWeight: 800, color: "var(--brand-primary)", lineHeight: 1.1 }}>
+                  <div className="text-xs text-gray-500">Score Ponderado Calculado</div>
+                  <div className="text-4xl leading-[1.1] font-extrabold text-brand-primary">
                     {liveScore}
-                    <span style={{ fontSize: 18, color: "#9ca3af", fontWeight: 500 }}>/100</span>
+                    <span className="text-lg font-medium text-gray-400">/100</span>
                   </div>
                 </div>
 
                 <div>
-                  <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>
+                  <div className="mb-1 text-xs text-gray-500">
                     Prioridad Resultante
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div className="flex items-center gap-2">
                     {getPriorityBadge(livePriority)}
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>
+                    <span className="text-xs text-gray-500">
                       ({liveScore >= 80 ? "Sugerida para comité" : "Requiere refinamiento"})
                     </span>
                   </div>
@@ -1639,18 +1846,17 @@ function IniciativasContent() {
               </div>
             </div>
 
-            <div className="prio-modal-footer">
+            <div className="flex items-center justify-end gap-3 border-t border-[#f1f3f5] px-6 pt-3.5 pb-5">
               <button
                 type="button"
-                className="btn-purple-outline"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                 onClick={() => setIsEvalModalOpen(false)}
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                className="btn-purple-solid"
-                style={{ background: "#e6007e", borderColor: "#e6007e" }}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-accent bg-brand-accent px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-accent-dark hover:bg-brand-accent-dark"
                 onClick={handleSaveEvaluation}
               >
                 <span>Guardar evaluación y actualizar prioridad</span>
@@ -1665,7 +1871,13 @@ function IniciativasContent() {
 
 export default function IniciativasPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando iniciativas...</div>}>
+    <Suspense
+      fallback={
+        <div className="p-10 text-center text-sm text-text-secondary">
+          Cargando iniciativas...
+        </div>
+      }
+    >
       <IniciativasContent />
     </Suspense>
   );

@@ -197,50 +197,65 @@ function ConfirmacionContent() {
     showToast("Borrador de decisión guardado exitosamente");
   };
 
+  const getMeterWidthClass = (val: number) => {
+    if (val <= 1) return "w-1/5";
+    if (val === 2) return "w-2/5";
+    if (val === 3) return "w-3/5";
+    if (val === 4) return "w-4/5";
+    return "w-full";
+  };
+
   return (
-    <div className="eval-page-container">
-      <div className="app-back-bar">
+    <div className="px-1 pb-12">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* Toast de confirmación */}
       {toastMessage && (
-        <div className="prio-toast">
+        <div className="fixed top-[calc(var(--app-header-height)+16px)] right-6 z-100 flex items-center gap-2.5 rounded-lg bg-text-heading px-4.5 py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-opacity duration-150">
           <Icon icon={Check} size={16} />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* 1. ENCABEZADO Y BREADCRUMB */}
-      <div className="eval-header-row">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="prio-breadcrumb">
-            <Link href="/" className="prio-breadcrumb__link">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs">
+            <Link href="/" className="font-semibold text-brand-primary no-underline hover:underline">
               Portafolio
             </Link>
-            <span className="prio-breadcrumb__sep">&gt;</span>
-            <Link href="/iniciativas" className="prio-breadcrumb__link">
+            <span className="text-gray-400">&gt;</span>
+            <Link
+              href="/iniciativas"
+              className="font-semibold text-brand-primary no-underline hover:underline"
+            >
               Iniciativas
             </Link>
-            <span className="prio-breadcrumb__sep">&gt;</span>
-            <span className="prio-breadcrumb__current">Evaluación</span>
+            <span className="text-gray-400">&gt;</span>
+            <span className="font-bold text-brand-primary">Evaluación</span>
           </div>
-          <h1 className="eval-header__title">Confirmación de prioridad</h1>
-          <p className="eval-header__subtitle">
+          <h1 className="m-0 mb-1.5 text-2xl font-extrabold tracking-[-0.3px] text-text-heading">
+            Confirmación de prioridad
+          </h1>
+          <p className="m-0 text-[13.5px] text-text-secondary">
             Revisa el resultado de la evaluación y define la decisión final de la iniciativa.
           </p>
         </div>
 
         {/* Paso 2 de 2 + Aviso de Evaluación */}
-        <div className="eval-header__right">
-          <div className="eval-step-box">
-            <div className="eval-step-label">Paso 2 de 2 · Confirmación de decisión</div>
-            <div className="eval-step-track">
-              <div className="eval-step-fill" style={{ width: "100%" }} />
+        <div className="flex flex-col items-end gap-2.5">
+          <div className="flex flex-col items-end gap-1.5">
+            <div className="text-xs font-semibold text-gray-700">
+              Paso 2 de 2 · Confirmación de decisión
+            </div>
+            <div className="h-1.5 w-[190px] overflow-hidden rounded-[3px] bg-gray-200">
+              <div className="h-full w-full rounded-[3px] bg-brand-accent" />
             </div>
           </div>
 
-          <div className="eval-info-callout">
+          <div className="flex items-center gap-2 rounded-lg border border-[#cce3fd] bg-[#f0f7ff] px-3 py-1.5 text-[11.5px] font-medium text-sky-700">
             <Icon icon={Info} size={16} />
             <span>
               La iniciativa ya cuenta con una evaluación preliminar. Confirma su prioridad y define su siguiente paso dentro del portafolio.
@@ -250,20 +265,22 @@ function ConfirmacionContent() {
       </div>
 
       {/* 2. CARD DE CABECERA DE LA INICIATIVA */}
-      <div className="eval-initiative-banner">
-        <div className="eval-initiative-banner__icon">
+      <div className="mb-5 flex items-center gap-4 rounded-[14px] border border-border-default bg-bg-card px-5 py-4 shadow-2xs">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-pink-50">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6007e" strokeWidth="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
         </div>
         <div>
-          <h2 className="eval-initiative-banner__title">{initiative.name}</h2>
-          <div className="eval-initiative-banner__meta">
+          <h2 className="m-0 mb-1 text-[17.5px] font-extrabold text-text-heading">
+            {initiative.name}
+          </h2>
+          <div className="flex flex-wrap items-center gap-2.5 text-[12.5px] text-text-secondary">
             <span>Área: {initiative.area}</span>
-            <span className="eval-initiative-banner__divider">|</span>
+            <span className="text-gray-300">|</span>
             <span>Madurez: {initiative.madurez}%</span>
-            <span className="eval-initiative-banner__divider">|</span>
-            <span className="eval-maturity-badge">
+            <span className="text-gray-300">|</span>
+            <span className="inline-flex items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-0.5 text-[11.5px] font-bold text-brand-primary">
               {initiative.madurezTag || "Madurez inicial"}
             </span>
           </div>
@@ -271,70 +288,82 @@ function ConfirmacionContent() {
       </div>
 
       {/* 3. LAYOUT PRINCIPAL A DOS COLUMNAS */}
-      <div className="step2-main-grid">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(420px,1.25fr)_minmax(360px,1fr)]">
         {/* ============================================================== */}
         {/* COLUMNA IZQUIERDA: RESULTADO Y ANÁLISIS DE EVALUACIÓN          */}
         {/* ============================================================== */}
-        <div className="step2-col-left">
+        <div className="flex flex-col">
           {/* Card: Resultado de la evaluación */}
-          <div className="eval-criteria-card" style={{ marginBottom: 20 }}>
-            <div className="eval-card-header">
-              <span className="step2-section-icon">
+          <div className="mb-5 rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
+            <div className="mb-3.5 flex items-center gap-2.5 border-b border-[#f1f3f5] pb-3.5 text-brand-primary">
+              <span className="inline-flex items-center text-brand-accent">
                 <Icon icon={Chart} size={18} />
               </span>
-              <h3 className="eval-card-header__title">Resultado de la evaluación</h3>
+              <h3 className="m-0 text-base font-bold text-text-heading">
+                Resultado de la evaluación
+              </h3>
             </div>
 
             {/* 3 Métricas KPI side-by-side */}
-            <div className="step2-kpi-grid">
+            <div className="grid grid-cols-1 gap-4 border-b border-[#f1f3f7] bg-bg-card px-5 py-4 sm:grid-cols-3">
               {/* Score preliminar */}
-              <div className="step2-kpi-box">
-                <div className="step2-kpi-icon-wrap step2-kpi-icon--pink">
+              <div className="flex flex-col items-start gap-1.5">
+                <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-pink-50 text-pink-600">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#db2777" strokeWidth="2">
                     <circle cx="12" cy="12" r="10" />
                     <circle cx="12" cy="12" r="6" />
                     <circle cx="12" cy="12" r="2" fill="#db2777" />
                   </svg>
                 </div>
-                <div className="step2-kpi-label">Score preliminar</div>
-                <div className="step2-kpi-value">{score}/100</div>
+                <div className="text-[11.5px] font-medium text-gray-500">Score preliminar</div>
+                <div className="text-[22px] leading-[1.1] font-extrabold text-text-heading">
+                  {score}/100
+                </div>
               </div>
 
               {/* Prioridad sugerida */}
-              <div className="step2-kpi-box">
-                <div className="step2-kpi-icon-wrap step2-kpi-icon--pink">
+              <div className="flex flex-col items-start gap-1.5">
+                <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-pink-50 text-pink-600">
                   <Icon icon={Chart} size={16} />
                 </div>
-                <div className="step2-kpi-label">Prioridad sugerida</div>
+                <div className="text-[11.5px] font-medium text-gray-500">Prioridad sugerida</div>
                 <div>
-                  <span className="step2-pill step2-pill--pink">{suggestedPriority}</span>
+                  <span className="inline-flex items-center rounded-[14px] border border-pink-200 bg-pink-50 px-3.5 py-[3px] text-xs font-bold text-pink-600">
+                    {suggestedPriority}
+                  </span>
                 </div>
               </div>
 
               {/* Confianza de evaluación */}
-              <div className="step2-kpi-box">
-                <div className="step2-kpi-icon-wrap step2-kpi-icon--amber">
+              <div className="flex flex-col items-start gap-1.5">
+                <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-amber-50 text-warning-500">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
                 </div>
-                <div className="step2-kpi-label">Confianza de evaluación</div>
+                <div className="text-[11.5px] font-medium text-gray-500">
+                  Confianza de evaluación
+                </div>
                 <div>
-                  <span className="step2-pill step2-pill--amber">{confianza}</span>
+                  <span className="inline-flex items-center rounded-[14px] border border-amber-200 bg-amber-50 px-3.5 py-[3px] text-xs font-bold text-warning-500">
+                    {confianza}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Lectura ejecutiva */}
-            <div className="step2-lectura-box">
-              <div className="step2-lectura-header">
+            <div className="bg-bg-card px-5 py-4">
+              <div className="mb-3 flex items-center gap-2 text-text-heading">
                 <Icon icon={FileIcon} size={16} />
-                <span className="step2-lectura-title">Lectura ejecutiva</span>
+                <span className="text-[13.5px] font-bold text-text-heading">
+                  Lectura ejecutiva
+                </span>
               </div>
-              <ul className="step2-lectura-list">
+              <ul className="m-0 flex list-none flex-col gap-[9px] p-0">
                 {lecturaBullets.map((bullet, idx) => (
-                  <li key={idx}>
-                    <span className="step2-bullet-dot" />
+                  <li key={idx} className="flex items-center gap-2.5 text-[12.5px] text-gray-700">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-pink-600" />
                     <span>{bullet}</span>
                   </li>
                 ))}
@@ -343,52 +372,40 @@ function ConfirmacionContent() {
           </div>
 
           {/* Card: Resumen del análisis */}
-          <div className="eval-criteria-card" style={{ marginBottom: 20 }}>
-            <div className="eval-card-header">
-              <span className="step2-section-icon">
+          <div className="mb-5 rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
+            <div className="mb-3.5 flex items-center gap-2.5 border-b border-[#f1f3f5] pb-3.5 text-brand-primary">
+              <span className="inline-flex items-center text-brand-accent">
                 <Icon icon={Chart} size={18} />
               </span>
               <div>
-                <h3 className="eval-card-header__title">Resumen del análisis</h3>
-                <p className="eval-card-header__subtitle">
+                <h3 className="m-0 text-base font-bold text-text-heading">Resumen del análisis</h3>
+                <p className="mt-0.5 mb-0 text-xs text-text-secondary">
                   Calificación final por criterio con base en la evaluación realizada.
                 </p>
               </div>
             </div>
 
-            <div className="step2-table-wrapper">
+            <div className="px-4 pt-1 pb-4">
               {/* Resumen de Pirámide (30 pts) y Pizza (30 pts) */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  padding: "12px 14px",
-                  background: "#fdf4f9",
-                  border: "1px solid #efd6e7",
-                  borderRadius: 10,
-                  marginBottom: 14,
-                  fontSize: 12,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 700, color: "#833177" }}>
+              <div className="mb-3.5 flex flex-col gap-2 rounded-[10px] border border-[#efd6e7] bg-[#fdf4f9] px-3.5 py-3 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-brand-primary">
                     🔺 Alineación Estratégica (&quot;Pirámide&quot; · Máx. 30%)
                   </span>
-                  <span style={{ fontWeight: 800, color: "#e6007e" }}>
+                  <span className="font-extrabold text-brand-accent">
                     {piramideNivel} · {piramidePuntos} / 30 pts
                   </span>
                 </div>
-                <div style={{ borderTop: "1px solid #f2d8ec", paddingTop: 8 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontWeight: 700, color: "#833177" }}>
+                <div className="border-t border-[#f2d8ec] pt-2">
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="font-bold text-brand-primary">
                       🍕 OKR&apos;s Estratégicos (&quot;Pizza&quot; · Máx. 30%)
                     </span>
-                    <span style={{ fontWeight: 800, color: "#e6007e" }}>
+                    <span className="font-extrabold text-brand-accent">
                       {pizzaPuntos} / 30 pts
                     </span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 3, color: "#4b5563", fontSize: 11.5 }}>
+                  <div className="flex flex-col gap-[3px] text-[11.5px] text-gray-600">
                     <div>• <b>Objetivo Clave:</b> {pizzaObjetivoClave}</div>
                     <div>• <b>Batalla / Iniciativa Clave:</b> {pizzaBatalla}</div>
                     <div>• <b>Habilitador:</b> {pizzaHabilitador}</div>
@@ -396,37 +413,41 @@ function ConfirmacionContent() {
                 </div>
               </div>
 
-              <table className="step2-analysis-table">
+              <table className="w-full border-collapse text-[12.5px]">
                 <thead>
-                  <tr>
-                    <th style={{ width: "42%" }}>Criterio</th>
-                    <th style={{ width: "18%" }}>Calificación</th>
-                    <th style={{ width: "15%" }}>Peso</th>
-                    <th style={{ width: "25%" }}>Nivel</th>
+                  <tr className="border-b border-[#f1f3f7] bg-bg-card text-left text-[11.5px] font-semibold text-gray-500">
+                    <th className="w-[42%] px-2.5 py-2">Criterio</th>
+                    <th className="w-[18%] px-2.5 py-2">Calificación</th>
+                    <th className="w-[15%] px-2.5 py-2">Peso</th>
+                    <th className="w-[25%] px-2.5 py-2">Nivel</th>
                   </tr>
                 </thead>
                 <tbody>
                   {criteriosList.map((crit) => {
-                    const percent = (crit.val / crit.max) * 100;
                     return (
-                      <tr key={crit.id}>
-                        <td>
-                          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            <span className="step2-num-badge">{crit.id}</span>
-                            <span className="step2-crit-name">{crit.name}</span>
+                      <tr key={crit.id} className="border-b border-slate-50">
+                        <td className="p-2.5 align-middle">
+                          <div className="flex items-center gap-2.5">
+                            <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pink-50 text-[11px] font-bold text-pink-600">
+                              {crit.id}
+                            </span>
+                            <span className="text-[12.5px] font-semibold text-text-heading">
+                              {crit.name}
+                            </span>
                           </div>
                         </td>
-                        <td>
-                          <span className="step2-crit-score">{crit.val} / {crit.max}</span>
+                        <td className="p-2.5 align-middle">
+                          <span className="text-[12.5px] font-semibold text-text-heading">
+                            {crit.val} / {crit.max}
+                          </span>
                         </td>
-                        <td>
-                          <span className="step2-crit-peso">{crit.peso}</span>
+                        <td className="p-2.5 align-middle">
+                          <span className="text-xs text-gray-500">{crit.peso}</span>
                         </td>
-                        <td>
-                          <div className="step2-meter-track">
+                        <td className="p-2.5 align-middle">
+                          <div className="h-2 w-full overflow-hidden rounded-sm bg-slate-200">
                             <div
-                              className="step2-meter-fill"
-                              style={{ width: `${percent}%` }}
+                              className={`h-full rounded-sm bg-pink-600 transition-all duration-300 ${getMeterWidthClass(crit.val)}`}
                             />
                           </div>
                         </td>
@@ -439,15 +460,17 @@ function ConfirmacionContent() {
           </div>
 
           {/* Card: Siguiente paso sugerido */}
-          <div className="step2-suggested-card">
-            <div className="step2-suggested-icon">
+          <div className="flex items-start gap-3.5 rounded-[14px] border border-border-default bg-bg-card px-5 py-4 shadow-2xs">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-pink-50">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#db2777" strokeWidth="2">
                 <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6v1h8v-1c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z" />
               </svg>
             </div>
             <div>
-              <div className="step2-suggested-title">Siguiente paso sugerido</div>
-              <div className="step2-suggested-text">
+              <div className="mb-1 text-[13.5px] font-bold text-text-heading">
+                Siguiente paso sugerido
+              </div>
+              <div className="text-[12.5px] leading-[1.45] text-gray-600">
                 Integrar la iniciativa a la bandeja de priorización del portafolio para compararla contra el resto de iniciativas activas.
               </div>
             </div>
@@ -457,31 +480,43 @@ function ConfirmacionContent() {
         {/* ============================================================== */}
         {/* COLUMNA DERECHA: DECISIÓN DEL PORTFOLIO MANAGER               */}
         {/* ============================================================== */}
-        <div className="step2-col-right">
-          <div className="eval-criteria-card">
-            <div className="eval-card-header">
-              <span className="step2-section-icon">
+        <div className="flex flex-col">
+          <div className="rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
+            <div className="mb-3.5 flex items-center gap-2.5 border-b border-[#f1f3f5] pb-3.5 text-brand-primary">
+              <span className="inline-flex items-center text-brand-accent">
                 <Icon icon={Person} size={18} />
               </span>
               <div>
-                <h3 className="eval-card-header__title">Decisión del Portfolio Manager</h3>
-                <p className="eval-card-header__subtitle">
+                <h3 className="m-0 text-base font-bold text-text-heading">
+                  Decisión del Portfolio Manager
+                </h3>
+                <p className="mt-0.5 mb-0 text-xs text-text-secondary">
                   Selecciona la decisión final para esta iniciativa.
                 </p>
               </div>
             </div>
 
             {/* Opciones de decisión (Radio cards) */}
-            <div className="step2-decision-list">
+            <div className="flex flex-col gap-2.5 px-5 pt-2.5 pb-5">
               {/* Opción 1: Priorizar */}
               <div
-                className={`step2-decision-card ${decision === "priorizar" ? "step2-decision-card--active" : ""}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3.5 py-3 transition-all duration-150 ${
+                  decision === "priorizar"
+                    ? "border-pink-600 bg-[#fdf8fb] ring-1 ring-pink-600"
+                    : "border-gray-200 bg-bg-card hover:border-slate-300 hover:bg-[#fafbfe]"
+                }`}
                 onClick={() => handleSelectDecision("priorizar")}
               >
-                <div className="step2-radio-circle">
-                  {decision === "priorizar" && <div className="step2-radio-dot" />}
+                <div
+                  className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] ${
+                    decision === "priorizar" ? "border-pink-600" : "border-gray-300"
+                  }`}
+                >
+                  {decision === "priorizar" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                  )}
                 </div>
-                <div className="step2-decision-icon-wrap" style={{ color: "#db2777" }}>
+                <div className="flex shrink-0 items-center justify-center text-pink-600">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
                     <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
@@ -489,9 +524,9 @@ function ConfirmacionContent() {
                     <path d="M15 9V4s3.03.55 4.5 2c1.28 1.26 1.5 3 1.5 3" />
                   </svg>
                 </div>
-                <div className="step2-decision-content">
-                  <div className="step2-decision-title">Priorizar</div>
-                  <div className="step2-decision-desc">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13.5px] font-bold text-text-heading">Priorizar</div>
+                  <div className="mt-0.5 text-[11.5px] text-gray-500">
                     Incluir la iniciativa en el portafolio y pasar a la siguiente etapa.
                   </div>
                 </div>
@@ -499,18 +534,30 @@ function ConfirmacionContent() {
 
               {/* Opción 2: Mantener en observación */}
               <div
-                className={`step2-decision-card ${decision === "observacion" ? "step2-decision-card--active" : ""}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3.5 py-3 transition-all duration-150 ${
+                  decision === "observacion"
+                    ? "border-pink-600 bg-[#fdf8fb] ring-1 ring-pink-600"
+                    : "border-gray-200 bg-bg-card hover:border-slate-300 hover:bg-[#fafbfe]"
+                }`}
                 onClick={() => handleSelectDecision("observacion")}
               >
-                <div className="step2-radio-circle">
-                  {decision === "observacion" && <div className="step2-radio-dot" />}
+                <div
+                  className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] ${
+                    decision === "observacion" ? "border-pink-600" : "border-gray-300"
+                  }`}
+                >
+                  {decision === "observacion" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                  )}
                 </div>
-                <div className="step2-decision-icon-wrap" style={{ color: "#4b5563" }}>
+                <div className="flex shrink-0 items-center justify-center text-gray-600">
                   <Icon icon={Show} size={18} />
                 </div>
-                <div className="step2-decision-content">
-                  <div className="step2-decision-title">Mantener en observación</div>
-                  <div className="step2-decision-desc">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13.5px] font-bold text-text-heading">
+                    Mantener en observación
+                  </div>
+                  <div className="mt-0.5 text-[11.5px] text-gray-500">
                     Conservar la iniciativa para una futura revisión.
                   </div>
                 </div>
@@ -518,18 +565,30 @@ function ConfirmacionContent() {
 
               {/* Opción 3: Solicitar ajustes */}
               <div
-                className={`step2-decision-card ${decision === "ajustes" ? "step2-decision-card--active" : ""}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3.5 py-3 transition-all duration-150 ${
+                  decision === "ajustes"
+                    ? "border-pink-600 bg-[#fdf8fb] ring-1 ring-pink-600"
+                    : "border-gray-200 bg-bg-card hover:border-slate-300 hover:bg-[#fafbfe]"
+                }`}
                 onClick={() => handleSelectDecision("ajustes")}
               >
-                <div className="step2-radio-circle">
-                  {decision === "ajustes" && <div className="step2-radio-dot" />}
+                <div
+                  className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] ${
+                    decision === "ajustes" ? "border-pink-600" : "border-gray-300"
+                  }`}
+                >
+                  {decision === "ajustes" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                  )}
                 </div>
-                <div className="step2-decision-icon-wrap" style={{ color: "#4b5563" }}>
+                <div className="flex shrink-0 items-center justify-center text-gray-600">
                   <Icon icon={Edit} size={18} />
                 </div>
-                <div className="step2-decision-content">
-                  <div className="step2-decision-title">Solicitar ajustes</div>
-                  <div className="step2-decision-desc">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13.5px] font-bold text-text-heading">
+                    Solicitar ajustes
+                  </div>
+                  <div className="mt-0.5 text-[11.5px] text-gray-500">
                     Regresar la iniciativa al solicitante para mayor información.
                   </div>
                 </div>
@@ -537,18 +596,28 @@ function ConfirmacionContent() {
 
               {/* Opción 4: Descartar */}
               <div
-                className={`step2-decision-card ${decision === "descartar" ? "step2-decision-card--active" : ""}`}
+                className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3.5 py-3 transition-all duration-150 ${
+                  decision === "descartar"
+                    ? "border-pink-600 bg-[#fdf8fb] ring-1 ring-pink-600"
+                    : "border-gray-200 bg-bg-card hover:border-slate-300 hover:bg-[#fafbfe]"
+                }`}
                 onClick={() => handleSelectDecision("descartar")}
               >
-                <div className="step2-radio-circle">
-                  {decision === "descartar" && <div className="step2-radio-dot" />}
+                <div
+                  className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] ${
+                    decision === "descartar" ? "border-pink-600" : "border-gray-300"
+                  }`}
+                >
+                  {decision === "descartar" && (
+                    <div className="h-2.5 w-2.5 rounded-full bg-pink-600" />
+                  )}
                 </div>
-                <div className="step2-decision-icon-wrap" style={{ color: "#db2777" }}>
+                <div className="flex shrink-0 items-center justify-center text-pink-600">
                   <Icon icon={Delete} size={18} />
                 </div>
-                <div className="step2-decision-content">
-                  <div className="step2-decision-title">Descartar</div>
-                  <div className="step2-decision-desc">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13.5px] font-bold text-text-heading">Descartar</div>
+                  <div className="mt-0.5 text-[11.5px] text-gray-500">
                     No continuar con la iniciativa en el portafolio actual.
                   </div>
                 </div>
@@ -556,18 +625,22 @@ function ConfirmacionContent() {
             </div>
 
             {/* Controles de Prioridad Final y Justificación */}
-            <div className="step2-form-fields">
+            <div className="flex flex-col gap-4 px-5 pb-4.5">
               {/* Prioridad final (Segmented control) */}
-              <div className="step2-field-group">
-                <label className="step2-field-label">Prioridad final</label>
-                <div className="step2-segment-control">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-gray-700">Prioridad final</label>
+                <div className="flex gap-2">
                   {(["Alta", "Media", "Baja"] as const).map((p) => {
                     const isSelected = prioridadFinal === p;
                     return (
                       <button
                         key={p}
                         type="button"
-                        className={`step2-segment-btn ${isSelected ? "step2-segment-btn--active" : ""}`}
+                        className={`flex-1 cursor-pointer rounded-md border px-3 py-2 text-[12.5px] transition-all duration-150 ${
+                          isSelected
+                            ? "border-pink-600 bg-pink-600 font-bold text-white"
+                            : "border-gray-200 bg-slate-50 font-semibold text-gray-600 hover:bg-slate-100"
+                        }`}
                         onClick={() => setPrioridadFinal(p)}
                       >
                         {p}
@@ -578,25 +651,29 @@ function ConfirmacionContent() {
               </div>
 
               {/* Justificación de decisión */}
-              <div className="step2-field-group">
-                <label className="step2-field-label">Justificación de decisión</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-gray-700">
+                  Justificación de decisión
+                </label>
                 <textarea
-                  className="step2-textarea"
+                  className="w-full resize-y rounded-md border border-[#d0d4e4] px-3 py-2.5 text-[12.5px] leading-[1.4] text-text-heading transition-all duration-150 outline-none focus:border-pink-600 focus:ring-2 focus:ring-pink-600/15"
                   value={justificacion}
                   maxLength={500}
                   onChange={(e) => setJustificacion(e.target.value)}
                   rows={3}
                   placeholder="Explica el motivo de la decisión y consideraciones clave..."
                 />
-                <div className="step2-char-counter">{justificacion.length}/500</div>
+                <div className="mt-0.5 text-right text-[11px] text-gray-400">
+                  {justificacion.length}/500
+                </div>
               </div>
 
               {/* Destino */}
-              <div className="step2-field-group">
-                <label className="step2-field-label">Destino</label>
-                <div className="step2-select-wrapper">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-gray-700">Destino</label>
+                <div className="relative">
                   <select
-                    className="step2-select"
+                    className="w-full cursor-pointer rounded-md border border-[#d0d4e4] bg-bg-card px-3 py-[9px] text-[12.5px] text-text-heading outline-none focus:border-pink-600"
                     value={destino}
                     onChange={(e) => setDestino(e.target.value)}
                   >
@@ -628,15 +705,17 @@ function ConfirmacionContent() {
             </div>
 
             {/* Impacto de la decisión */}
-            <div className="step2-impact-section">
-              <div className="step2-impact-header">
+            <div className="border-t border-[#f1f3f7] px-5 py-4">
+              <div className="mb-3 flex items-center gap-2 text-pink-600">
                 <Icon icon={Chart} size={16} />
-                <span className="step2-impact-title">Impacto de la decisión</span>
+                <span className="text-[13.5px] font-bold text-text-heading">
+                  Impacto de la decisión
+                </span>
               </div>
-              <ul className="step2-impact-list">
+              <ul className="m-0 flex list-none flex-col gap-2 p-0">
                 {impactoBullets.map((bullet, idx) => (
-                  <li key={idx}>
-                    <span className="step2-check-circle">
+                  <li key={idx} className="flex items-center gap-2.5 text-[12.5px] text-gray-700">
+                    <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
                       <Icon icon={Check} size={12} />
                     </span>
                     <span>{bullet}</span>
@@ -649,27 +728,26 @@ function ConfirmacionContent() {
       </div>
 
       {/* 4. BARRA INFERIOR FIJA DE ACCIONES */}
-      <div className="eval-bottom-bar">
+      <div className="relative mt-6 mb-8 flex w-full flex-wrap items-center justify-between gap-5 rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-xs">
         <div />
 
-        <div className="eval-bottom-bar__right">
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/iniciativas/evaluacion?id=${initiative.id}`}
-            className="eval-btn-outline-pink"
-            style={{ textDecoration: "none" }}
+            className="cursor-pointer rounded-lg border border-pink-200 bg-bg-card px-4 py-2 text-[12.5px] font-bold text-pink-600 no-underline transition-all duration-150 hover:border-pink-600 hover:bg-pink-50"
           >
             Volver a evaluación
           </Link>
           <button
             type="button"
-            className="eval-btn-outline-neutral"
+            className="cursor-pointer rounded-lg border border-[#d0d4e4] bg-bg-card px-4 py-2 text-[12.5px] font-semibold text-gray-700 transition-all duration-150 hover:border-gray-400 hover:bg-gray-100"
             onClick={handleSaveDraft}
           >
             Guardar borrador
           </button>
           <button
             type="button"
-            className="eval-btn-solid-pink"
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg border-none bg-brand-accent px-5 py-2 text-[13px] font-bold text-white shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
             onClick={handleConfirm}
           >
             <span>Confirmar y continuar</span>
@@ -683,7 +761,13 @@ function ConfirmacionContent() {
 
 export default function ConfirmacionPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando confirmación de prioridad...</div>}>
+    <Suspense
+      fallback={
+        <div className="p-10 text-center text-sm text-text-secondary">
+          Cargando confirmación de prioridad...
+        </div>
+      }
+    >
       <ConfirmacionContent />
     </Suspense>
   );

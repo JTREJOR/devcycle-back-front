@@ -26,8 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>
-        <div id="app-root">
+      <body className="m-0 h-full bg-bg-page p-0 font-sans text-text-main antialiased">
+        <div id="app-root" className="flex min-h-screen flex-col">
           <ClientProviders>{children}</ClientProviders>
         </div>
       </body>

@@ -209,38 +209,43 @@ function EstimacionContent() {
     estData.voboLiderTecnico === "aprobado" && estData.voboLiderArquitectura === "aprobado";
 
   return (
-    <div className="prio-page-container">
-      <div className="app-back-bar">
+    <div className="px-1 pb-10">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* Toast Notification */}
       {notification && (
-        <div className="prio-toast">
+        <div className="fixed top-[calc(var(--app-header-height)+16px)] right-6 z-100 flex items-center gap-2.5 rounded-lg bg-text-heading px-4.5 py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-opacity duration-150">
           <Icon icon={Check} size={16} />
           <span>{notification}</span>
         </div>
       )}
 
       {/* 1. ENCABEZADO */}
-      <div className="prio-header">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="prio-breadcrumb">
-            <Link href="/" className="prio-breadcrumb__link">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs">
+            <Link href="/" className="font-semibold text-brand-primary no-underline hover:underline">
               Portafolio
             </Link>
-            <span className="prio-breadcrumb__sep">&gt;</span>
-            <span className="prio-breadcrumb__current">Estimación y Validación Técnica</span>
+            <span className="text-gray-400">&gt;</span>
+            <span className="font-bold text-brand-primary">Estimación y Validación Técnica</span>
           </div>
-          <h1 className="prio-header__title">Estimación Técnica y Aprobación de Arquitectura</h1>
-          <p className="prio-header__subtitle">
+          <h1 className="m-0 mb-1.5 text-2xl font-extrabold tracking-[-0.3px] text-text-heading">
+            Estimación Técnica y Aprobación de Arquitectura
+          </h1>
+          <p className="m-0 text-[13.5px] text-text-secondary">
             Dimensionamiento guiado por IA (Gemini), desglose de Hoja de Costos y VoBo dual de Arquitectura y Desarrollo.
           </p>
         </div>
 
-        <div className="prio-header__right">
-          <div style={{ display: "flex", gap: 10 }}>
-            <Link href="/iniciativas" className="btn-purple-outline" style={{ fontSize: 12.5 }}>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex gap-2.5">
+            <Link
+              href="/iniciativas"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[12.5px] font-semibold text-brand-primary no-underline transition-all duration-150 hover:bg-brand-primary-light"
+            >
               <Icon icon={CheckList} size={15} />
               <span>Volver a Iniciativas</span>
             </Link>
@@ -249,25 +254,13 @@ function EstimacionContent() {
       </div>
 
       {/* SELECTOR DE INICIATIVA ACTUAL */}
-      <div
-        style={{
-          background: "#ffffff",
-          padding: "12px 18px",
-          borderRadius: 8,
-          border: "1px solid var(--color-border)",
-          marginBottom: 16,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border-default bg-bg-card px-4.5 py-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-xs font-bold text-slate-500 uppercase">
             Iniciativa en Revisión:
           </span>
           <select
-            className="config-card__input"
-            style={{ width: 380, fontWeight: 700 }}
+            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] font-bold text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 sm:w-[380px]"
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
           >
@@ -279,33 +272,47 @@ function EstimacionContent() {
           </select>
         </div>
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span style={{ fontSize: 12, color: "#64748b" }}>Etapa:</span>
-          <span className="prio-stage-pill prio-stage-pill--est">2. Estimación</span>
-          <span style={{ fontSize: 12, color: "#64748b" }}>Solicitante:</span>
-          <strong>{activeInitiative.solicitante}</strong>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="text-xs text-slate-500">Etapa:</span>
+          <span className="inline-flex items-center rounded-xl border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap text-violet-600">
+            2. Estimación
+          </span>
+          <span className="text-xs text-slate-500">Solicitante:</span>
+          <strong className="text-xs text-text-heading">{activeInitiative.solicitante}</strong>
         </div>
       </div>
 
       {/* 2. PESTAÑAS DE TRABAJO */}
-      <div className="prio-tabs" style={{ marginBottom: 16 }}>
+      <div className="mb-4 flex flex-wrap gap-2 border-b border-border-default pb-2">
         <button
           type="button"
-          className={`prio-tab ${activeTab === "sizing" ? "prio-tab--active" : ""}`}
+          className={`cursor-pointer rounded-lg border px-4 py-2 text-[13px] transition-all duration-150 ${
+            activeTab === "sizing"
+              ? "border-brand-primary bg-brand-primary-light font-bold text-brand-primary"
+              : "border-transparent bg-bg-card font-medium text-text-secondary hover:bg-slate-50 hover:text-brand-primary"
+          }`}
           onClick={() => setActiveTab("sizing")}
         >
           1. Sizing Asistido con IA (Gemini)
         </button>
         <button
           type="button"
-          className={`prio-tab ${activeTab === "hojaCostos" ? "prio-tab--active" : ""}`}
+          className={`cursor-pointer rounded-lg border px-4 py-2 text-[13px] transition-all duration-150 ${
+            activeTab === "hojaCostos"
+              ? "border-brand-primary bg-brand-primary-light font-bold text-brand-primary"
+              : "border-transparent bg-bg-card font-medium text-text-secondary hover:bg-slate-50 hover:text-brand-primary"
+          }`}
           onClick={() => setActiveTab("hojaCostos")}
         >
           2. Canvas y Hoja de Costos
         </button>
         <button
           type="button"
-          className={`prio-tab ${activeTab === "vobo" ? "prio-tab--active" : ""}`}
+          className={`cursor-pointer rounded-lg border px-4 py-2 text-[13px] transition-all duration-150 ${
+            activeTab === "vobo"
+              ? "border-brand-primary bg-brand-primary-light font-bold text-brand-primary"
+              : "border-transparent bg-bg-card font-medium text-text-secondary hover:bg-slate-50 hover:text-brand-primary"
+          }`}
           onClick={() => setActiveTab("vobo")}
         >
           3. Doble Aprobación (VoBo Técnico y Arquitectura) {isFullyApproved && "✓"}
@@ -316,30 +323,19 @@ function EstimacionContent() {
 
       {/* PESTAÑA 1: SIZING CON IA */}
       {activeTab === "sizing" && (
-        <div className="prio-main-split">
-          <div className="prio-table-panel" style={{ flex: 1.2 }}>
-            <div className="dataswat-card" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-              <div className="dataswat-header">
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: 6,
-                      background: "var(--brand-primary-light)",
-                      color: "var(--brand-primary)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[1.2fr_1fr]">
+          <div className="overflow-hidden rounded-[14px] border border-border-default bg-bg-card shadow-2xs">
+            <div className="flex h-full flex-col">
+              <div className="flex items-center justify-between border-b border-border-default px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-primary-light text-brand-primary">
                     <Icon icon={Bolt} size={16} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1e2022" }}>
+                    <div className="text-[13.5px] font-bold text-text-heading">
                       Agente de Sizing Técnico (Gemini AI)
                     </div>
-                    <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>
+                    <div className="text-[11px] text-text-secondary">
                       Cálculo predictivo de infraestructura GCP y esfuerzo de desarrollo
                     </div>
                   </div>
@@ -347,27 +343,31 @@ function EstimacionContent() {
               </div>
 
               {/* Mensajes del chat */}
-              <div className="dataswat-messages" style={{ flex: 1, minHeight: 380, maxHeight: 460 }}>
+              <div className="flex max-h-[460px] min-h-[380px] flex-1 flex-col gap-3 overflow-y-auto p-4">
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={msg.sender === "gemini" ? "dataswat-bubble-bot" : "dataswat-bubble-user"}
+                    className={
+                      msg.sender === "gemini"
+                        ? "max-w-[90%] self-start rounded-xl rounded-tl-[2px] border border-border-subtle bg-slate-50 px-3.5 py-2.5 text-text-main"
+                        : "max-w-[90%] self-end rounded-xl rounded-tr-[2px] bg-brand-primary px-3.5 py-2.5 text-white"
+                    }
                   >
                     {msg.sender === "gemini" && (
-                      <div className="dataswat-bubble-bot__header">
+                      <div className="mb-1 flex items-center gap-1.5 text-[11px] font-bold text-brand-primary">
                         <Icon icon={Bolt} size={13} />
                         <span>Gemini Sizing Engine</span>
                       </div>
                     )}
-                    <div style={{ whiteSpace: "pre-line", fontSize: 12.5, lineHeight: 1.45 }}>
+                    <div className="text-[12.5px] leading-[1.45] whitespace-pre-line">
                       {msg.text}
                     </div>
 
                     {msg.actionLabel && msg.actionPayload && (
-                      <div style={{ marginTop: 10 }}>
+                      <div className="mt-2.5">
                         <button
                           type="button"
-                          className="btn-ai-assist"
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-[20px] border border-[#f2d8ec] bg-brand-primary-soft px-3 py-[5px] text-xs font-semibold text-brand-primary transition-all duration-150 hover:-translate-y-[1px] hover:border-brand-primary hover:bg-[#f5e1f0]"
                           onClick={() => handleApplySizing(msg.actionPayload)}
                         >
                           <Icon icon={Check} size={12} />
@@ -377,12 +377,11 @@ function EstimacionContent() {
                     )}
 
                     <div
-                      style={{
-                        fontSize: 10,
-                        marginTop: 4,
-                        textAlign: msg.sender === "bp" ? "right" : "left",
-                        color: msg.sender === "bp" ? "rgba(255,255,255,0.7)" : "var(--color-text-muted)",
-                      }}
+                      className={`mt-1 text-[10px] ${
+                        msg.sender === "bp"
+                          ? "text-right text-white/70"
+                          : "text-left text-text-muted"
+                      }`}
                     >
                       {msg.timestamp}
                     </div>
@@ -390,9 +389,9 @@ function EstimacionContent() {
                 ))}
 
                 {isTyping && (
-                  <div className="dataswat-bubble-bot" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div className="flex max-w-[90%] items-center gap-2 self-start rounded-xl rounded-tl-[2px] border border-border-subtle bg-slate-50 px-3.5 py-2.5">
                     <Loader size={14} />
-                    <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>
+                    <span className="text-xs text-text-secondary">
                       Gemini está calculando la estimación y costos de nube...
                     </span>
                   </div>
@@ -400,28 +399,17 @@ function EstimacionContent() {
               </div>
 
               {/* Sugerencias Rápidas */}
-              <div
-                style={{
-                  padding: "8px 16px",
-                  borderTop: "1px solid var(--color-border-subtle)",
-                  display: "flex",
-                  gap: 6,
-                  overflowX: "auto",
-                  background: "#fafbfc",
-                }}
-              >
+              <div className="flex gap-1.5 overflow-x-auto border-t border-border-subtle bg-[#fafbfc] px-4 py-2">
                 <button
                   type="button"
-                  className="tag-pill tag-pill--purple"
-                  style={{ cursor: "pointer", fontSize: 11 }}
+                  className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
                   onClick={() => handleSendMessage("Estimamos 450 TPS pico y 3.2M de usuarios al mes.")}
                 >
                   ⚡ Cargar métricas de tráfico esperadas
                 </button>
                 <button
                   type="button"
-                  className="tag-pill tag-pill--purple"
-                  style={{ cursor: "pointer", fontSize: 11 }}
+                  className="inline-flex cursor-pointer items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text transition-colors hover:bg-brand-primary-light"
                   onClick={() => handleSendMessage("Requerimos disponibilidad del 99.95% con réplica multi-región.")}
                 >
                   🛡️ Alta Resiliencia 99.95%
@@ -429,11 +417,11 @@ function EstimacionContent() {
               </div>
 
               {/* Input */}
-              <div className="dataswat-footer">
-                <div className="dataswat-input-box">
+              <div className="border-t border-border-default p-3.5">
+                <div className="flex items-center gap-2 rounded-lg border border-border-default bg-bg-card px-3 py-1.5 focus-within:border-brand-primary">
                   <input
                     type="text"
-                    className="dataswat-input-box__text"
+                    className="flex-1 border-none bg-transparent text-[13px] text-text-main outline-none"
                     placeholder="Escribe detalles de tráfico, transacciones o componentes..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
@@ -441,7 +429,7 @@ function EstimacionContent() {
                   />
                   <button
                     type="button"
-                    className="dataswat-btn-send"
+                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-none bg-brand-primary text-white transition-colors hover:bg-brand-primary-hover"
                     onClick={() => handleSendMessage()}
                     title="Enviar al agente"
                   >
@@ -453,64 +441,66 @@ function EstimacionContent() {
           </div>
 
           {/* Panel Lateral: Parámetros Extraídos */}
-          <div className="prio-detail-panel" style={{ flex: 1, background: "#ffffff", padding: 20 }}>
-            <h3 style={{ margin: "0 0 12px 0", fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+          <div className="rounded-[14px] border border-border-default bg-bg-card p-5 shadow-2xs">
+            <h3 className="m-0 mb-3 text-base font-bold text-slate-900">
               Dimensionamiento Actual de la Iniciativa
             </h3>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+            <div className="flex flex-col gap-3.5">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <div className="text-[11px] font-bold text-slate-500 uppercase">
                   Tráfico y Concurrencia
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "var(--brand-primary)", marginTop: 2 }}>
+                <div className="mt-0.5 text-base font-extrabold text-brand-primary">
                   {estData.tps} TPS pico · {estData.usuariosMensuales} usuarios/mes
                 </div>
               </div>
 
-              <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <div className="text-[11px] font-bold text-slate-500 uppercase">
                   Arquitectura Propuesta
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#1e293b", marginTop: 2 }}>
+                <div className="mt-0.5 text-[13px] font-bold text-slate-800">
                   {estData.tipoArquitectura}
                 </div>
-                <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 6 }}>
+                <div className="mt-1.5 flex flex-wrap gap-[5px]">
                   {estData.serviciosNube?.map((s) => (
-                    <span key={s} className="tag-pill tag-pill--blue" style={{ fontSize: 10.5 }}>
+                    <span
+                      key={s}
+                      className="inline-flex items-center rounded-xl border border-status-blue-border bg-status-blue-bg px-2.5 py-[3px] text-[10.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-blue-text"
+                    >
                       {s}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div style={{ background: "#eff6ff", padding: 12, borderRadius: 8, border: "1px solid #bfdbfe" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#1e40af", textTransform: "uppercase" }}>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                  <div className="text-[11px] font-bold text-blue-800 uppercase">
                     Horas de Desarrollo
                   </div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#1e40af", marginTop: 2 }}>
+                  <div className="mt-0.5 text-xl font-extrabold text-blue-800">
                     {estData.horasDesarrolloEstimadas} hrs
                   </div>
-                  <div style={{ fontSize: 11, color: "#60a5fa" }}>~3 Sprints de equipo</div>
+                  <div className="text-[11px] text-blue-400">~3 Sprints de equipo</div>
                 </div>
 
-                <div style={{ background: "#ecfdf5", padding: 12, borderRadius: 8, border: "1px solid #a7f3d0" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#065f46", textTransform: "uppercase" }}>
+                <div className="rounded-lg border border-status-green-border bg-emerald-50 p-3">
+                  <div className="text-[11px] font-bold text-emerald-800 uppercase">
                     Costo Cloud Estimado
                   </div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#065f46", marginTop: 2 }}>
+                  <div className="mt-0.5 text-xl font-extrabold text-emerald-800">
                     {estData.costoNubeMensualEstimado}
                   </div>
-                  <div style={{ fontSize: 11, color: "#34d399" }}>Building API GCP</div>
+                  <div className="text-[11px] text-emerald-400">Building API GCP</div>
                 </div>
               </div>
 
-              <div style={{ marginTop: 12 }}>
+              <div className="mt-3">
                 <button
                   type="button"
-                  className="btn-purple-solid"
-                  style={{ width: "100%", justifyContent: "center" }}
+                  className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
                   onClick={() => setActiveTab("hojaCostos")}
                 >
                   <span>Ver Desglose en Hoja de Costos</span>
@@ -524,23 +514,23 @@ function EstimacionContent() {
 
       {/* PESTAÑA 2: HOJA DE COSTOS Y CANVAS */}
       {activeTab === "hojaCostos" && (
-        <div style={{ background: "#ffffff", padding: 24, borderRadius: 8, border: "1px solid var(--color-border)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div className="rounded-lg border border-border-default bg-bg-card p-6">
+          <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
             <div>
-              <span className="tag-pill tag-pill--purple" style={{ marginBottom: 6, display: "inline-block" }}>
+              <span className="mb-1.5 inline-flex items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text">
                 Charter de Iniciativa · Hoja de Costos
               </span>
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a" }}>
+              <h2 className="m-0 text-xl font-extrabold text-slate-900">
                 {activeInitiative.name}
               </h2>
-              <p style={{ margin: "4px 0 0 0", fontSize: 12.5, color: "#64748b" }}>
+              <p className="mt-1 mb-0 text-[12.5px] text-slate-500">
                 Desglose financiero e inversión de esfuerzo calculada por la herramienta asistida.
               </p>
             </div>
 
             <button
               type="button"
-              className="btn-purple-solid"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
               onClick={() => setActiveTab("vobo")}
             >
               <span>Avanzar a Doble VoBo</span>
@@ -549,100 +539,100 @@ function EstimacionContent() {
           </div>
 
           {/* Tabla Desglose de Horas Hombre */}
-          <div style={{ marginBottom: 24 }}>
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", marginBottom: 10 }}>
+          <div className="mb-6 overflow-x-auto">
+            <h4 className="mb-2.5 text-sm font-bold text-slate-800">
               1. Desglose de Horas Hombre por Perfil Técnico
             </h4>
-            <table className="prio-table">
+            <table className="w-full border-collapse text-[13px]">
               <thead>
-                <tr>
-                  <th>Rol / Perfil</th>
-                  <th>Actividades Principales</th>
-                  <th style={{ textAlign: "center" }}>Sprints</th>
-                  <th style={{ textAlign: "center" }}>Horas</th>
-                  <th style={{ textAlign: "right" }}>Costo Estimado MXN</th>
+                <tr className="border-b border-border-default bg-[#fafbfc] text-left text-xs font-semibold text-text-secondary">
+                  <th className="px-3 py-2.5">Rol / Perfil</th>
+                  <th className="px-3 py-2.5">Actividades Principales</th>
+                  <th className="px-3 py-2.5 text-center">Sprints</th>
+                  <th className="px-3 py-2.5 text-center">Horas</th>
+                  <th className="px-3 py-2.5 text-right">Costo Estimado MXN</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Líder Técnico / Arquitectura</strong></td>
-                  <td>Diseño de microservicios, seguridad, configuración de GCP y contratos de API</td>
-                  <td style={{ textAlign: "center" }}>3</td>
-                  <td style={{ textAlign: "center" }}>80 hrs</td>
-                  <td style={{ textAlign: "right" }}>$96,000</td>
+              <tbody className="divide-y divide-[#f1f3f7]">
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Líder Técnico / Arquitectura</strong></td>
+                  <td className="px-3 py-3">Diseño de microservicios, seguridad, configuración de GCP y contratos de API</td>
+                  <td className="px-3 py-3 text-center">3</td>
+                  <td className="px-3 py-3 text-center">80 hrs</td>
+                  <td className="px-3 py-3 text-right">$96,000</td>
                 </tr>
-                <tr>
-                  <td><strong>Desarrolladores Frontend (NextJS/React)</strong></td>
-                  <td>Vistas interactivas, integración de Vibe UI y flujos de usuario</td>
-                  <td style={{ textAlign: "center" }}>3</td>
-                  <td style={{ textAlign: "center" }}>160 hrs</td>
-                  <td style={{ textAlign: "right" }}>$160,000</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Desarrolladores Frontend (NextJS/React)</strong></td>
+                  <td className="px-3 py-3">Vistas interactivas, integración de Vibe UI y flujos de usuario</td>
+                  <td className="px-3 py-3 text-center">3</td>
+                  <td className="px-3 py-3 text-center">160 hrs</td>
+                  <td className="px-3 py-3 text-right">$160,000</td>
                 </tr>
-                <tr>
-                  <td><strong>Desarrolladores Backend (Node/NestJS)</strong></td>
-                  <td>Microservicios transaccionales, orquestación y conectores SAP</td>
-                  <td style={{ textAlign: "center" }}>3</td>
-                  <td style={{ textAlign: "center" }}>160 hrs</td>
-                  <td style={{ textAlign: "right" }}>$160,000</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Desarrolladores Backend (Node/NestJS)</strong></td>
+                  <td className="px-3 py-3">Microservicios transaccionales, orquestación y conectores SAP</td>
+                  <td className="px-3 py-3 text-center">3</td>
+                  <td className="px-3 py-3 text-center">160 hrs</td>
+                  <td className="px-3 py-3 text-right">$160,000</td>
                 </tr>
-                <tr>
-                  <td><strong>Ingeniería QA & Automatización</strong></td>
-                  <td>Pruebas unitarias, de integración, carga y regresión automatizada</td>
-                  <td style={{ textAlign: "center" }}>3</td>
-                  <td style={{ textAlign: "center" }}>80 hrs</td>
-                  <td style={{ textAlign: "right" }}>$72,000</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Ingeniería QA & Automatización</strong></td>
+                  <td className="px-3 py-3">Pruebas unitarias, de integración, carga y regresión automatizada</td>
+                  <td className="px-3 py-3 text-center">3</td>
+                  <td className="px-3 py-3 text-center">80 hrs</td>
+                  <td className="px-3 py-3 text-right">$72,000</td>
                 </tr>
-                <tr style={{ background: "#f8fafc", fontWeight: 800 }}>
-                  <td colSpan={3}>TOTAL DE ESFUERZO DE DESARROLLO</td>
-                  <td style={{ textAlign: "center", color: "var(--brand-primary)" }}>{estData.horasDesarrolloEstimadas} hrs</td>
-                  <td style={{ textAlign: "right", color: "var(--brand-primary)" }}>$488,000 MXN</td>
+                <tr className="bg-slate-50 font-extrabold">
+                  <td colSpan={3} className="px-3 py-3">TOTAL DE ESFUERZO DE DESARROLLO</td>
+                  <td className="px-3 py-3 text-center text-brand-primary">{estData.horasDesarrolloEstimadas} hrs</td>
+                  <td className="px-3 py-3 text-right text-brand-primary">$488,000 MXN</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* Tabla de Infraestructura Cloud */}
-          <div>
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", marginBottom: 10 }}>
+          <div className="overflow-x-auto">
+            <h4 className="mb-2.5 text-sm font-bold text-slate-800">
               2. Infraestructura y Servicios de Nube (Google Cloud Platform)
             </h4>
-            <table className="prio-table">
+            <table className="w-full border-collapse text-[13px]">
               <thead>
-                <tr>
-                  <th>Servicio GCP</th>
-                  <th>Especificación / Dimensionamiento</th>
-                  <th style={{ textAlign: "center" }}>Concurrencia</th>
-                  <th style={{ textAlign: "right" }}>Costo Mensual</th>
+                <tr className="border-b border-border-default bg-[#fafbfc] text-left text-xs font-semibold text-text-secondary">
+                  <th className="px-3 py-2.5">Servicio GCP</th>
+                  <th className="px-3 py-2.5">Especificación / Dimensionamiento</th>
+                  <th className="px-3 py-2.5 text-center">Concurrencia</th>
+                  <th className="px-3 py-2.5 text-right">Costo Mensual</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Cloud Run (Serverless Cómputo)</strong></td>
-                  <td>Auto-escalable de 2 a 25 instancias, 2 vCPU, 4GB RAM</td>
-                  <td style={{ textAlign: "center" }}>{estData.tps} TPS</td>
-                  <td style={{ textAlign: "right" }}>$1,200 USD/mes</td>
+              <tbody className="divide-y divide-[#f1f3f7]">
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Cloud Run (Serverless Cómputo)</strong></td>
+                  <td className="px-3 py-3">Auto-escalable de 2 a 25 instancias, 2 vCPU, 4GB RAM</td>
+                  <td className="px-3 py-3 text-center">{estData.tps} TPS</td>
+                  <td className="px-3 py-3 text-right">$1,200 USD/mes</td>
                 </tr>
-                <tr>
-                  <td><strong>Cloud SQL PostgreSQL HA</strong></td>
-                  <td>Instancia db-custom-4-16384 con réplica standby síncrona</td>
-                  <td style={{ textAlign: "center" }}>Alta Disponibilidad</td>
-                  <td style={{ textAlign: "right" }}>$950 USD/mes</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Cloud SQL PostgreSQL HA</strong></td>
+                  <td className="px-3 py-3">Instancia db-custom-4-16384 con réplica standby síncrona</td>
+                  <td className="px-3 py-3 text-center">Alta Disponibilidad</td>
+                  <td className="px-3 py-3 text-right">$950 USD/mes</td>
                 </tr>
-                <tr>
-                  <td><strong>Pub/Sub & Cloud Storage</strong></td>
-                  <td>Colas de mensajería asíncronas y almacenamiento de archivos</td>
-                  <td style={{ textAlign: "center" }}>10M eventos/mes</td>
-                  <td style={{ textAlign: "right" }}>$450 USD/mes</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>Pub/Sub & Cloud Storage</strong></td>
+                  <td className="px-3 py-3">Colas de mensajería asíncronas y almacenamiento de archivos</td>
+                  <td className="px-3 py-3 text-center">10M eventos/mes</td>
+                  <td className="px-3 py-3 text-right">$450 USD/mes</td>
                 </tr>
-                <tr>
-                  <td><strong>BigQuery & Cloud Monitoring</strong></td>
-                  <td>Almacén de datos analítico y telemetría de observabilidad</td>
-                  <td style={{ textAlign: "center" }}>2.4M queries/mes</td>
-                  <td style={{ textAlign: "right" }}>$600 USD/mes</td>
+                <tr className="hover:bg-[#fafbfe]">
+                  <td className="px-3 py-3"><strong>BigQuery & Cloud Monitoring</strong></td>
+                  <td className="px-3 py-3">Almacén de datos analítico y telemetría de observabilidad</td>
+                  <td className="px-3 py-3 text-center">2.4M queries/mes</td>
+                  <td className="px-3 py-3 text-right">$600 USD/mes</td>
                 </tr>
-                <tr style={{ background: "#f8fafc", fontWeight: 800 }}>
-                  <td colSpan={3}>TOTAL INFRAESTRUCTURA CLOUD (MENSUAL)</td>
-                  <td style={{ textAlign: "right", color: "#059669" }}>{estData.costoNubeMensualEstimado}</td>
+                <tr className="bg-slate-50 font-extrabold">
+                  <td colSpan={3} className="px-3 py-3">TOTAL INFRAESTRUCTURA CLOUD (MENSUAL)</td>
+                  <td className="px-3 py-3 text-right text-success-500">{estData.costoNubeMensualEstimado}</td>
                 </tr>
               </tbody>
             </table>
@@ -652,90 +642,83 @@ function EstimacionContent() {
 
       {/* PESTAÑA 3: DOBLE APROBACIÓN (VOBO DUAL) */}
       {activeTab === "vobo" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div className="flex flex-col gap-5">
           <div
-            style={{
-              background: isFullyApproved ? "#ecfdf5" : "#f8fafc",
-              border: isFullyApproved ? "1px solid #a7f3d0" : "1px solid #e2e8f0",
-              padding: 16,
-              borderRadius: 8,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            className={`flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4 ${
+              isFullyApproved
+                ? "border-status-green-border bg-emerald-50"
+                : "border-slate-200 bg-slate-50"
+            }`}
           >
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: isFullyApproved ? "#065f46" : "#1e293b" }}>
+              <div
+                className={`text-[13px] font-bold ${
+                  isFullyApproved ? "text-emerald-800" : "text-slate-800"
+                }`}
+              >
                 {isFullyApproved
                   ? "✓ Estimación Aprobada por Ambos Líderes (Lista para Ejecución)"
                   : "Pendiente de Visto Bueno Dual (Arquitectura y Desarrollo)"}
               </div>
-              <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
+              <div className="mt-0.5 text-xs text-slate-500">
                 Se requiere la validación simultánea antes de transferir a Jira y Monday para asignación de sprints.
               </div>
             </div>
 
             {isFullyApproved && (
-              <span className="tag-pill tag-pill--green" style={{ fontSize: 12, padding: "4px 12px" }}>
+              <span className="inline-flex items-center rounded-xl border border-status-green-border bg-status-green-bg px-3 py-1 text-xs font-semibold tracking-[0.2px] whitespace-nowrap text-status-green-text">
                 ✓ VoBo Completo
               </span>
             )}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {/* Tarjeta 1: Líder Técnico (Desarrollo) */}
-            <div className="board-card" style={{ padding: 24 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 8,
-                      background: "#eff6ff",
-                      color: "#1e40af",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+            <div className="rounded-xl border border-border-default bg-bg-card p-6 shadow-2xs">
+              <div className="mb-3.5 flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-800">
                     <Icon icon={Person} size={20} />
                   </div>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+                    <h3 className="m-0 text-base font-bold text-slate-900">
                       Líder Técnico (Desarrollo)
                     </h3>
-                    <div style={{ fontSize: 11.5, color: "#64748b" }}>
+                    <div className="text-[11.5px] text-slate-500">
                       Validación de horas, perfiles y sprints
                     </div>
                   </div>
                 </div>
 
                 {estData.voboLiderTecnico === "aprobado" ? (
-                  <span className="tag-pill tag-pill--green">✓ Aprobado</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-green-border bg-status-green-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-green-text">
+                    ✓ Aprobado
+                  </span>
                 ) : estData.voboLiderTecnico === "refinamiento" ? (
-                  <span className="tag-pill tag-pill--amber">✎ Refinamiento</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-orange-border bg-status-orange-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-orange-text">
+                    ✎ Refinamiento
+                  </span>
                 ) : (
-                  <span className="tag-pill tag-pill--gray">Pendiente</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-gray-border bg-status-gray-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-gray-text">
+                    Pendiente
+                  </span>
                 )}
               </div>
 
-              <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, fontSize: 12, color: "#475569", marginBottom: 18, lineHeight: 1.45 }}>
+              <div className="mb-4.5 rounded-lg bg-slate-50 p-3 text-xs leading-[1.45] text-slate-600">
                 • <strong>Horas propuestas:</strong> {estData.horasDesarrolloEstimadas} hrs.<br />
                 • <strong>Equipo estimado:</strong> 1 TL, 2 Front, 2 Back, 1 QA.<br />
                 • <strong>Factibilidad técnica:</strong> Viable con el stack corporativo NextJS / NestJS.
               </div>
 
-              <div style={{ display: "flex", gap: 10 }}>
+              <div className="flex gap-2.5">
                 <button
                   type="button"
-                  className="btn-purple-solid"
-                  style={{
-                    background: estData.voboLiderTecnico === "aprobado" ? "#10b981" : "var(--brand-primary)",
-                    borderColor: estData.voboLiderTecnico === "aprobado" ? "#10b981" : "var(--brand-primary)",
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
+                  className={`inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-[1.5px] px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 ${
+                    estData.voboLiderTecnico === "aprobado"
+                      ? "border-emerald-500 bg-emerald-500"
+                      : "border-brand-primary bg-brand-primary hover:border-brand-primary-hover hover:bg-brand-primary-hover"
+                  }`}
                   onClick={() => handleApproveVoBo("tecnico")}
                 >
                   <Icon icon={Check} size={15} />
@@ -744,7 +727,7 @@ function EstimacionContent() {
 
                 <button
                   type="button"
-                  className="btn-purple-outline"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                   onClick={() => handleOpenRefineModal("tecnico")}
                 >
                   <Icon icon={Edit} size={14} />
@@ -754,58 +737,51 @@ function EstimacionContent() {
             </div>
 
             {/* Tarjeta 2: Líder de Arquitectura (Nube & Datos) */}
-            <div className="board-card" style={{ padding: 24 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 8,
-                      background: "#f5f3ff",
-                      color: "#6b21a8",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+            <div className="rounded-xl border border-border-default bg-bg-card p-6 shadow-2xs">
+              <div className="mb-3.5 flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 text-purple-800">
                     <Icon icon={Security} size={20} />
                   </div>
                   <div>
-                    <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
+                    <h3 className="m-0 text-base font-bold text-slate-900">
                       Líder de Arquitectura
                     </h3>
-                    <div style={{ fontSize: 11.5, color: "#64748b" }}>
+                    <div className="text-[11.5px] text-slate-500">
                       Validación de componentes, nube y seguridad
                     </div>
                   </div>
                 </div>
 
                 {estData.voboLiderArquitectura === "aprobado" ? (
-                  <span className="tag-pill tag-pill--green">✓ Aprobado</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-green-border bg-status-green-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-green-text">
+                    ✓ Aprobado
+                  </span>
                 ) : estData.voboLiderArquitectura === "refinamiento" ? (
-                  <span className="tag-pill tag-pill--amber">✎ Refinamiento</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-orange-border bg-status-orange-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-orange-text">
+                    ✎ Refinamiento
+                  </span>
                 ) : (
-                  <span className="tag-pill tag-pill--gray">Pendiente</span>
+                  <span className="inline-flex items-center rounded-xl border border-status-gray-border bg-status-gray-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-gray-text">
+                    Pendiente
+                  </span>
                 )}
               </div>
 
-              <div style={{ background: "#f8fafc", padding: 12, borderRadius: 8, fontSize: 12, color: "#475569", marginBottom: 18, lineHeight: 1.45 }}>
+              <div className="mb-4.5 rounded-lg bg-slate-50 p-3 text-xs leading-[1.45] text-slate-600">
                 • <strong>Infraestructura:</strong> Google Cloud Platform ({estData.costoNubeMensualEstimado}).<br />
                 • <strong>Servicios:</strong> {estData.serviciosNube?.join(", ") || "Cloud Run, Cloud SQL"}.<br />
                 • <strong>Patrón:</strong> Desacoplado con APIs y mensajería Pub/Sub.
               </div>
 
-              <div style={{ display: "flex", gap: 10 }}>
+              <div className="flex gap-2.5">
                 <button
                   type="button"
-                  className="btn-purple-solid"
-                  style={{
-                    background: estData.voboLiderArquitectura === "aprobado" ? "#10b981" : "#8b5cf6",
-                    borderColor: estData.voboLiderArquitectura === "aprobado" ? "#10b981" : "#8b5cf6",
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
+                  className={`inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-[1.5px] px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 ${
+                    estData.voboLiderArquitectura === "aprobado"
+                      ? "border-emerald-500 bg-emerald-500"
+                      : "border-violet-500 bg-violet-500 hover:border-violet-600 hover:bg-violet-600"
+                  }`}
                   onClick={() => handleApproveVoBo("arquitectura")}
                 >
                   <Icon icon={Check} size={15} />
@@ -814,7 +790,7 @@ function EstimacionContent() {
 
                 <button
                   type="button"
-                  className="btn-purple-outline"
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                   onClick={() => handleOpenRefineModal("arquitectura")}
                 >
                   <Icon icon={Edit} size={14} />
@@ -826,27 +802,26 @@ function EstimacionContent() {
 
           {/* Observaciones de Refinamiento si existen */}
           {estData.observacionesRefinamiento && (
-            <div style={{ background: "#fffbeb", border: "1px solid #fde68a", padding: 14, borderRadius: 8 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#92400e", fontWeight: 700, fontSize: 12.5 }}>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3.5">
+              <div className="flex items-center gap-2 text-[12.5px] font-bold text-amber-800">
                 <Icon icon={Alert} size={16} />
                 <span>Observaciones para Refinamiento de Estimación:</span>
               </div>
-              <p style={{ margin: "6px 0 0 0", fontSize: 12.5, color: "#78350f" }}>
+              <p className="mt-1.5 mb-0 text-[12.5px] text-amber-900">
                 {estData.observacionesRefinamiento}
               </p>
             </div>
           )}
 
           {/* Botón de Formalización Final */}
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+          <div className="mt-2.5 flex justify-end">
             <Link
               href="/iniciativas"
-              className="btn-purple-solid"
-              style={{
-                background: isFullyApproved ? "#10b981" : "#94a3b8",
-                borderColor: isFullyApproved ? "#10b981" : "#94a3b8",
-                cursor: isFullyApproved ? "pointer" : "not-allowed",
-              }}
+              className={`inline-flex items-center gap-1.5 rounded-lg border-[1.5px] px-4 py-[7px] text-[13px] font-semibold text-white no-underline transition-all duration-150 ${
+                isFullyApproved
+                  ? "cursor-pointer border-emerald-500 bg-emerald-500 hover:border-emerald-600 hover:bg-emerald-600"
+                  : "cursor-not-allowed border-slate-400 bg-slate-400"
+              }`}
               onClick={(e) => {
                 if (!isFullyApproved) {
                   e.preventDefault();
@@ -865,51 +840,52 @@ function EstimacionContent() {
 
       {/* MODAL DE SOLICITUD DE REFINAMIENTO DE ESTIMACIÓN */}
       {isRefineModalOpen && (
-        <div className="prio-modal-overlay">
-          <div className="prio-modal-card" style={{ maxWidth: 500, padding: 24 }} role="dialog">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-[2px]">
+          <div
+            className="w-full max-w-[500px] rounded-2xl border border-border-default bg-bg-card p-6 shadow-xl"
+            role="dialog"
+          >
+            <div className="mb-3.5 flex items-start justify-between">
               <div>
-                <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#0f172a" }}>
+                <h3 className="m-0 text-[17px] font-bold text-slate-900">
                   Solicitar Refinamiento de Estimación
                 </h3>
-                <div style={{ fontSize: 12, color: "#64748b" }}>
+                <div className="text-xs text-slate-500">
                   Rol solicitante: Líder {refineRole === "tecnico" ? "Técnico" : "de Arquitectura"}
                 </div>
               </div>
               <button
                 type="button"
-                className="main-menu-panel__close-btn"
+                className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-text-secondary transition-all duration-150 hover:border-[#f2d8ec] hover:bg-brand-primary-light hover:text-brand-primary"
                 onClick={() => setIsRefineModalOpen(false)}
               >
                 <Icon icon={Close} size={18} />
               </button>
             </div>
 
-            <p style={{ fontSize: 12.5, color: "#475569", margin: "0 0 14px 0" }}>
+            <p className="m-0 mb-3.5 text-[12.5px] text-slate-600">
               Indica qué variables deben ajustarse (p. ej. reducir alcance en horas de frontend, optimizar cómputo de nube o replantear el conector con SAP):
             </p>
 
             <textarea
               rows={4}
-              className="config-card__input"
-              style={{ resize: "vertical", width: "100%", marginBottom: 18 }}
+              className="mb-4.5 w-full resize-y rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               placeholder="Ej. Reducir instancias standby en GCP a 1 región para Fase 1..."
               value={refineFeedback}
               onChange={(e) => setRefineFeedback(e.target.value)}
             />
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+            <div className="flex justify-end gap-2.5">
               <button
                 type="button"
-                className="btn-purple-outline"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light"
                 onClick={() => setIsRefineModalOpen(false)}
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                className="btn-purple-solid"
-                style={{ background: "#d97706", borderColor: "#d97706" }}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-warning-500 bg-warning-500 px-4 py-[7px] text-[13px] font-semibold text-white transition-all duration-150 hover:opacity-90"
                 onClick={handleSubmitRefine}
               >
                 <span>Enviar Refinamiento</span>
@@ -924,7 +900,13 @@ function EstimacionContent() {
 
 export default function EstimacionPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Cargando módulo de estimación...</div>}>
+    <Suspense
+      fallback={
+        <div className="p-10 text-center text-sm text-text-secondary">
+          Cargando módulo de estimación...
+        </div>
+      }
+    >
       <EstimacionContent />
     </Suspense>
   );

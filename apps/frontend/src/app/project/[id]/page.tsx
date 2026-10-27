@@ -31,9 +31,12 @@ export default function ProjectDetailPage() {
   if (loadingProject || loadingStages) return <Loader size={48} />;
   if (!project || !stages) {
     return (
-      <div className="board-card" style={{ textAlign: "center", padding: 40 }}>
-        <h3>Iniciativa no encontrada</h3>
-        <Link href="/" className="btn-purple-outline" style={{ marginTop: 12 }}>
+      <div className="rounded-xl border border-border-default bg-bg-card p-10 text-center shadow-2xs">
+        <h3 className="text-lg font-bold text-text-heading">Iniciativa no encontrada</h3>
+        <Link
+          href="/"
+          className="mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary no-underline transition-all duration-150 hover:bg-brand-primary-light"
+        >
           ← Volver al portafolio
         </Link>
       </div>
@@ -46,40 +49,31 @@ export default function ProjectDetailPage() {
   return (
     <div>
       {/* Navegación Atrás */}
-      <div className="app-back-bar">
+      <div className="mb-3 flex items-center">
         <BackButton />
       </div>
 
       {/* Header de la Iniciativa */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-          gap: 16,
-          marginBottom: 16,
-        }}
-      >
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#1e2022" }}>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="m-0 text-2xl font-bold text-text-heading">
               {project.name}
             </h1>
-            <span className="tag-pill tag-pill--purple">
+            <span className="inline-flex items-center rounded-xl border border-status-purple-border bg-status-purple-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-purple-text">
               {project.id.toUpperCase()}
             </span>
             <StatusPill status={project.status} />
           </div>
-          <p style={{ fontSize: 13.5, color: "var(--color-text-secondary)", margin: "6px 0 0 0" }}>
+          <p className="mt-1.5 mb-0 text-[13.5px] text-text-secondary">
             {project.description}
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
-            className="btn-purple-outline"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-primary-light disabled:cursor-not-allowed disabled:opacity-60"
             onClick={() => refetch()}
             disabled={isRefetching}
           >
@@ -90,64 +84,57 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Tarjeta de Metadatos estilo Imagen 4 */}
-      <div
-        className="board-card"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: 16,
-          marginBottom: 20,
-          padding: "16px 20px",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-4 rounded-xl border border-border-default bg-bg-card px-5 py-4 shadow-2xs sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
         <div>
-          <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+          <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
             Responsable
           </div>
-          <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>{project.owner}</div>
+          <div className="mt-[3px] text-[13.5px] font-semibold text-text-main">{project.owner}</div>
         </div>
         <div>
-          <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+          <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
             Área Solicitante
           </div>
-          <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>{project.area}</div>
+          <div className="mt-[3px] text-[13.5px] font-semibold text-text-main">{project.area}</div>
         </div>
         <div>
-          <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+          <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
             Prioridad
           </div>
-          <div style={{ marginTop: 3 }}>
-            <span className="tag-pill tag-pill--gray">{project.priority}</span>
+          <div className="mt-[3px]">
+            <span className="inline-flex items-center rounded-xl border border-status-gray-border bg-status-gray-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-gray-text">
+              {project.priority}
+            </span>
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+          <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
             Presupuesto Estimado
           </div>
-          <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>
+          <div className="mt-[3px] text-[13.5px] font-semibold text-text-main">
             {formatCurrency(project.budgetEstimate)}
           </div>
         </div>
         {project.pepNumber && (
           <div>
-            <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+            <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
               Número PEP
             </div>
-            <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>{project.pepNumber}</div>
+            <div className="mt-[3px] text-[13.5px] font-semibold text-text-main">{project.pepNumber}</div>
           </div>
         )}
         <div>
-          <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)", fontWeight: 600, textTransform: "uppercase" }}>
+          <div className="text-[11.5px] font-semibold text-text-secondary uppercase">
             Fecha Objetivo
           </div>
-          <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 3 }}>
+          <div className="mt-[3px] text-[13.5px] font-semibold text-text-main">
             {formatDate(project.targetDate)}
           </div>
         </div>
       </div>
 
       {/* Stage Tracker / Flujo de Etapas */}
-      <div style={{ marginBottom: 20 }}>
+      <div className="mb-5">
         <StageTracker
           stages={stages}
           currentStageId={project.currentStageId}
@@ -157,11 +144,15 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Segmented Control / Tabs estilo Imagen 4 */}
-      <div style={{ marginBottom: 16 }}>
-        <div className="segmented-control">
+      <div className="mb-4">
+        <div className="inline-flex flex-wrap gap-1 rounded-[10px] bg-status-gray-bg p-1">
           <button
             type="button"
-            className={`segmented-btn ${activeTab === "flow" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border-none px-4 py-1.5 text-[13px] transition-all duration-150 ${
+              activeTab === "flow"
+                ? "bg-brand-primary-light font-bold text-brand-primary shadow-2xs"
+                : "bg-transparent font-medium text-text-secondary hover:text-brand-primary"
+            }`}
             onClick={() => setActiveTab("flow")}
           >
             <Icon icon={Timeline} size={15} />
@@ -169,7 +160,11 @@ export default function ProjectDetailPage() {
           </button>
           <button
             type="button"
-            className={`segmented-btn ${activeTab === "docs" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border-none px-4 py-1.5 text-[13px] transition-all duration-150 ${
+              activeTab === "docs"
+                ? "bg-brand-primary-light font-bold text-brand-primary shadow-2xs"
+                : "bg-transparent font-medium text-text-secondary hover:text-brand-primary"
+            }`}
             onClick={() => setActiveTab("docs")}
           >
             <Icon icon={FileIcon} size={15} />
@@ -180,65 +175,39 @@ export default function ProjectDetailPage() {
 
       {/* Contenido según pestaña */}
       {activeTab === "flow" ? (
-        <div className="board-card">
-          <div style={{ borderBottom: "1px solid var(--color-border)", paddingBottom: 14, marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#1e2022" }}>
+        <div className="rounded-xl border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
+          <div className="mb-4 border-b border-border-default pb-3.5">
+            <div className="flex items-center gap-2">
+              <h2 className="m-0 text-lg font-bold text-text-heading">
                 {activeStage.name}
               </h2>
-              <span className="tag-pill tag-pill--blue">
+              <span className="inline-flex items-center rounded-xl border border-status-blue-border bg-status-blue-bg px-2.5 py-[3px] text-[11.5px] font-semibold tracking-[0.2px] whitespace-nowrap text-status-blue-text">
                 {activeStage.sourceFlow}
               </span>
             </div>
-            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: "6px 0 0 0" }}>
+            <p className="mt-1.5 mb-0 text-[13px] text-text-secondary">
               {activeStage.description}
             </p>
           </div>
 
           {activeStage.id === "priorizacion" && (
-            <div
-              style={{
-                background: "#fbf2f7",
-                border: "1px solid #f2d8ec",
-                borderRadius: 10,
-                padding: "12px 16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                marginBottom: 20,
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: "var(--brand-primary)",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[10px] border border-[#f2d8ec] bg-brand-primary-soft px-4 py-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-primary text-white">
                   <Icon icon={Bolt} size={16} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--brand-primary)" }}>
+                  <div className="text-[13px] font-bold text-brand-primary">
                     Paso 1: Descubrimiento Inteligente con DataSwat AI
                   </div>
-                  <div style={{ fontSize: 11.5, color: "var(--color-text-secondary)" }}>
+                  <div className="text-[11.5px] text-text-secondary">
                     Define beneficios cuantificados, impacto TI y problemática con asistencia guiada tipo Pega Blueprint.
                   </div>
                 </div>
               </div>
               <Link
                 href="/discovery"
-                className="btn-purple-solid"
-                style={{ fontSize: 12, padding: "6px 14px" }}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-3.5 py-1.5 text-xs font-semibold text-white no-underline transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
               >
                 Abrir Discovery Asistido →
               </Link>
@@ -248,12 +217,12 @@ export default function ProjectDetailPage() {
           <SubflowStepper project={project} stage={activeStage} />
         </div>
       ) : (
-        <div className="board-card">
-          <div style={{ marginBottom: 16 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#1e2022" }}>
+        <div className="rounded-xl border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
+          <div className="mb-4">
+            <h2 className="m-0 text-lg font-bold text-text-heading">
               Documentos de descubrimiento y soporte
             </h2>
-            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: "4px 0 0 0" }}>
+            <p className="mt-1 mb-0 text-[13px] text-text-secondary">
               Archivos adjuntos analizados automáticamente por el asistente de portafolio.
             </p>
           </div>
