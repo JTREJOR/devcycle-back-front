@@ -258,15 +258,23 @@ Todos los microservicios del backend de DevCycle deben construirse utilizando **
 
 Todos los microservicios se implementan con **NestJS 10**, aprovechando su arquitectura modular (`@Module`), inyección de dependencias (`@Injectable`), tuberías de validación (`ValidationPipe`), guardias de seguridad (`CanActivate`) y filtros de excepción (`ExceptionFilter`).
 
-### 3.2 Lenguaje de Desarrollo (TypeScript)
+### 3.2 Lenguaje de Desarrollo (TypeScript Estricto — Cero `any`)
 
-El uso de **TypeScript** es obligatorio en todos los archivos del backend (`.ts`).
+El uso de **TypeScript en modo estricto** es obligatorio en todos los archivos del backend (`.ts`). Aunque la plantilla por defecto del CLI de NestJS suele generar `tsconfig.json` con `"noImplicitAny": false`, en **DevCycle es obligatorio habilitar `"strict": true` y `"noImplicitAny": true`** en todos los microservicios.
 
-**No está permitido:**
-- Crear archivos en JavaScript puro (`.js`) dentro de `src/`.
-- Deshabilitar verificaciones con `@ts-ignore` o `@ts-nocheck`.
-- Utilizar `any` en controladores, servicios o repositorios (usar tipos explícitos, DTOs o tipos de `@devcycle/shared`).
-- Declarar DTOs únicamente como `interface` de TypeScript (deben ser **`class`** para que los decoradores de `class-validator` y `@nestjs/swagger` persistan en tiempo de ejecución).
+En el backend, el uso de `any` es una **mala práctica crítica**, ya que desactiva el compilador en capas que manipulan dinero, puntajes de priorización, permisos corporativos y persistencia en PostgreSQL.
+
+**Reglas y prohibiciones estrictas:**
+- **Prohibido utilizar el tipo `any` en cualquier parte del backend** (controladores, servicios, módulos, guards, interceptors, pipes, filtros de excepciones, clientes HTTP o utilidades). En medida de lo posible, **nunca debe usarse `any`**.
+- **Prohibido** dejar parámetros sin tipo implícito (`noImplicitAny: true`).
+- **Prohibido** crear archivos en JavaScript puro (`.js`) dentro de `src/`.
+- **Prohibido** silenciar errores del compilador o del linter con `@ts-ignore`, `@ts-nocheck` o `eslint-disable @typescript-eslint/no-explicit-any`.
+- **Prohibido** declarar DTOs únicamente como `interface` de TypeScript (deben ser **`class`** para que los decoradores de `class-validator` y `@nestjs/swagger` existan en tiempo de ejecución).
+
+**Alternativas obligatorias en lugar de `any`:**
+- **Entidades y contratos de negocio:** Usar los tipos de `@devcycle/shared`, las clases DTO validadas o los tipos autogenerados por **Prisma Client** (`Prisma.InitiativeGetPayload<...>`, `Initiative`, etc.).
+- **Payloads externos no confiables (webhooks de Monday/Jira, respuestas de terceros o errores en bloques `catch`):** Tipar siempre como **`unknown`** y estrechar el tipo (*type narrowing*) mediante *type guards*, funciones validadoras o `class-validator` antes de acceder a sus propiedades.
+- **Campos dinámicos (`JSONB` en PostgreSQL, como `stageData`):** Tipar como `Record<string, unknown>` o `Prisma.JsonValue` en lugar de `any`.
 
 ### 3.3 Persistencia y ORM (Prisma + Cloud SQL PostgreSQL)
 
@@ -777,7 +785,7 @@ Ninguna historia de usuario, endpoint, migración o microservicio del backend se
 - [ ] **10.1 Cumplimiento Funcional y de Arquitectura:** El cambio se implementó en el microservicio correcto según el catálogo de la Sección 2.2, respetando el aislamiento de esquemas de PostgreSQL y los contratos de `@devcycle/shared`.
 - [ ] **10.2 Validación y Seguridad en Endpoints:** Todos los datos de entrada (`@Body`, `@Query`, `@Param`) están validados con clases DTO y decoradores de `class-validator`, y los endpoints cuentan con los `Guards` de autenticación y rol correspondientes.
 - [ ] **10.3 Integridad Transaccional y Migraciones Limpias:** Las escrituras multi-registro utilizan `prisma.$transaction`, las migraciones de Prisma se generaron limpiamente y aplican sin errores sobre PostgreSQL 16.
-- [ ] **10.4 Compilación Exitosa (`pnpm build`):** El paquete compartido (`@devcycle/shared`) y los servicios backend compilan sin un solo error de TypeScript ejecutando `pnpm build`.
+- [ ] **10.4 Tipado Estricto y Compilación Exitosa (`pnpm build`):** El código no utiliza el tipo `any` en ninguna capa (`strict: true`, `noImplicitAny: true`) y tanto `@devcycle/shared` como los servicios backend compilan sin errores ejecutando `pnpm build`.
 - [ ] **10.5 Cero Errores de Lint (`pnpm lint`):** El código pasa todas las validaciones de linting sin advertencias ni reglas deshabilitadas arbitrariamente.
 - [ ] **10.6 Pruebas Automatizadas Aprobadas:** Las pruebas unitarias (`.spec.ts`) de la lógica de negocio y las pruebas de integración de los endpoints modificados se ejecutan y pasan satisfactoriamente.
 - [ ] **10.7 Observabilidad y Limpieza de Código:** Se utiliza el `Logger` estructurado de NestJS (cero `console.log` residuales), los errores retornan el formato estándar sin filtrar detalles internos de infraestructura y `.env.example` fue actualizado si se agregaron variables de entorno.
