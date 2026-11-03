@@ -22,3 +22,10 @@ Este documento funciona como memoria persistente para agentes y desarrolladores 
 - **Fase 1 (Completada)**: Migración de todos los componentes en `apps/frontend/src/components/*` a Tailwind CSS v4.
 - **Fase 2 (Completada)**: Migración de todas las páginas en `apps/frontend/src/app/**` (`page.tsx`, `layout.tsx`, `discovery/page.tsx`, `estimacion/page.tsx`, `iniciativas/page.tsx`, `iniciativas/evaluacion/page.tsx`, `iniciativas/confirmacion/page.tsx`, `project/[id]/page.tsx`, `team/page.tsx`, `en-construccion/page.tsx`, `not-found.tsx`) a Tailwind CSS v4 y limpieza total de las clases CSS legacy y variables no utilizadas en `globals.css`.
 - **Guía Oficial de Estilos y Sistema de Diseño**: Ver `docs/GUIA_ESTILOS_SISTEMA_DISENO.md` para la especificación completa de paleta de colores Liverpool + Monday.com, colores por situación y estados de botones, medidas exactas de componentes (px), breakpoints responsivos y diccionario de variables de `globals.css`.
+
+## 4. Cumplimiento Obligatorio de Lineamientos de Desarrollo Frontend
+- **REGLA CRÍTICA (SIEMPRE OBLIGATORIA)**: Cada nueva feature, pantalla, componente o modificación para el frontend (`apps/frontend`) **DEBE tener en cuenta y cumplir SIEMPRE** el documento oficial **`docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md`**.
+- Antes de planificar o escribir código en el frontend, cualquier desarrollador o agente de IA debe consultar `docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md` y `docs/GUIA_ESTILOS_SISTEMA_DISENO.md` para respetar:
+  - El stack tecnológico oficial (Next.js 16 App Router, React 19, TypeScript estricto, Tailwind CSS v4 con `@theme inline`, `@vibe/core`, `@vibe/icons`, Zustand, TanStack React Query, Axios, React Hook Form, React Hot Toast y `@devcycle/shared`).
+  - La estructura de carpetas y separación de responsabilidades (`src/app` ➔ `src/components` ➔ `src/lib/queries` / `src/store` ➔ `src/lib/apiClient`).
+  - La regla de trabajo en Git: toda nueva feature debe trabajarse en una nueva rama `feature/nombre-feature` creada siempre a partir de la rama `main` actualizada, y cumplir con la Definition of Done (DoD).

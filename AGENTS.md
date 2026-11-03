@@ -10,4 +10,5 @@ Para evitar duplicidad, las reglas detalladas de desarrollo, arquitectura y refe
 - **`docs/`**: Documentación técnica de arquitectura, flujos y sistema de diseño.
 
 ## Notas Adicionales para Agentes
-<!-- Puedes agregar aquí reglas rápidas adicionales o mantener todo centralizado en .github/copilot-instructions.md -->
+- **REGLA OBLIGATORIA PARA FRONTEND (`apps/frontend`)**: Cada nueva feature, componente o cambio en el frontend **DEBE tener en cuenta y respetar SIEMPRE** el documento **`docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md`** junto con **`docs/GUIA_ESTILOS_SISTEMA_DISENO.md`**.
+- Toda nueva feature debe trabajarse siempre en una rama `feature/nombre-feature` que nazca de la rama `main` actualizada.

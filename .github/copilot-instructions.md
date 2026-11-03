@@ -18,7 +18,9 @@ Archivo de instrucciones principales del monorepo (`apps/backend`, `apps/fronten
 - <!-- Agrega aquí convenciones de NestJS, arquitectura, endpoints y manejo de datos. -->
 
 ### Frontend (`apps/frontend`)
-- <!-- Agrega aquí convenciones de Next.js, componentes y estilos (Tailwind CSS v4). -->
+- **Cumplimiento obligatorio de lineamientos**: Cada nueva feature, componente o ajuste en el frontend **DEBE tener en cuenta y respetar SIEMPRE** el documento `docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md`.
+- **Estilos y Sistema de Diseño**: Usar exclusivamente Tailwind CSS v4 con variables registradas en `@theme inline` dentro de `apps/frontend/src/app/globals.css` y seguir `docs/GUIA_ESTILOS_SISTEMA_DISENO.md`. Prohibido escribir CSS puro o estilos inline estáticos.
+- **Flujo de Ramas**: Cada nueva feature debe trabajarse siempre en una nueva rama `feature/nombre-feature` creada a partir de la rama `main` actualizada.
 
 ### Paquete Compartido (`packages/shared`)
 - <!-- Agrega aquí reglas sobre tipos, contratos y datos compartidos entre front y back. -->
@@ -26,6 +28,7 @@ Archivo de instrucciones principales del monorepo (`apps/backend`, `apps/fronten
 ## 3. Mapa de Documentación y Referencias
 <!-- Indica qué documentos debe consultar el agente según el tipo de tarea. -->
 
+- `docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md`: **Documento obligatorio SIEMPRE** para cualquier desarrollo o nueva feature en `apps/frontend` (arquitectura, stack, estructura de carpetas, reglas de código, seguridad, DoD y flujo de Git).
 - `MEMORY.md`: Decisiones de arquitectura y reglas de estilizado con Tailwind CSS v4.
 - `docs/GUIA_ESTILOS_SISTEMA_DISENO.md`: Guía oficial del sistema de diseño, paleta de colores y medidas.
 - `docs/ARQUITECTURA_DEVCYCLE.md` y `docs/ARQUITECTURA_ALTO_NIVEL.md`: Contexto de arquitectura del sistema.
