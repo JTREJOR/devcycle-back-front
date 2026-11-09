@@ -11,7 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Lineamientos Oficiales de Desarrollo Frontend (OBLIGATORIO SIEMPRE)
 
 - **Lectura y cumplimiento obligatorio**: Cada nueva feature, vista, componente o modificación en `apps/frontend` **DEBE tener en cuenta y cumplir SIEMPRE** el documento oficial **`../../docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md`** (`docs/LINEAMIENTOS_DESARROLLO_FRONTEND.md` desde la raíz del monorepo).
-- **Ramas de trabajo**: Cada nueva feature debe trabajarse siempre en una nueva rama `feature/nombre-feature` que nazca de la rama `main` actualizada.
+- **Ramas de trabajo y promoción**: Cada nueva feature debe trabajarse en una rama `feature/nombre-feature` (nacida de `pro`) o en una rama con las iniciales/username del desarrollador (ej. `jetr` o `jetrejor`, emparejada previamente con `pro`). Al terminar, el merge se realiza únicamente hacia `dev` (eliminando la rama `feature/nombre-feature` tras integrarla), y los cambios se promueven estrictamente en el orden `dev` ➔ `qas` ➔ `pro`. Commits siempre en inglés bajo Conventional Commits.
 
 ## Reglas de Estilizado (Memoria del Proyecto)
 

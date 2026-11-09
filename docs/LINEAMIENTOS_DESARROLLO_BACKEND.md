@@ -683,7 +683,7 @@ flowchart TD
 ### 7.2 Paso 2: Modelar Persistencia en Prisma y Generar Migración
 - Identificar a cuál de los 4 microservicios pertenece la entidad (`iam`, `portfolio`, `estimation` o `integrations`).
 - Agregar o actualizar el modelo en el `prisma/schema.prisma` correspondiente, definiendo claves primarias, tipos de columna (`@db.VarChar`, `@db.Timestamptz`, `@db.JsonB`) e índices (`@@index`).
-- Generar la migración SQL versionada con `pnpm prisma migrate dev --name <descripcion_corta>`. **Nunca modificar manualmente migraciones ya aplicadas en `main`.**
+- Generar la migración SQL versionada con `pnpm prisma migrate dev --name <descripcion_corta>`. **Nunca modificar manualmente migraciones ya aplicadas en `dev`, `qas` o `pro`.**
 
 ### 7.3 Paso 3: Crear Clases DTO con Validadores
 - Crear los archivos `create-<recurso>.dto.ts`, `update-<recurso>.dto.ts` o `query-<recurso>.dto.ts` dentro de `src/modules/<dominio>/dto/`.
@@ -795,39 +795,62 @@ Ninguna historia de usuario, endpoint, migración o microservicio del backend se
 
 ## 11. PROCESO DE TRABAJO (GIT Y CONVENCIONES DE COMMITS)
 
-### 11.1 Regla Obligatoria de Creación de Ramas
+### 11.1 Regla Obligatoria de Ramas y Flujo de Promoción (`pro` ➔ `feature` ➔ `dev` ➔ `qas` ➔ `pro`)
 
-Cada nueva funcionalidad (`feature`), microservicio, endpoint, migración o corrección debe trabajarse siempre en una rama independiente.
+El repositorio cuenta con tres ramas principales de entorno (**`dev`**, **`qas`** y **`pro`**). Todo desarrollo de una nueva funcionalidad (`feature`), microservicio, endpoint, migración o corrección debe cumplir **sin excepción** las siguientes 6 reglas obligatorias:
 
-> **Regla de Oro:** Todo desarrollo debe trabajarse en una nueva rama (`feature/nombre-feature` o `fix/nombre-fix`) que **nazca siempre de la rama `main` debidamente actualizada**.
-
-Antes de comenzar cualquier desarrollo, el flujo obligatorio en terminal es el siguiente:
-
-```bash
-# 1. Posicionarse en la rama principal main
-git checkout main
-
-# 2. Actualizar main con los últimos cambios del repositorio remoto
-git pull origin main
-
-# 3. Crear y cambiar a la nueva rama en kebab-case
-git checkout -b feature/nombre-de-la-funcionalidad
+```mermaid
+flowchart LR
+    PRO_BASE["pro\n(Rama Base Productiva)"] -->|"1. Nace o se empareja"| FEAT["feature/nombre-feature\no rama de desarrollador\n(ej. jetr / jetrejor)"]
+    FEAT -->|"2. Merge exclusivo al terminar\n(y eliminar feature/*)"| DEV["dev\n(Integración / Desarrollo)"]
+    DEV -->|"3. Único origen permitido\nhacia QAS"| QAS["qas\n(Aseguramiento de Calidad)"]
+    QAS -->|"4. Único origen permitido\nhacia PRO"| PRO_FINAL["pro\n(Producción)"]
 ```
 
-**Consideraciones adicionales sobre ramas:**
-- **Nunca desarrollar ni hacer commits directos sobre `main`**.
-- Utilizar nombres descriptivos en **`kebab-case`**:
-  - `feature/portfolio-initiatives-prisma-schema`
-  - `feature/ai-sizing-gemini-integration`
-  - `fix/priority-reorder-transaction-lock`
-- Mantener la rama sincronizada con `main` antes de abrir un Pull Request, verificando que las migraciones de Prisma no entren en conflicto con las de otros desarrolladores.
+1. **Rama independiente por desarrollo:** Cada nueva feature se tendrá que trabajar en una rama aparte, ya sea en una rama **`feature/nombre-feature`** o en alguna rama que comience con las **iniciales del desarrollador** o con el **username de Liverpool** (ejemplo: `jetr` o `jetrejor`).
+2. **Origen obligatorio desde `pro`:** Cada rama nueva **`feature/nombre-feature`** deberá **nacer siempre de la rama `pro`** debidamente actualizada.
+3. **Emparejamiento previo en ramas de desarrollador:** Si se está desarrollando sobre una rama con las iniciales o username del desarrollador (ej. `jetr` o `jetrejor`), **antes de comenzar con el desarrollo** se debe asegurar que esté **emparejada con `pro`**, es decir, que tenga los cambios más recientes de `pro`, que no tenga conflictos y que no tenga problemas para desplegar.
+4. **Merge exclusivo hacia `dev`:** Al terminar el desarrollo de una nueva feature, el merge deberá realizarse **únicamente hacia la rama `dev`**.
+   > **IMPORTANTE:** **NINGUNA** rama `feature/nombre-feature` ni rama con iniciales/username de un desarrollador se deberá mergear directamente a `qas` o a `pro`; **únicamente hacia `dev`**.
+5. **Eliminación de ramas `feature/nombre-feature` tras integrar a `dev`:** Cuando se termine el desarrollo de una nueva feature en una rama `feature/nombre-feature` y después de integrarla exitosamente a `dev`, **se deberá eliminar esa rama `feature/nombre-feature`** (local y remota) con la intención de mantener limpio el repositorio. *(Esto aplica únicamente para las ramas `feature/nombre-feature`).*
+6. **Flujo estricto e inquebrantable de promoción (`dev` ➔ `qas` ➔ `pro`):**
+   - Para que los commits lleguen a `pro`, deberán pasar **antes por la rama `qas`**.
+   - Es decir, si se hicieron 50 commits en `dev` y aún no están esos cambios en `qas` ni en `pro`, entonces se deberá hacer merge de **`dev` hacia `qas`** y posteriormente de **`qas` hacia `pro`**, siguiendo siempre ese flujo y **sin ninguna excepción**.
+   - **Regla crítica de protección:** La rama **`qas` no deberá recibir ningún merge de otra rama que no sea `dev`**, y la rama **`pro` no deberá recibir ningún merge que no sea desde la rama `qas`**.
 
-### 11.2 Convención de Mensajes de Commit
+#### Comandos de Referencia del Flujo Oficial
 
-Durante el desarrollo se deben realizar commits pequeños, atómicos y descriptivos siguiendo la especificación de **Conventional Commits**:
+```bash
+# Opción A: Crear una nueva rama feature/nombre-feature nacida desde pro
+git checkout pro
+git pull origin pro
+git checkout -b feature/nombre-de-la-funcionalidad
+
+# Opción B: Emparejar una rama existente de desarrollador (ej. jetr o jetrejor) con pro antes de iniciar
+git checkout jetr
+git pull origin pro
+
+# Al terminar la feature: integrar únicamente hacia dev
+git checkout dev
+git pull origin dev
+git merge feature/nombre-de-la-funcionalidad
+git push origin dev
+
+# Si se usó una rama feature/nombre-feature, eliminarla tras integrarla en dev
+git branch -d feature/nombre-de-la-funcionalidad
+git push origin --delete feature/nombre-de-la-funcionalidad
+
+# Promoción de cambios: dev -> qas -> pro (sin saltarse etapas)
+git checkout qas && git pull origin qas && git merge dev && git push origin qas
+git checkout pro && git pull origin pro && git merge qas && git push origin pro
+```
+
+### 11.2 Convención de Mensajes de Commit (En Inglés)
+
+Durante el desarrollo se deben realizar commits pequeños, atómicos y descriptivos escritos **siempre en inglés**, siguiendo la especificación y reglas de **Conventional Commits**:
 
 ```text
-<prefijo>(<alcance>): <descripción breve del cambio>
+<prefijo>(<alcance>): <short description in english>
 ```
 
 Para el backend, se recomienda indicar en el `<alcance>` el microservicio o paquete modificado (`backend`, `gateway`, `portfolio`, `sizing`, `integrations`, `shared`, `db`):
