@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Icon, Loader } from "@vibe/core";
 import {
@@ -19,21 +18,42 @@ import {
   Add,
   File as FileIcon,
 } from "@vibe/icons";
+import toast from "react-hot-toast";
 import { usePriorizacionStore, OKRItem, DependenciaItem } from "@/store/priorizacionStore";
 import { BackButton } from "@/components/BackButton";
 
 // ==========================================
 // CATÁLOGOS CORPORATIVOS LIVERPOOL / DEVCYCLE
 // ==========================================
+// TODO: Esta lista posteriormente va a provenir desde el backend y se va a llenar mediante un llamado a la API.
 const DIRECCIONES_NEGOCIO = [
+  "Logística",
+  "Boutiques",
+  "Liverpool",
+  "Inmobiliaria",
+  "Finanzas",
   "Capital Humano",
-  "Finanzas y Contabilidad",
-  "Omnicanalidad y Tiendas",
-  "Banca Digital y Servicios Financieros",
-  "Crédito y Cobranza",
-  "Logística y Cadena de Suministro",
-  "Mercadotecnia y Lealtad",
-  "Operaciones TI",
+  "Jurídico",
+  "Comercializadora de Marcas",
+  "Transformación",
+  "Tecnología",
+  "Negocios Financieros",
+  "Digital",
+];
+
+// TODO: Estos datos son mocks momentáneos; en un futuro esta información debe venir de un llamado a la API del backend.
+const OFICINAS_AREAS = [
+  "Liverpool",
+  "Logística",
+  "Suburbia",
+  "Galerías",
+  "Construcción",
+  "IT Infraestructura",
+  "IT Arquitecura, Data y Modernización",
+  "IT Soporte",
+  "IT Ingeniería de Software",
+  "Digital",
+  "NF Backoffice",
 ];
 
 const PMO_CATALOG = [
@@ -44,30 +64,41 @@ const PMO_CATALOG = [
   "PMO Financiera",
 ];
 
+// TODO: Estos datos deberán venir en un futuro de un llamado a la API del backend.
 const CLASIFICACIONES_KPI = [
-  "Calidad o Eficiencia",
-  "Crecimiento de Ventas",
-  "Experiencia de Cliente",
-  "Cumplimiento y Riesgo",
+  "Calidad y Eficiencia",
+  "Cumplimiento",
+  "Satisfacción del Cliente",
 ];
 
-const CONCEPTOS_KPI = [
-  "Servicio",
-  "Ventas",
-  "Costo",
-  "Operación",
-  "Riesgo",
+// TODO: Estos datos deberán venir en un futuro de un llamado a la API del backend.
+const IMPACTOS_FINANCIEROS_KPI = [
+  "Ingreso",
+  "Ahorro",
+  "Sin impacto financiero",
 ];
 
+// TODO: Esto es temporal y en un futuro los datos deberán venir de un llamado a la API del backend.
 const SYSTEMS_CATALOG = [
-  { id: "sap", name: "SAP / ERP Central" },
-  { id: "payments", name: "Pasarela de Pagos" },
-  { id: "core", name: "Core Transaccional" },
-  { id: "mobile", name: "App Móvil Clientes" },
-  { id: "pos", name: "Punto de Venta (POS Tienda)" },
-  { id: "dwh", name: "BigQuery / Data Warehouse" },
-  { id: "apis", name: "API Gateway / Microservicios" },
-  { id: "crm", name: "CRM Salesforce" },
+  "App Outsourcing",
+  "Power BI",
+  "Genially",
+  "Infobip",
+  "Entrada Única",
+  "Sorteos",
+  "Portal Importaciones",
+  "CAR Suburbia",
+  "SAP BW",
+  "SAP SLT Liverpool",
+  "Confluent",
+  "Data Cloud",
+  "PoS Suburbia",
+  "Arcus",
+  "Autodesk",
+  "Confluence",
+  "Triskell",
+  "Github",
+  "Jira",
 ];
 
 interface ChatMessage {
@@ -136,13 +167,13 @@ const INITIAL_FORM: ExtendedDiscoveryForm = {
   // 1.1
   title: "Automatización de Conciliación y Liquidación Omnicanal",
   businessUnit: "Capital Humano",
-  requester: "Argos Eyra Martínez Zeferino",
-  solicitanteEmail: "aemartinezz@liverpool.com.mx",
+  requester: "Alejandro Gómez Rivera",
+  solicitanteEmail: "agomez@liverpool.com.mx",
   sponsor: "Carlos Méndez (CFO)",
   sponsorEmail: "cmendez@liverpool.com.mx",
   interesadosEmails: ["pm_cartera@liverpool.com.mx", "brm_lider@liverpool.com.mx"],
   pmoResponsable: "EPL",
-  oficinaArea: "TI Arquitectura & Datos",
+  oficinaArea: "IT Arquitecura, Data y Modernización",
   portafolioManager: "AL UBAMARI MALINALLI MORENO MERAZ",
   dominioMatriz: "Dominio Backoffice",
 
@@ -175,24 +206,24 @@ const INITIAL_FORM: ExtendedDiscoveryForm = {
       objetivo: "Reducir a cero las discrepancias en el cierre contable omnicanal",
       resultadoClave: "Conciliar el 99.5% de las transacciones diarias sin intervención humana",
       kpi: "Porcentaje de conciliación automática en tiempo real",
-      clasificacion: "Calidad o Eficiencia",
-      concepto: "Servicio",
+      clasificacion: "Calidad y Eficiencia",
+      concepto: "Ahorro",
     },
   ],
 
-  // 2.2
-  ingresoIncremental: "1500000",
-  ahorroCostos: "3500000",
-  inversionEstimada: "1800000",
-  horizonte: "3 años",
+  // 2.2 ROI (en placeholder por defecto; ningún campo es obligatorio)
+  ingresoIncremental: "",
+  ahorroCostos: "",
+  inversionEstimada: "",
+  horizonte: "",
 
   // 3.1
   dimensionesImpacto: ["Tecnología", "Procesos"],
 
   // 3.2
   requiereTecnologia: "Sí",
-  sistemasAfectados: "SAP / ERP Central\nPasarela de Pagos\nCore Transaccional\nBigQuery / Data Warehouse\nAPI Gateway / Microservicios",
-  selectedSystems: ["sap", "payments", "core", "dwh", "apis"],
+  sistemasAfectados: "SAP BW, SAP SLT Liverpool, Confluent, Data Cloud",
+  selectedSystems: ["SAP BW", "SAP SLT Liverpool", "Confluent", "Data Cloud"],
 
   // 3.3
   existeDependencia: "Sí",
@@ -218,9 +249,27 @@ export default function DiscoveryPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // Catálogo dinámico de sistemas y campo para nuevo sistema
-  const [availableSystems, setAvailableSystems] = useState(SYSTEMS_CATALOG);
-  const [newSystemInput, setNewSystemInput] = useState("");
+  // Estado del dropdown multi-selección con buscador para sistemas y plataformas
+  const [isSystemsDropdownOpen, setIsSystemsDropdownOpen] = useState(false);
+  const [systemSearchQuery, setSystemSearchQuery] = useState("");
+  const systemsDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        systemsDropdownRef.current &&
+        !systemsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSystemsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredSystems = SYSTEMS_CATALOG.filter((sys) =>
+    sys.toLowerCase().includes(systemSearchQuery.trim().toLowerCase())
+  );
 
   const [newEmailInput, setNewEmailInput] = useState("");
 
@@ -261,51 +310,31 @@ export default function DiscoveryPage() {
   ]);
 
   // Obtener nombres de los sistemas seleccionados
-  const getSelectedSystemNames = () => {
-    return form.selectedSystems.map((id) => {
-      const found = availableSystems.find((s) => s.id === id);
-      return found ? found.name : id;
-    });
-  };
+  const getSelectedSystemNames = () => form.selectedSystems;
 
-  // Añadir un nuevo sistema personalizado al catálogo y seleccionarlo
-  const handleAddCustomSystem = () => {
-    const trimmed = newSystemInput.trim();
-    if (!trimmed) return;
-
-    const existing = availableSystems.find(
-      (s) => s.name.toLowerCase() === trimmed.toLowerCase()
-    );
-
-    if (existing) {
-      if (!form.selectedSystems.includes(existing.id)) {
-        setForm((prev) => ({
-          ...prev,
-          selectedSystems: [...prev.selectedSystems, existing.id],
-        }));
-      }
-    } else {
-      const newSys = { id: `sys-${Date.now()}`, name: trimmed };
-      setAvailableSystems((prev) => [...prev, newSys]);
-      setForm((prev) => ({
-        ...prev,
-        selectedSystems: [...prev.selectedSystems, newSys.id],
-      }));
-    }
-    setNewSystemInput("");
-  };
-
-  // Manejo de chips de sistemas
-  const toggleSystemChip = (sysId: string) => {
+  // Manejo de selección / eliminación de sistemas
+  const toggleSystemChip = (systemName: string) => {
     setForm((prev) => {
-      const exists = prev.selectedSystems.includes(sysId);
+      const exists = prev.selectedSystems.includes(systemName);
       const newSelected = exists
-        ? prev.selectedSystems.filter((s) => s !== sysId)
-        : [...prev.selectedSystems, sysId];
+        ? prev.selectedSystems.filter((s) => s !== systemName)
+        : [...prev.selectedSystems, systemName];
 
       return {
         ...prev,
         selectedSystems: newSelected,
+        sistemasAfectados: newSelected.join(", "),
+      };
+    });
+  };
+
+  const handleRemoveSystemChip = (systemName: string) => {
+    setForm((prev) => {
+      const newSelected = prev.selectedSystems.filter((s) => s !== systemName);
+      return {
+        ...prev,
+        selectedSystems: newSelected,
+        sistemasAfectados: newSelected.join(", "),
       };
     });
   };
@@ -353,8 +382,8 @@ export default function DiscoveryPage() {
       objetivo: "",
       resultadoClave: "",
       kpi: "",
-      clasificacion: "Calidad o Eficiencia",
-      concepto: "Servicio",
+      clasificacion: "Calidad y Eficiencia",
+      concepto: "Ahorro",
     };
     setForm((prev) => ({
       ...prev,
@@ -459,7 +488,7 @@ export default function DiscoveryPage() {
         };
       } else if (lower.includes("okr") || lower.includes("kpi") || lower.includes("métrica")) {
         botReply =
-          "Te sugiero estructurar los OKRs de éxito de la siguiente manera:\n• Objetivo: Eliminar demoras en el cierre de ventas y dispersión de pagos.\n• Resultado Clave: 99.8% de operaciones conciliadas en < 5 minutos.\n• KPI: Tiempo medio de liquidación por lote.\n• Clasificación: Calidad o Eficiencia (Concepto: Servicio).";
+          "Te sugiero estructurar los OKRs de éxito de la siguiente manera:\n• Objetivo: Eliminar demoras en el cierre de ventas y dispersión de pagos.\n• Resultado Clave: 99.8% de operaciones conciliadas en < 5 minutos.\n• KPI: Tiempo medio de liquidación por lote.\n• Clasificación: Calidad y Eficiencia (Impacto Financiero: Ahorro).";
         payload = {
           okrs: [
             {
@@ -467,19 +496,19 @@ export default function DiscoveryPage() {
               objetivo: "Eliminar demoras en el cierre de ventas y dispersión de pagos",
               resultadoClave: "99.8% de operaciones conciliadas en < 5 minutos",
               kpi: "Tiempo medio de liquidación por lote",
-              clasificacion: "Calidad o Eficiencia",
-              concepto: "Servicio",
+              clasificacion: "Calidad y Eficiencia",
+              concepto: "Ahorro",
             },
           ],
         };
       } else if (lower.includes("sistema") || lower.includes("ti") || lower.includes("tecnolog")) {
         botReply =
-          "Analizando la arquitectura omnicanal, confirmo impacto en Tecnología y Procesos. Sistemas sugeridos:\n• SAP / ERP Central\n• Pasarela de Pagos\n• Core Transaccional\n• BigQuery / Data Warehouse\n• API Gateway / Microservicios";
+          "Analizando la arquitectura omnicanal, confirmo impacto en Tecnología y Procesos. Sistemas sugeridos:\n• SAP BW\n• SAP SLT Liverpool\n• Confluent\n• Data Cloud\n• Power BI";
         payload = {
           requiereTecnologia: "Sí",
           dimensionesImpacto: ["Tecnología", "Procesos"],
-          selectedSystems: ["sap", "payments", "core", "dwh", "apis"],
-          sistemasAfectados: "SAP / ERP Central\nPasarela de Pagos\nCore Transaccional\nBigQuery / Data Warehouse\nAPI Gateway / Microservicios",
+          selectedSystems: ["SAP BW", "SAP SLT Liverpool", "Confluent", "Data Cloud", "Power BI"],
+          sistemasAfectados: "SAP BW, SAP SLT Liverpool, Confluent, Data Cloud, Power BI",
         };
       } else if (lower.includes("alineaci") || lower.includes("estratég")) {
         botReply =
@@ -520,12 +549,12 @@ export default function DiscoveryPage() {
       const botMsg: ChatMessage = {
         id: `b-${Date.now()}`,
         sender: "bot",
-        text: "✅ Documento procesado exitosamente por DataSwat AI. He extraído el caso completo:\n• Título y Gobierno: Finanzas / PMO EPL\n• Alcance y Sustento: Conciliación omnicanal automatizada\n• OKRs y ROI: Ahorro de $3.8M MXN anuales con ROI 210%\n• Sistemas: SAP, Pasarela de Pagos, BigQuery y APIs\nPuedes aplicar todos los datos a la ficha con un solo clic.",
+        text: "✅ Documento procesado exitosamente por DataSwat AI. He extraído el caso completo:\n• Título y Gobierno: Finanzas / PMO EPL\n• Alcance y Sustento: Conciliación omnicanal automatizada\n• OKRs y ROI: Ahorro de $3.8M MXN anuales con ROI 210%\n• Sistemas: SAP BW, SAP SLT Liverpool, Confluent y Data Cloud\nPuedes aplicar todos los datos a la ficha con un solo clic.",
         actionPayload: {
           title: "Plataforma Inteligente de Conciliación y Liquidación Omnicanal",
-          businessUnit: "Finanzas y Contabilidad",
+          businessUnit: "Finanzas",
           pmoResponsable: "EPL",
-          oficinaArea: "TI Arquitectura & Finanzas",
+          oficinaArea: "IT Arquitecura, Data y Modernización",
           portafolioManager: "AL UBAMARI MALINALLI MORENO MERAZ",
           needDescription:
             "Reemplazar los procesos manuales por una arquitectura orientada a eventos para procesar 1.4M de transacciones mensuales sin fricción.",
@@ -549,8 +578,8 @@ export default function DiscoveryPage() {
           horizonte: "3 años",
           dimensionesImpacto: ["Tecnología", "Procesos"],
           requiereTecnologia: "Sí",
-          selectedSystems: ["sap", "payments", "core", "dwh", "apis"],
-          sistemasAfectados: "SAP / ERP Central\nPasarela de Pagos\nCore Transaccional\nBigQuery / Data Warehouse\nAPI Gateway / Microservicios",
+          selectedSystems: ["SAP BW", "SAP SLT Liverpool", "Confluent", "Data Cloud"],
+          sistemasAfectados: "SAP BW, SAP SLT Liverpool, Confluent, Data Cloud",
           existeDependencia: "Sí",
           dependencias: [
             {
@@ -588,8 +617,8 @@ export default function DiscoveryPage() {
       etapaCiclo: "Priorización",
       estadoOperativo: "Por revisar",
       description: form.needDescription || "Iniciativa formulada con asistencia de IA en Discovery.",
-      solicitante: form.requester || "Argos Eyra Martínez Zeferino",
-      solicitanteEmail: form.solicitanteEmail || "aemartinezz@liverpool.com.mx",
+      solicitante: form.requester || "Alejandro Gómez Rivera",
+      solicitanteEmail: form.solicitanteEmail || "agomez@liverpool.com.mx",
       sponsor: form.sponsor || form.portafolioManager || "AL UBAMARI MALINALLI MORENO MERAZ",
       sponsorEmail: form.sponsorEmail || "sponsor@liverpool.com.mx",
       sponsorRole: form.portafolioManager ? "Portfolio Manager" : "CFO",
@@ -598,7 +627,7 @@ export default function DiscoveryPage() {
       requiereTI: form.requiereTecnologia === "Sí",
       enCarteraPendientes: true,
       impactoTIConfirmado: false,
-      sistemasInvolucrados: getSelectedSystemNames().length ? getSelectedSystemNames() : ["SAP", "API Gateway"],
+      sistemasInvolucrados: getSelectedSystemNames().length ? getSelectedSystemNames() : ["SAP BW", "Confluent"],
       beneficioEstimado: savingsStr,
       beneficioDetalle: form.beneficioNegocio || `Ahorro estimado y ${form.savedHoursPerMonth || "140"} hrs/mes optimizadas`,
       kpiEsperado: form.okrs[0]?.kpi || form.successKpi || "Reducción de tiempos operativos",
@@ -860,7 +889,7 @@ export default function DiscoveryPage() {
                           type="text"
                           className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.requester}
-                          placeholder="Ej. Argos Eyra Martínez Zeferino"
+                          placeholder="Ej. Alejandro Gómez Rivera"
                           onChange={(e) => setForm({ ...form, requester: e.target.value })}
                         />
                       </div>
@@ -956,6 +985,7 @@ export default function DiscoveryPage() {
                           <span className="font-extrabold text-brand-accent">*</span>
                           <span className="text-xs font-extrabold text-green-600">✓</span>
                         </label>
+                        {/* TODO: La lista de Direcciones de Negocio provendrá posteriormente desde el backend mediante un llamado a la API */}
                         <select
                           className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.businessUnit}
@@ -1003,13 +1033,18 @@ export default function DiscoveryPage() {
                       <span className="text-[10.5px] font-medium text-gray-500">(opcional)</span>
                       <span className="text-xs font-extrabold text-green-600">✓</span>
                     </label>
-                    <input
-                      type="text"
+                    {/* TODO: Estos datos son mocks momentáneos; en un futuro esta información debe venir de un llamado a la API del backend */}
+                    <select
                       className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                       value={form.oficinaArea}
-                      placeholder="Ej. TI Arquitectura & Datos"
                       onChange={(e) => setForm({ ...form, oficinaArea: e.target.value })}
-                    />
+                    >
+                      {OFICINAS_AREAS.map((area) => (
+                        <option key={area} value={area}>
+                          {area}
+                        </option>
+                      ))}
+                    </select>
                     <div className="mt-1 text-[11px] text-text-secondary">
                       Tomada del directorio. Si no es correcta, puedes cambiarla.
                     </div>
@@ -1546,7 +1581,7 @@ export default function DiscoveryPage() {
                         </div>
                       </div>
 
-                      {/* Clasificación y Concepto */}
+                      {/* Clasificación e Impacto Financiero */}
                       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                         <div>
                           <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
@@ -1559,6 +1594,7 @@ export default function DiscoveryPage() {
                             </span>
                             <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
+                          {/* TODO: Estos datos deberán venir en un futuro de un llamado a la API del backend */}
                           <select
                             className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.clasificacion}
@@ -1574,23 +1610,24 @@ export default function DiscoveryPage() {
 
                         <div>
                           <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold text-text-heading">
-                            <span>Concepto</span>
+                            <span>Impacto Financiero</span>
                             <span
                               className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
-                              title="Área de impacto contable/operativo"
+                              title="Tipo de impacto financiero esperado"
                             >
                               ?
                             </span>
                             <span className="text-xs font-extrabold text-green-600">✓</span>
                           </label>
+                          {/* TODO: Estos datos deberán venir en un futuro de un llamado a la API del backend */}
                           <select
                             className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                             value={okr.concepto}
                             onChange={(e) => handleUpdateOkr(idx, "concepto", e.target.value)}
                           >
-                            {CONCEPTOS_KPI.map((cp) => (
-                              <option key={cp} value={cp}>
-                                {cp}
+                            {IMPACTOS_FINANCIEROS_KPI.map((imp) => (
+                              <option key={imp} value={imp}>
+                                {imp}
                               </option>
                             ))}
                           </select>
@@ -1623,12 +1660,12 @@ export default function DiscoveryPage() {
                     <div>
                       <h3 className="m-0 text-[14.5px] font-bold text-text-heading">ROI</h3>
                       <p className="mt-0.5 mb-0 text-[11.5px] text-text-secondary">
-                        Cifras anuales estimadas en pesos. El ROI se calcula solo.
+                        Cifras anuales estimadas en pesos (opcionales). El ROI se calcula solo.
                       </p>
                     </div>
                   </div>
-                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-green-200 bg-emerald-50 px-2.5 py-[3px] text-[11.5px] font-semibold text-green-700">
-                    ✓ Completo
+                  <span className="inline-flex shrink-0 items-center gap-[5px] rounded-xl border border-slate-200 bg-bg-card px-2.5 py-[3px] text-[11.5px] font-semibold text-slate-600">
+                    {hasRoiData ? "✓ Calculado" : "Opcional"}
                   </span>
                 </div>
 
@@ -1645,7 +1682,6 @@ export default function DiscoveryPage() {
                         >
                           ?
                         </span>
-                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <div className="relative">
                         <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
@@ -1655,7 +1691,7 @@ export default function DiscoveryPage() {
                           type="number"
                           className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.ingresoIncremental}
-                          placeholder="0"
+                          placeholder="Ej. 1,500,000"
                           onChange={(e) => setForm({ ...form, ingresoIncremental: e.target.value })}
                         />
                       </div>
@@ -1672,7 +1708,6 @@ export default function DiscoveryPage() {
                         >
                           ?
                         </span>
-                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <div className="relative">
                         <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
@@ -1682,7 +1717,7 @@ export default function DiscoveryPage() {
                           type="number"
                           className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.ahorroCostos}
-                          placeholder="0"
+                          placeholder="Ej. 3,500,000"
                           onChange={(e) => setForm({ ...form, ahorroCostos: e.target.value })}
                         />
                       </div>
@@ -1701,7 +1736,6 @@ export default function DiscoveryPage() {
                         >
                           ?
                         </span>
-                        <span className="text-xs font-extrabold text-green-600">✓</span>
                       </label>
                       <div className="relative">
                         <span className="absolute top-[9px] left-3 font-semibold text-gray-500">
@@ -1711,7 +1745,7 @@ export default function DiscoveryPage() {
                           type="number"
                           className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card py-[9px] pr-3 pl-[26px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           value={form.inversionEstimada}
-                          placeholder="0"
+                          placeholder="Ej. 1,800,000"
                           onChange={(e) => setForm({ ...form, inversionEstimada: e.target.value })}
                         />
                       </div>
@@ -2005,8 +2039,8 @@ export default function DiscoveryPage() {
               </div>
 
               {/* 3.2 SISTEMAS Y PLATAFORMAS */}
-              <div className="mb-5 overflow-hidden rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
-                <div className="flex items-center justify-between gap-3 border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
+              <div className="mb-5 rounded-xl border border-border-default bg-bg-card shadow-2xs transition-shadow duration-150 hover:shadow-xs">
+                <div className="flex items-center justify-between gap-3 rounded-t-xl border-b border-pink-100 bg-[#fdf2f7] px-4.5 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-md bg-pink-600 px-1.5 text-xs font-extrabold text-white">
                       3.2
@@ -2075,58 +2109,110 @@ export default function DiscoveryPage() {
                           </span>
                           <span
                             className="inline-flex h-[15px] w-[15px] cursor-help items-center justify-center rounded-full bg-status-gray-bg text-[10px] font-bold text-gray-500"
-                            title="Selecciona o añade los sistemas involucrados"
+                            title="Selecciona uno o varios sistemas involucrados"
                           >
                             ?
                           </span>
                         </label>
 
-                        {/* Cuadro de texto para agregar nuevo sistema con botón ADD */}
-                        <div className="mb-3 flex max-w-[520px] gap-2">
-                          <input
-                            type="text"
-                            className="w-full rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-[13.5px] text-text-main transition-all duration-150 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
-                            placeholder="Escribe el nombre de otro sistema o plataforma..."
-                            value={newSystemInput}
-                            onChange={(e) => setNewSystemInput(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                handleAddCustomSystem();
-                              }
-                            }}
-                          />
+                        {/* TODO: Esto es temporal y en un futuro los datos deberán venir de un llamado a la API del backend */}
+                        <div ref={systemsDropdownRef} className="relative max-w-[520px]">
                           <button
                             type="button"
-                            className="inline-flex h-[38px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-brand-primary px-4.5 text-xs font-bold text-white transition-all duration-150 hover:border-brand-primary-hover hover:bg-brand-primary-hover"
-                            onClick={handleAddCustomSystem}
+                            onClick={() => setIsSystemsDropdownOpen((prev) => !prev)}
+                            className="flex w-full cursor-pointer items-center justify-between rounded-[7px] border border-[#dcdfe4] bg-bg-card px-3 py-[9px] text-left text-[13.5px] text-text-main transition-all duration-150 outline-none hover:border-brand-primary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                           >
-                            <Icon icon={Add} size={14} />
-                            <span>ADD</span>
+                            <span
+                              className={
+                                form.selectedSystems.length > 0
+                                  ? "font-medium text-text-main"
+                                  : "text-text-secondary"
+                              }
+                            >
+                              {form.selectedSystems.length > 0
+                                ? `${form.selectedSystems.length} sistema(s) seleccionado(s)`
+                                : "Selecciona uno o varios sistemas..."}
+                            </span>
+                            <span className="text-xs text-text-secondary">
+                              {isSystemsDropdownOpen ? "▲" : "▼"}
+                            </span>
                           </button>
+
+                          {isSystemsDropdownOpen && (
+                            <div className="absolute top-[calc(100%+6px)] right-0 left-0 z-30 overflow-hidden rounded-lg border border-border-default bg-bg-card shadow-lg">
+                              {/* Buscador dentro del dropdown */}
+                              <div className="border-b border-border-subtle bg-[#fafbfc] p-2.5">
+                                <input
+                                  type="text"
+                                  className="w-full rounded-md border border-[#dcdfe4] bg-bg-card px-3 py-1.5 text-xs text-text-main outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
+                                  placeholder="Buscar sistema o plataforma..."
+                                  value={systemSearchQuery}
+                                  onChange={(e) => setSystemSearchQuery(e.target.value)}
+                                  autoFocus
+                                />
+                              </div>
+
+                              {/* Lista filtrable de selección múltiple */}
+                              <div className="max-h-56 overflow-y-auto p-1.5">
+                                {filteredSystems.length === 0 ? (
+                                  <div className="px-3 py-3 text-center text-xs text-text-secondary">
+                                    No se encontraron sistemas para &quot;{systemSearchQuery}&quot;
+                                  </div>
+                                ) : (
+                                  filteredSystems.map((sys) => {
+                                    const isSelected = form.selectedSystems.includes(sys);
+                                    return (
+                                      <button
+                                        key={sys}
+                                        type="button"
+                                        onClick={() => toggleSystemChip(sys)}
+                                        className={`flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-left text-xs transition-colors duration-150 ${
+                                          isSelected
+                                            ? "bg-brand-primary-light font-bold text-brand-primary"
+                                            : "text-text-main hover:bg-slate-50"
+                                        }`}
+                                      >
+                                        <span>{sys}</span>
+                                        <span
+                                          className={`flex h-4 w-4 items-center justify-center rounded-xs border text-[10px] ${
+                                            isSelected
+                                              ? "border-brand-primary bg-brand-primary text-white"
+                                              : "border-slate-300 bg-bg-card text-transparent"
+                                          }`}
+                                        >
+                                          ✓
+                                        </span>
+                                      </button>
+                                    );
+                                  })
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Chips seleccionables de sistemas */}
-                        <div className="flex flex-wrap gap-2">
-                          {availableSystems.map((sys) => {
-                            const isSelected = form.selectedSystems.includes(sys.id);
-                            return (
-                              <button
-                                key={sys.id}
-                                type="button"
-                                className={`inline-flex cursor-pointer items-center gap-[5px] rounded-[20px] border px-3.5 py-1.5 text-xs transition-all duration-150 ${
-                                  isSelected
-                                    ? "border-brand-primary bg-brand-primary font-bold text-white"
-                                    : "border-[#d0d4e4] bg-status-gray-bg font-medium text-gray-600 hover:border-brand-primary hover:bg-brand-primary-light hover:text-brand-primary"
-                                }`}
-                                onClick={() => toggleSystemChip(sys.id)}
+                        {/* Chips de sistemas seleccionados con botón "x" para eliminar */}
+                        {form.selectedSystems.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {form.selectedSystems.map((sys) => (
+                              <span
+                                key={sys}
+                                className="inline-flex items-center gap-1.5 rounded-[20px] border border-brand-primary bg-brand-primary px-3 py-1 text-xs font-bold text-white"
                               >
-                                <span>{isSelected ? "✓" : "+"}</span>
-                                <span>{sys.name}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
+                                <span>{sys}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveSystemChip(sys)}
+                                  className="inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-none bg-white/20 p-0 text-[11px] leading-none font-bold text-white transition-colors hover:bg-white/35"
+                                  title={`Eliminar ${sys}`}
+                                  aria-label={`Eliminar ${sys}`}
+                                >
+                                  ✕
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -2242,13 +2328,23 @@ export default function DiscoveryPage() {
               {/* LA GRAN FICHA CANVAS INSTITUCIONAL DE LIVERPOOL */}
               <div className="mb-6 overflow-hidden rounded-xl border border-[#d0d4e4] bg-bg-card shadow-md">
                 {/* Banner superior */}
-                <div className="flex items-center justify-between gap-4 bg-linear-to-r from-[#b01777] to-pink-600 px-5.5 py-3.5 text-white">
-                  <div className="m-0 text-[13.5px] font-extrabold tracking-[0.8px] uppercase">
-                    FICHA CANVAS DE INICIATIVA
+                <div className="flex flex-wrap items-center justify-between gap-4 bg-linear-to-r from-[#b01777] to-pink-600 px-5.5 py-3.5 text-white">
+                  <div>
+                    <div className="m-0 text-[13.5px] font-extrabold tracking-[0.8px] uppercase">
+                      FICHA CANVAS DE INICIATIVA
+                    </div>
+                    <div className="text-[11.5px] font-medium opacity-90">
+                      Una división de: El Puerto de Liverpool
+                    </div>
                   </div>
-                  <div className="text-[11.5px] font-medium opacity-90">
-                    Una división de: El Puerto de Liverpool
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toast.success("La descarga iniciará en un momento")}
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/50 bg-white/15 px-3.5 py-1.5 text-xs font-bold text-white transition-all duration-150 hover:bg-white hover:text-brand-primary"
+                  >
+                    <Icon icon={FileIcon} size={14} />
+                    <span>Exportar a PDF</span>
+                  </button>
                 </div>
 
                 <div className="flex flex-col gap-4.5 bg-bg-card p-5.5">
@@ -2439,7 +2535,9 @@ export default function DiscoveryPage() {
                       <span>Sistemas afectados</span>
                     </div>
                     <div className="text-[12.5px] leading-[1.45] text-text-heading">
-                      {form.sistemasAfectados || "Sin sistemas declarados."}
+                      {form.selectedSystems.length > 0
+                        ? form.selectedSystems.join(", ")
+                        : "Sin sistemas declarados."}
                     </div>
                   </div>
 
@@ -2497,7 +2595,7 @@ export default function DiscoveryPage() {
                         LÍDER
                       </div>
                       <div className="mt-[1px] text-[11.5px] font-bold text-text-heading">
-                        ARGOS EYRA MARTINEZ ZEFERINO
+                        {(form.requester || "Alejandro Gómez Rivera").toUpperCase()}
                       </div>
                     </div>
                   </div>

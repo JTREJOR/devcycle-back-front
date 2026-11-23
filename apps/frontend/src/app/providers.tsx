@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@vibe/core";
+import { Toaster } from "react-hot-toast";
 import { AppShell } from "@/components/AppShell";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -20,6 +21,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ThemeProvider systemTheme="light">
         <AppShell>{children}</AppShell>
       </ThemeProvider>
+      <Toaster position="bottom-right" />
     </QueryClientProvider>
   );
 }

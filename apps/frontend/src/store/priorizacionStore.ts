@@ -453,7 +453,7 @@ const RAW_DEFAULT_INITIATIVES: InitiativeItem[] = [
     creationDate: "22 sep 2026",
     description:
       "El proceso de conciliación y liquidación entre canales se realiza de forma manual, generando retrasos, incidencias y falta de trazabilidad en la información.",
-    solicitante: "Argos Eyra Martínez Zeferino",
+    solicitante: "Alejandro Gómez Rivera",
     sponsor: "Carlos Méndez",
     sponsorRole: "CFO",
     impactoTI: "Sí, proyecto tecnológico",
@@ -1473,7 +1473,7 @@ export const usePriorizacionStore = create<PriorizacionStore>((set, get) => ({
       priority: newItem.priority ?? null,
       creationDate: newItem.creationDate || "Hoy",
       description: newItem.description || "",
-      solicitante: newItem.solicitante || "Argos Eyra Martínez Zeferino",
+      solicitante: newItem.solicitante || "Alejandro Gómez Rivera",
       solicitanteEmail: newItem.solicitanteEmail || "solicitante@liverpool.com.mx",
       sponsor: newItem.sponsor || "Carlos Méndez",
       sponsorEmail: newItem.sponsorEmail || "sponsor@liverpool.com.mx",

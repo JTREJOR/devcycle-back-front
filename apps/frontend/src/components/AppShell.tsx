@@ -89,7 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {activeRole ? activeRole.name.replace(/_/g, " ").toUpperCase() : "ADMIN ROOT"}
           </span>
           <span className="hidden text-[12.5px] text-text-secondary md:inline">
-            {activeUser ? activeUser.email : "aemartinezz@liverpool.com.mx"}
+            {activeUser ? activeUser.email : "agomez@liverpool.com.mx"}
           </span>
         </div>
       </header>
@@ -108,7 +108,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 MODO PRUEBAS &nbsp; Simulando: {activeUser?.name} · {activeRole?.name.toUpperCase()}
               </div>
               <div className="text-[11px] text-text-secondary">
-                Usuario real: Argos Eyra Martinez Zeferino · aemartinezz@liverpool.com.mx
+                Usuario real: Alejandro Gómez Rivera · agomez@liverpool.com.mx
               </div>
             </div>
           </div>
