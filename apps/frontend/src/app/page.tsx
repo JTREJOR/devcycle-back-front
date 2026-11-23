@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Icon } from "@vibe/core";
 import {
   Sun,
-  Calendar,
   CheckList,
   Bolt,
   Alert,
@@ -18,7 +17,6 @@ import {
 } from "@vibe/icons";
 import { usePriorizacionStore, getMacroStage } from "@/store/priorizacionStore";
 import { useUiStore } from "@/store/uiStore";
-import { BackButton } from "@/components/BackButton";
 
 const CARTERAS = [
   "Todas",
@@ -333,12 +331,27 @@ export default function PortfolioPage() {
     return map[color || ""] || "border-l-brand-primary";
   };
 
+  const getKpiCardClass = (isActive: boolean) =>
+    `group relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-magenta hover:bg-brand-magenta-bg hover:shadow-[0_6px_18px_rgba(181,38,112,0.12)] active:border-brand-magenta-active active:bg-brand-magenta-bg ${
+      isActive
+        ? "border-[1.5px] border-brand-magenta bg-brand-magenta-bg shadow-[0_6px_18px_rgba(181,38,112,0.12)]"
+        : "border border-slate-200 bg-bg-card shadow-2xs"
+    }`;
+
+  const getKpiIconClass = (isActive: boolean) =>
+    `flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors duration-200 group-hover:bg-brand-magenta group-hover:text-white ${
+      isActive
+        ? "bg-brand-magenta text-white"
+        : "bg-brand-magenta-bg text-brand-magenta"
+    }`;
+
+  const getKpiTitleClass = (isActive: boolean) =>
+    `text-[14.5px] font-bold transition-colors duration-200 group-hover:text-brand-magenta-text ${
+      isActive ? "text-brand-magenta-text" : "text-slate-800"
+    }`;
+
   return (
     <div>
-      <div className="mb-3 flex items-center">
-        <BackButton />
-      </div>
-
       {/* 1. SECCIÓN HERO (Bienvenida ejecutiva) */}
       <section className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-border-default bg-bg-card px-6 py-5 shadow-2xs">
         <div>
@@ -409,20 +422,16 @@ export default function PortfolioPage() {
       <div className="mt-4 mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* 1. Aprobadas en proceso */}
         <div
-          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
-            selectedKpiCard === "aprobadas"
-              ? "border-success-500 bg-green-50 shadow-[0_6px_18px_rgba(5,150,105,0.12)]"
-              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
-          }`}
+          className={getKpiCardClass(selectedKpiCard === "aprobadas")}
           onClick={() => setSelectedKpiCard("aprobadas")}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-success-500">
+          <div className={getKpiIconClass(selectedKpiCard === "aprobadas")}>
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#059669"
+              stroke="currentColor"
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -437,7 +446,7 @@ export default function PortfolioPage() {
           </div>
 
           <div>
-            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+            <div className={`mt-1 ${getKpiTitleClass(selectedKpiCard === "aprobadas")}`}>
               Aprobadas en proceso
             </div>
             <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
@@ -448,21 +457,17 @@ export default function PortfolioPage() {
 
         {/* 2. Backlog por priorizar */}
         <div
-          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border-[1.5px] bg-brand-magenta-bg px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-magenta hover:shadow-[0_6px_18px_rgba(181,38,112,0.12)] ${
-            selectedKpiCard === "backlog"
-              ? "border-brand-magenta shadow-[0_6px_18px_rgba(181,38,112,0.12)]"
-              : "border-brand-magenta-border shadow-2xs"
-          }`}
+          className={getKpiCardClass(selectedKpiCard === "backlog")}
           onClick={() => {
             setSelectedKpiCard("backlog");
             setSelectedBacklogPill("registradas");
           }}
         >
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-magenta text-white">
+            <div className={getKpiIconClass(selectedKpiCard === "backlog")}>
               <Icon icon={Clipboard} size={17} />
             </div>
-            <span className="text-[14.5px] font-bold text-brand-magenta-text">
+            <span className={getKpiTitleClass(selectedKpiCard === "backlog")}>
               Backlog por priorizar
             </span>
           </div>
@@ -512,20 +517,16 @@ export default function PortfolioPage() {
 
         {/* 3. Sin etapa definida */}
         <div
-          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
-            selectedKpiCard === "sin_etapa"
-              ? "border-slate-500 bg-slate-50 shadow-[0_6px_18px_rgba(100,116,139,0.12)]"
-              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
-          }`}
+          className={getKpiCardClass(selectedKpiCard === "sin_etapa")}
           onClick={() => setSelectedKpiCard("sin_etapa")}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+          <div className={getKpiIconClass(selectedKpiCard === "sin_etapa")}>
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#64748B"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -541,7 +542,7 @@ export default function PortfolioPage() {
           </div>
 
           <div>
-            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+            <div className={`mt-1 ${getKpiTitleClass(selectedKpiCard === "sin_etapa")}`}>
               Sin etapa definida
             </div>
             <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
@@ -552,20 +553,16 @@ export default function PortfolioPage() {
 
         {/* 4. Rechazadas */}
         <div
-          className={`relative flex min-h-[142px] cursor-pointer flex-col justify-between rounded-2xl border px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 ${
-            selectedKpiCard === "rechazadas"
-              ? "border-danger-500 bg-red-50 shadow-[0_6px_18px_rgba(220,38,38,0.12)]"
-              : "border-slate-200 bg-bg-card shadow-2xs hover:border-[#d9bfd5] hover:shadow-[0_6px_18px_rgba(131,49,119,0.08)]"
-          }`}
+          className={getKpiCardClass(selectedKpiCard === "rechazadas")}
           onClick={() => setSelectedKpiCard("rechazadas")}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-danger-500">
+          <div className={getKpiIconClass(selectedKpiCard === "rechazadas")}>
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#DC2626"
+              stroke="currentColor"
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -581,7 +578,7 @@ export default function PortfolioPage() {
           </div>
 
           <div>
-            <div className="mt-1 text-[14.5px] font-bold text-slate-800">
+            <div className={`mt-1 ${getKpiTitleClass(selectedKpiCard === "rechazadas")}`}>
               Rechazadas
             </div>
             <div className="mt-0.5 text-xs leading-[1.3] font-medium text-slate-500">
@@ -911,60 +908,6 @@ export default function PortfolioPage() {
                     <Icon icon={FileIcon} size={14} />
                   </div>
                   <span>3 con documentos pendientes</span>
-                </div>
-                <Icon icon={NavigationChevronRight} size={14} />
-              </Link>
-            </div>
-          </section>
-
-          {/* Widget 3: Próximos hitos (Imagen 2) */}
-          <section
-            className="rounded-[14px] border border-border-default bg-bg-card p-5 shadow-2xs"
-            id="hitos"
-          >
-            <div className="mb-4 flex items-center gap-2.5">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-pink-50 text-pink-600">
-                <Icon icon={Calendar} size={18} />
-              </div>
-              <div>
-                <h3 className="m-0 text-sm font-bold text-text-heading">Próximos hitos</h3>
-                <div className="text-[11.5px] text-text-secondary">
-                  Fechas importantes del portafolio
-                </div>
-              </div>
-              <Link
-                href="/en-construccion?modulo=Calendario%20de%20Hitos"
-                className="ml-auto text-xs font-semibold text-brand-primary no-underline hover:underline"
-              >
-                Ver calendario →
-              </Link>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Link
-                href="/en-construccion?modulo=Comité%20de%20Portafolio"
-                className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-[9px] text-gray-700 no-underline transition-colors duration-150 hover:bg-gray-50"
-              >
-                <div className="w-[95px] shrink-0 text-xs font-bold text-text-heading">
-                  29 Sep 2026
-                </div>
-                <div className="flex flex-1 items-center gap-2 text-xs text-gray-600">
-                  <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-violet-500" />
-                  <span>Comité de portafolio</span>
-                </div>
-                <Icon icon={NavigationChevronRight} size={14} />
-              </Link>
-
-              <Link
-                href="/en-construccion?modulo=Cierre%20de%20Estimaciones%20Q4"
-                className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-[9px] text-gray-700 no-underline transition-colors duration-150 hover:bg-gray-50"
-              >
-                <div className="w-[95px] shrink-0 text-xs font-bold text-text-heading">
-                  15 Oct 2026
-                </div>
-                <div className="flex flex-1 items-center gap-2 text-xs text-gray-600">
-                  <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-slate-500" />
-                  <span>Cierre de estimaciones Q4</span>
                 </div>
                 <Icon icon={NavigationChevronRight} size={14} />
               </Link>

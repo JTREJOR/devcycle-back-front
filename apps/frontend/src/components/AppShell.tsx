@@ -86,7 +86,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-3">
           <RoleSwitcher />
           <span className="inline-flex items-center rounded-[20px] border border-status-purple-border bg-status-purple-bg px-2.5 py-1 text-[11.5px] font-bold tracking-[0.4px] text-brand-primary">
-            {activeRole ? activeRole.name.toUpperCase().replace(/\s+/g, "_") : "ADMIN_ROOT"}
+            {activeRole ? activeRole.name.replace(/_/g, " ").toUpperCase() : "ADMIN ROOT"}
           </span>
           <span className="hidden text-[12.5px] text-text-secondary md:inline">
             {activeUser ? activeUser.email : "aemartinezz@liverpool.com.mx"}
