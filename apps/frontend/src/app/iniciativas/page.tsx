@@ -469,6 +469,29 @@ function IniciativasContent() {
     );
   };
 
+  const renderDisabledStageButton = (label: string) => (
+    <div
+      className="group relative mt-5 cursor-not-allowed"
+      title="Esta sección se encuentra aún en desarrollo, disculpe las molestias :)"
+    >
+      <div
+        role="tooltip"
+        className="pointer-events-none invisible absolute bottom-[calc(100%+8px)] left-1/2 z-30 w-max max-w-[280px] -translate-x-1/2 rounded-lg bg-text-heading px-3 py-2 text-center text-xs leading-[1.35] font-semibold text-white opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition-all duration-150 group-hover:visible group-hover:opacity-100"
+      >
+        Esta sección se encuentra aún en desarrollo, disculpe las molestias :)
+        <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-text-heading" />
+      </div>
+      <button
+        type="button"
+        disabled
+        className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border-[1.5px] border-slate-400 bg-slate-400 px-4.5 py-2.5 text-[13.5px] font-bold text-white opacity-80"
+      >
+        <span>{label}</span>
+        <Icon icon={NavigationChevronRight} size={16} />
+      </button>
+    </div>
+  );
+
   return (
     <div className="px-1 pb-10">
       <div className="mb-3 flex items-center">
@@ -1239,16 +1262,7 @@ function IniciativasContent() {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <Link
-                  href={`/en-construccion?modulo=${encodeURIComponent("Autorización")}&id=${selectedInitiative.id}`}
-                  onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
-                >
-                  <span>Ir a autorización</span>
-                  <Icon icon={NavigationChevronRight} size={16} />
-                </Link>
-              </div>
+              {renderDisabledStageButton("Ir a autorización")}
             </div>
           )}
 
@@ -1318,16 +1332,7 @@ function IniciativasContent() {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <Link
-                  href={`/en-construccion?modulo=${encodeURIComponent("Formalización")}&id=${selectedInitiative.id}`}
-                  onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
-                >
-                  <span>Ir a formalización</span>
-                  <Icon icon={NavigationChevronRight} size={16} />
-                </Link>
-              </div>
+              {renderDisabledStageButton("Ir a formalización")}
             </div>
           )}
 
@@ -1396,16 +1401,7 @@ function IniciativasContent() {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <Link
-                  href={`/en-construccion?modulo=${encodeURIComponent("Ejecución")}&id=${selectedInitiative.id}`}
-                  onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
-                >
-                  <span>Ir a ejecución</span>
-                  <Icon icon={NavigationChevronRight} size={16} />
-                </Link>
-              </div>
+              {renderDisabledStageButton("Ir a ejecución")}
             </div>
           )}
 
@@ -1475,16 +1471,7 @@ function IniciativasContent() {
                 </div>
               </div>
 
-              <div className="mt-5">
-                <Link
-                  href={`/en-construccion?modulo=${encodeURIComponent("Cierre")}&id=${selectedInitiative.id}`}
-                  onClick={() => setSelectedId(selectedInitiative.id)}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-none bg-brand-accent px-4.5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-[0_2px_6px_rgba(230,0,126,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-brand-accent-dark"
-                >
-                  <span>Ir a cierre</span>
-                  <Icon icon={NavigationChevronRight} size={16} />
-                </Link>
-              </div>
+              {renderDisabledStageButton("Ir a cierre")}
             </div>
           )}
         </div>

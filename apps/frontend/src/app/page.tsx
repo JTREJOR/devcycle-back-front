@@ -636,10 +636,10 @@ export default function PortfolioPage() {
 
             <Link
               href="/iniciativas"
-              className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-brand-primary no-underline hover:underline"
+              className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border-[1.5px] border-brand-primary bg-bg-card px-3.5 py-[7px] text-[13px] font-semibold text-brand-primary no-underline shadow-2xs transition-all duration-150 hover:bg-brand-primary-light active:border-brand-primary-active active:bg-brand-primary-border active:text-brand-primary-active"
             >
               <span>Ver todas</span>
-              <span>→</span>
+              <Icon icon={NavigationChevronRight} size={15} />
             </Link>
           </div>
 
